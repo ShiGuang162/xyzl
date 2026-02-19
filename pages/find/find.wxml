@@ -13,6 +13,79 @@
     </view>
   </view>
   
+  <!-- 搜索对话框 -->
+  <view wx:if="{{showSearchDialog}}" class="search-dialog">
+    <view class="search-header">
+      <view class="search-input-container">
+        <view class="search-input-icon">🔍</view>
+        <input 
+          class="search-input" 
+          placeholder="搜索讨论内容..." 
+          value="{{searchKeyword}}" 
+          bindinput="onSearchInput"
+          bindconfirm="onSearchConfirm"
+          focus="{{true}}"
+        />
+        <view wx:if="{{searchKeyword}}" class="search-clear" bindtap="clearSearchInput">✕</view>
+      </view>
+      <view class="search-cancel" bindtap="hideSearchDialog">取消</view>
+    </view>
+    
+    <!-- 搜索历史 -->
+    <view wx:if="{{!searching && searchHistory.length > 0 && !searchKeyword}}" class="search-history">
+      <view class="search-history-header">
+        <view class="search-history-title">搜索历史</view>
+        <view class="search-history-clear" bindtap="clearSearchHistory">清空</view>
+      </view>
+      <view class="search-history-list">
+        <view wx:for="{{searchHistory}}" wx:key="index" class="search-history-item" bindtap="onHistoryItemClick" data-keyword="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 热门搜索 -->
+    <view wx:if="{{!searching && !searchKeyword}}" class="hot-search">
+      <view class="hot-search-title">热门搜索</view>
+      <view class="hot-search-list">
+        <view wx:for="{{hotSearchList}}" wx:key="index" class="hot-search-item" bindtap="onHotSearchClick" data-keyword="{{item}}">
+          <view class="hot-search-rank">{{index + 1}}</view>
+          <view class="hot-search-text">{{item}}</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 搜索结果 -->
+    <view wx:if="{{searching}}" class="search-loading">
+      <view class="loading-spinner"></view>
+      <view class="loading-text">搜索中...</view>
+    </view>
+    
+    <!-- 搜索结果 -->
+    <view wx:elif="{{searchResults.length > 0 && searchKeyword}}" class="search-results">
+      <view class="search-results-header">
+        搜索结果 ({{searchResults.length}})
+      </view>
+      <view class="search-results-list">
+        <view wx:for="{{searchResults}}" wx:key="id" class="search-result-item" bindtap="viewDiscussion" data-id="{{item.id}}">
+          <view class="search-result-title">{{item.title}}</view>
+          <view class="search-result-content">{{item.content}}</view>
+          <view class="search-result-meta">
+            <view class="search-result-tag">{{item.tag}}</view>
+            <view class="search-result-time">{{item.time}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 无搜索结果 -->
+    <view wx:elif="{{!searching && searchKeyword && searchResults.length === 0}}" class="search-empty">
+      <view class="search-empty-icon">🔍</view>
+      <view class="search-empty-text">未找到相关内容</view>
+      <view class="search-empty-hint">试试其他关键词吧</view>
+    </view>
+  </view>
+  
   <!-- 主内容区域 -->
   <view class="main-content">
     <!-- 左侧分类导航 -->

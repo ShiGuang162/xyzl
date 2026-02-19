@@ -120,7 +120,9 @@ Page({
         });
         break;
       case '我的交流':
-        wx.showToast({ title: '我的交流功能开发中', icon: 'none' });
+        wx.navigateTo({
+          url: '/pages/find/find'
+        });
         break;
       case '设置':
         wx.showToast({ title: '设置功能开发中', icon: 'none' });

@@ -91,7 +91,14 @@ Page({
       }
     ],
     // 加载状态
-    loading: false
+    loading: false,
+    // 搜索相关
+    showSearchDialog: false,
+    searchKeyword: '',
+    searchHistory: [],
+    hotSearchList: ['北京', '成都', '西湖', '上海', '西藏', '旅游攻略', '美食推荐'],
+    searchResults: [],
+    searching: false
   },
 
   // 生命周期函数
@@ -132,8 +139,111 @@ Page({
   // 显示搜索对话框
   showSearchDialog() {
     console.log('显示搜索对话框');
-    // 这里可以实现搜索功能
-    wx.showToast({ title: '搜索功能开发中', icon: 'none' });
+    // 从本地存储加载搜索历史
+    const searchHistory = wx.getStorageSync('searchHistory') || [];
+    this.setData({
+      showSearchDialog: true,
+      searchKeyword: '',
+      searchHistory: searchHistory,
+      searchResults: [],
+      searching: false
+    });
+  },
+  
+  // 隐藏搜索对话框
+  hideSearchDialog() {
+    console.log('隐藏搜索对话框');
+    this.setData({
+      showSearchDialog: false,
+      searchKeyword: '',
+      searchResults: []
+    });
+  },
+  
+  // 搜索输入变化
+  onSearchInput(e) {
+    const keyword = e.detail.value;
+    this.setData({ searchKeyword: keyword });
+  },
+  
+  // 清空搜索输入
+  clearSearchInput() {
+    this.setData({ searchKeyword: '' });
+  },
+  
+  // 搜索确认
+  onSearchConfirm() {
+    const keyword = this.data.searchKeyword.trim();
+    if (keyword) {
+      this.performSearch(keyword);
+    }
+  },
+  
+  // 执行搜索
+  performSearch(keyword) {
+    console.log('执行搜索:', keyword);
+    
+    this.setData({ searching: true });
+    
+    // 模拟搜索延迟
+    setTimeout(() => {
+      // 从讨论列表中过滤匹配的内容
+      const results = this.data.discussionList.filter(item => {
+        return (
+          item.title.includes(keyword) ||
+          item.content.includes(keyword) ||
+          item.tag.includes(keyword)
+        );
+      });
+      
+      this.setData({ 
+        searchResults: results,
+        searching: false 
+      });
+      
+      // 保存搜索历史
+      this.saveSearchHistory(keyword);
+    }, 500);
+  },
+  
+  // 保存搜索历史
+  saveSearchHistory(keyword) {
+    let history = this.data.searchHistory;
+    
+    // 移除重复项
+    history = history.filter(item => item !== keyword);
+    
+    // 添加到历史记录开头
+    history.unshift(keyword);
+    
+    // 限制历史记录数量
+    if (history.length > 10) {
+      history = history.slice(0, 10);
+    }
+    
+    // 保存到本地存储
+    wx.setStorageSync('searchHistory', history);
+    this.setData({ searchHistory: history });
+  },
+  
+  // 清空搜索历史
+  clearSearchHistory() {
+    wx.removeStorageSync('searchHistory');
+    this.setData({ searchHistory: [] });
+  },
+  
+  // 点击搜索历史项
+  onHistoryItemClick(e) {
+    const keyword = e.currentTarget.dataset.keyword;
+    this.setData({ searchKeyword: keyword });
+    this.performSearch(keyword);
+  },
+  
+  // 点击热门搜索项
+  onHotSearchClick(e) {
+    const keyword = e.currentTarget.dataset.keyword;
+    this.setData({ searchKeyword: keyword });
+    this.performSearch(keyword);
   },
 
   // 显示排序对话框
