@@ -9,6 +9,9 @@ Page({
     id: '',
     // 点赞状态
     isLiked: false,
+    // 评论相关状态
+    commentText: '',
+    comments: [],
     // 语音播放相关状态
     isPlaying: false,
     progress: 0,
@@ -99,6 +102,9 @@ Page({
 
       // 检查用户是否已点赞
       this.checkLikeStatus();
+      
+      // 加载评论列表
+      this.loadComments();
     }, 1000);
   },
 
@@ -165,7 +171,13 @@ Page({
 
   // 评论
   showCommentDialog() {
-    wx.showToast({ title: '评论功能开发中', icon: 'none' });
+    this.focusCommentInput();
+  },
+
+  // 聚焦评论输入框
+  focusCommentInput() {
+    // 这里可以添加逻辑，比如滚动到底部或显示评论输入框
+    wx.showToast({ title: '请在下方输入评论', icon: 'none' });
   },
 
   // 分享
@@ -210,6 +222,128 @@ Page({
         }
       }
     });
+  },
+
+  // 处理评论输入
+  onCommentInput(e) {
+    this.setData({ commentText: e.detail.value });
+  },
+
+  // 提交评论
+  submitComment() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    const commentText = this.data.commentText.trim();
+    if (!commentText) {
+      wx.showToast({ title: '请输入评论内容', icon: 'none' });
+      return;
+    }
+
+    // 创建新评论
+    const newComment = {
+      id: Date.now(),
+      user: userInfo.nickname || '用户',
+      content: commentText,
+      time: this.formatTime(new Date())
+    };
+
+    // 更新评论列表
+    const comments = [newComment, ...this.data.comments];
+    
+    // 更新评论计数
+    const detail = { ...this.data.detail };
+    detail.comments = (detail.comments || 0) + 1;
+
+    // 更新状态
+    this.setData({
+      comments,
+      detail,
+      commentText: ''
+    });
+
+    // 保存评论到本地存储
+    const commentsData = wx.getStorageSync('comments') || {};
+    const key = `${this.data.type}_${this.data.id}`;
+    commentsData[key] = comments;
+    wx.setStorageSync('comments', commentsData);
+
+    wx.showToast({ title: '评论成功', icon: 'success' });
+
+    // 向后端发送评论请求
+    const commentData = {
+      userId: userInfo.id,
+      itemId: this.data.id,
+      itemType: this.data.type,
+      content: commentText
+    };
+
+    wx.request({
+      url: 'http://localhost:3001/api/comments',
+      method: 'POST',
+      data: commentData,
+      success: (res) => {
+        console.log('评论请求结果:', res.data);
+      },
+      fail: (err) => {
+        console.error('评论请求失败:', err);
+      }
+    });
+  },
+
+  // 加载评论列表
+  loadComments() {
+    // 从本地存储获取评论
+    const commentsData = wx.getStorageSync('comments') || {};
+    const key = `${this.data.type}_${this.data.id}`;
+    const comments = commentsData[key] || [];
+    
+    this.setData({ comments });
+
+    // 向后端请求评论列表
+    wx.request({
+      url: 'http://localhost:3001/api/comments',
+      method: 'GET',
+      data: {
+        itemId: this.data.id,
+        itemType: this.data.type
+      },
+      success: (res) => {
+        if (res.data && res.data.length > 0) {
+          const formattedComments = res.data.map(comment => ({
+            id: comment.id,
+            user: comment.nickname,
+            content: comment.content,
+            time: this.formatTime(new Date(comment.created_at))
+          }));
+          this.setData({ comments: formattedComments });
+          // 更新本地存储
+          commentsData[key] = formattedComments;
+          wx.setStorageSync('comments', commentsData);
+        }
+      },
+      fail: (err) => {
+        console.error('加载评论失败:', err);
+      }
+    });
+  },
+
+  // 格式化时间
+  formatTime(date) {
+    const now = new Date();
+    const diff = now - date;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return '刚刚';
+    if (minutes < 60) return `${minutes}分钟前`;
+    if (hours < 24) return `${hours}小时前`;
+    if (days < 7) return `${days}天前`;
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
   },
 
   // 显示方言选择对话框

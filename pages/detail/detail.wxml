@@ -100,7 +100,7 @@
         <view class="interaction-icon {{isLiked ? 'liked' : ''}}">{{isLiked ? '💖' : '❤️'}}</view>
         <view class="interaction-text">{{isLiked ? '已点赞' : '点赞'}}</view>
       </view>
-      <view class="interaction-item" bindtap="showCommentDialog">
+      <view class="interaction-item" bindtap="focusCommentInput">
         <view class="interaction-icon">💬</view>
         <view class="interaction-text">评论</view>
       </view>
@@ -113,30 +113,27 @@
     <!-- 评论区域 -->
     <view class="comments-section">
       <view class="comments-title">评论</view>
-      <view class="comment-item">
-        <view class="comment-avatar">网</view>
-        <view class="comment-content">
-          <view class="comment-user">网友123</view>
-          <view class="comment-text">这篇攻略很详细，收藏了，下次去北京一定参考！</view>
-          <view class="comment-time">2天前</view>
+      <view wx:if="comments && comments.length > 0">
+        <view wx:for="{{comments}}" wx:key="{{index}}" class="comment-item">
+          <view class="comment-avatar">{{item.user.substring(0, 1)}}</view>
+          <view class="comment-content">
+            <view class="comment-user">{{item.user}}</view>
+            <view class="comment-text">{{item.content}}</view>
+            <view class="comment-time">{{item.time}}</view>
+          </view>
         </view>
       </view>
-      <view class="comment-item">
-        <view class="comment-avatar">游</view>
-        <view class="comment-content">
-          <view class="comment-user">旅游爱好者</view>
-          <view class="comment-text">故宫确实需要提前预约，我上次没预约就没进去，遗憾！</view>
-          <view class="comment-time">3天前</view>
-        </view>
+      <view wx:else class="no-comments">
+        <view class="no-comments-text">暂无评论，快来发表第一条评论吧！</view>
       </view>
     </view>
     
     <!-- 底部评论输入框 -->
     <view class="comment-input-section">
       <view class="comment-input">
-        <input placeholder="写下你的评论..." class="input-text" />
+        <input placeholder="写下你的评论..." class="input-text" value="{{commentText}}" bindinput="onCommentInput" />
       </view>
-      <view class="send-btn" bindtap="showCommentDialog">发送</view>
+      <view class="send-btn" bindtap="submitComment">发送</view>
     </view>
   </view>
   
