@@ -52,9 +52,26 @@ Page({
   },
   
   // 生命周期函数
-  onLoad() {
-    console.log('个人主页加载');
+  onLoad(options) {
+    console.log('个人主页 onLoad');
+    console.log('onLoad options:', options);
     this.checkLoginStatus();
+  },
+  
+  onShow() {
+    console.log('个人主页 onShow');
+  },
+  
+  onReady() {
+    console.log('个人主页 onReady');
+  },
+  
+  onHide() {
+    console.log('个人主页 onHide - 页面被隐藏了');
+  },
+  
+  onUnload() {
+    console.log('个人主页 onUnload - 页面被卸载了');
   },
   
   // 检查登录状态
@@ -221,18 +238,26 @@ Page({
             console.log('请求成功，响应:', res);
             
             if (res.statusCode === 200 && res.data.success) {
+              console.log('头像上传成功，准备更新用户信息');
               // 更新本地用户信息
               const updatedUserInfo = {
                 ...this.data.userInfo,
                 avatarUrl: res.data.data.avatarUrl
               };
+              console.log('新用户信息:', updatedUserInfo);
+              
               this.setData({ userInfo: updatedUserInfo });
               app.globalData.userInfo = updatedUserInfo;
               
               // 同时更新本地存储，确保页面刷新后头像保持最新
               wx.setStorageSync('userInfo', updatedUserInfo);
               
-              wx.showToast({ title: '头像更新成功', icon: 'success' });
+              console.log('用户信息已更新，显示提示');
+              wx.showToast({ 
+                title: '头像更新成功', 
+                icon: 'success',
+                duration: 2000
+              });
             } else {
               console.error('上传失败，后端返回失败:', res.data);
               wx.showToast({ title: '上传失败', icon: 'none' });
