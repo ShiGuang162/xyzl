@@ -1,0 +1,77 @@
+<!-- 个人主页 -->
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="user-section">
+    <block wx:if="{{isLogin}}">
+      <view class="avatar-container" bindtap="chooseAvatar">
+        <image src="{{userInfo.avatarUrl}}" class="user-avatar" />
+        <view class="avatar-edit">
+          <text class="avatar-edit-text">更换头像</text>
+        </view>
+      </view>
+      <view class="user-info">
+        <view class="user-name">{{userInfo.nickname}}</view>
+        <view class="user-id">{{userInfo.city}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%2C%20friendly%20face%2C%20professional%20portrait%2C%20simple%20background&image_size=square" class="user-avatar" />
+      <view class="user-info">
+        <view class="user-name">未登录</view>
+        <view class="user-id">点击登录享受更多功能</view>
+      </view>
+      <button class="login-btn" bindtap="login">登录</button>
+    </block>
+  </view>
+  
+  <!-- 功能模块 -->
+  <view class="module-section">
+    <view class="module-title">我的旅行</view>
+    <view class="module-grid">
+      <view class="module-item" bindtap="navigateToCollection" data-id="1" data-text="我的收藏">
+        <view class="module-icon">❤️</view>
+        <view class="module-text">我的收藏</view>
+        <view class="module-arrow">▶</view>
+      </view>
+      <view class="module-item" bindtap="clickModule" data-id="2" data-text="旅行攻略">
+        <view class="module-icon">📝</view>
+        <view class="module-text">旅行攻略</view>
+      </view>
+      <view class="module-item" bindtap="clickModule" data-id="3" data-text="我的交流">
+        <view class="module-icon">💬</view>
+        <view class="module-text">我的交流</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="module-section">
+    <view class="module-title">其他功能</view>
+    <view class="module-list">
+      <view class="module-list-item" bindtap="clickModule" data-id="1" data-text="设置">
+        <view class="module-list-icon">⚙️</view>
+        <view class="module-list-text">设置</view>
+        <view class="module-list-arrow">＞</view>
+      </view>
+      <view class="module-list-item" bindtap="clickModule" data-id="2" data-text="我的购买">
+        <view class="module-list-icon">🛒</view>
+        <view class="module-list-text">我的购买</view>
+        <view class="module-list-arrow">＞</view>
+      </view>
+      <view class="module-list-item" bindtap="clickModule" data-id="3" data-text="客服中心">
+        <view class="module-list-icon">📞</view>
+        <view class="module-list-text">客服中心</view>
+        <view class="module-list-arrow">＞</view>
+      </view>
+      <view class="module-list-item" bindtap="clickModule" data-id="4" data-text="关于我们">
+        <view class="module-list-icon">ℹ️</view>
+        <view class="module-list-text">关于我们</view>
+        <view class="module-list-arrow">＞</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 退出登录 -->
+  <block wx:if="{{isLogin}}">
+    <view class="logout-btn" bindtap="logout">退出登录</view>
+  </block>
+</view>

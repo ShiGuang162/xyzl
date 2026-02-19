@@ -1,0 +1,117 @@
+<!-- 讨论页 - QQ频道风格 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="channel-name">讨论频道</view>
+      <view class="channel-subtitle">发现精彩内容</view>
+    </view>
+    <view class="nav-right">
+      <view class="search-btn" bindtap="showSearchDialog">
+        <view class="search-icon">🔍</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 主内容区域 -->
+  <view class="main-content">
+    <!-- 左侧分类导航 -->
+    <view class="category-nav">
+      <view class="category-item {{activeCategory === 'all' ? 'active' : ''}}" bindtap="switchCategory" data-category="all">
+        <view class="category-icon">🏠</view>
+        <view class="category-text">全部</view>
+      </view>
+      <view class="category-item {{activeCategory === 'strategy' ? 'active' : ''}}" bindtap="switchCategory" data-category="strategy">
+        <view class="category-icon">🗺️</view>
+        <view class="category-text">旅游攻略</view>
+      </view>
+      <view class="category-item {{activeCategory === 'food' ? 'active' : ''}}" bindtap="switchCategory" data-category="food">
+        <view class="category-icon">🍜</view>
+        <view class="category-text">美食推荐</view>
+      </view>
+      <view class="category-item {{activeCategory === 'scenic' ? 'active' : ''}}" bindtap="switchCategory" data-category="scenic">
+        <view class="category-icon">🏞️</view>
+        <view class="category-text">景点讨论</view>
+      </view>
+      <view class="category-item {{activeCategory === 'transport' ? 'active' : ''}}" bindtap="switchCategory" data-category="transport">
+        <view class="category-icon">🚗</view>
+        <view class="category-text">交通住宿</view>
+      </view>
+      <view class="category-item {{activeCategory === 'story' ? 'active' : ''}}" bindtap="switchCategory" data-category="story">
+        <view class="category-icon">📖</view>
+        <view class="category-text">旅行故事</view>
+      </view>
+      <view class="category-item {{activeCategory === 'other' ? 'active' : ''}}" bindtap="switchCategory" data-category="other">
+        <view class="category-icon">💬</view>
+        <view class="category-text">其他话题</view>
+      </view>
+    </view>
+    
+    <!-- 右侧内容区域 -->
+    <view class="content-area">
+      <!-- 内容标题栏 -->
+      <view class="content-header">
+        <view class="header-title">{{categoryTitles[activeCategory]}}</view>
+        <view class="header-sort" bindtap="showSortDialog">
+          <view class="sort-text">最新</view>
+          <view class="sort-icon">▼</view>
+        </view>
+      </view>
+      
+      <!-- 加载状态 -->
+      <view wx:if="{{loading}}" class="loading-container">
+        <view class="loading-spinner"></view>
+        <view class="loading-text">加载中...</view>
+      </view>
+      
+      <!-- 无内容状态 -->
+      <view wx:elif="{{discussionList.length === 0 && !loading}}" class="empty-container">
+        <view class="empty-icon">💬</view>
+        <view class="empty-text">暂无讨论内容</view>
+        <view class="empty-hint">快来发布第一条讨论吧！</view>
+      </view>
+      
+      <!-- 讨论列表 -->
+      <view wx:else class="discussion-list">
+        <view wx:for="{{discussionList}}" wx:key="id" class="discussion-item" bindtap="viewDiscussion" data-id="{{item.id}}">
+          <view class="discussion-header">
+            <view class="user-avatar">{{item.user.avatar}}</view>
+            <view class="user-info">
+              <view class="user-name">{{item.user.name}}</view>
+              <view class="post-time">{{item.time}}</view>
+            </view>
+            <view class="post-tag">{{item.tag}}</view>
+          </view>
+          <view class="discussion-content">
+            <view class="discussion-title">{{item.title}}</view>
+            <view class="discussion-text">{{item.content}}</view>
+            <view wx:if="{{item.image}}" class="discussion-image">
+              <image src="{{item.image}}" class="discussion-img" />
+            </view>
+          </view>
+          <view class="discussion-footer">
+            <view class="discussion-stats">
+              <view class="stat-item" bindtap="likeDiscussion" data-id="{{item.id}}">
+                <view class="stat-icon">👍</view>
+                <view class="stat-text">{{item.likes}}</view>
+              </view>
+              <view class="stat-item">
+                <view class="stat-icon">💬</view>
+                <view class="stat-text">{{item.comments}}</view>
+              </view>
+              <view class="stat-item">
+                <view class="stat-icon">👀</view>
+                <view class="stat-text">{{item.views}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部发布按钮 -->
+  <view class="post-btn" bindtap="showPostDialog">
+    <view class="post-icon">+</view>
+  </view>
+</view>

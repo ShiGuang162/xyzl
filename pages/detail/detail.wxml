@@ -1,0 +1,148 @@
+<!-- 详情页 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="navigateBack">
+      <view class="back-icon">←</view>
+    </view>
+    <view class="nav-title">详情</view>
+    <view class="nav-right"></view>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">加载中...</view>
+  </view>
+  
+  <!-- 详情内容 -->
+  <view wx:elif="{{detail}}" class="detail-container">
+    <!-- 用户信息 -->
+    <view class="user-info">
+      <view class="user-avatar">{{detail.author ? detail.avatar : '用'}}</view>
+      <view class="user-meta">
+        <view class="user-name">{{detail.author || '未知用户'}}</view>
+        <view class="post-time">{{detail.time || '未知时间'}}</view>
+      </view>
+    </view>
+    
+    <!-- 内容区域 -->
+    <view class="content-section">
+      <!-- 标题 -->
+      <view class="content-title">{{detail.title}}</view>
+      
+      <!-- 地址信息（景点） -->
+      <view wx:if="{{type === 'scenic' && detail.address}}" class="location-info">
+        <view class="location-icon">📍</view>
+        <view class="location-text">{{detail.address}}</view>
+        <view wx:if="{{detail.rating}}" class="location-rating">⭐ {{detail.rating}} ({{detail.reviews}}条评论)</view>
+      </view>
+      
+      <!-- 语音播放控件 -->
+      <view class="audio-player">
+        <view class="audio-header">
+          <view class="audio-title">语音讲解</view>
+          <view class="dialect-selector" bindtap="showDialectDialog">
+            <view class="dialect-text">{{selectedDialect}}</view>
+            <view class="dialect-icon">▼</view>
+          </view>
+        </view>
+        <view class="audio-controls">
+          <view class="play-btn {{isPlaying ? 'playing' : ''}}" bindtap="togglePlay">
+            <view class="play-icon">{{isPlaying ? '⏸' : '▶'}}</view>
+          </view>
+          <view class="audio-progress">
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{progress}}%"></view>
+            </view>
+            <view class="progress-time">{{currentTime}} / {{totalTime}}</view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 正文内容 -->
+      <view class="content-text">{{detail.content}}</view>
+      
+      <!-- 图片轮播 -->
+      <view wx:if="{{detail.images && detail.images.length > 0}}" class="image-carousel">
+        <swiper autoplay="false" indicator-dots="true" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff">
+          <swiper-item wx:for="{{detail.images}}" wx:key="index">
+            <image src="{{item}}" class="carousel-image" mode="aspectFill" />
+          </swiper-item>
+        </swiper>
+      </view>
+      
+      <!-- 标签 -->
+      <view wx:if="{{detail.tags && detail.tags.length > 0}}" class="tags-section">
+        <view wx:for="{{detail.tags}}" wx:key="index" class="tag-item">#{{item}}</view>
+      </view>
+      
+      <!-- 互动统计 -->
+      <view class="stats-section">
+        <view class="stat-item">
+          <view class="stat-icon">👀</view>
+          <view class="stat-text">{{detail.views || 0}}次浏览</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-icon">❤️</view>
+          <view class="stat-text">{{detail.likes || 0}}人点赞</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-icon">💬</view>
+          <view class="stat-text">{{detail.comments || 0}}条评论</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 互动区域 -->
+    <view class="interaction-section">
+      <view class="interaction-item" bindtap="likeDetail">
+        <view class="interaction-icon">❤️</view>
+        <view class="interaction-text">点赞</view>
+      </view>
+      <view class="interaction-item" bindtap="showCommentDialog">
+        <view class="interaction-icon">💬</view>
+        <view class="interaction-text">评论</view>
+      </view>
+      <view class="interaction-item">
+        <view class="interaction-icon">⭐</view>
+        <view class="interaction-text">收藏</view>
+      </view>
+    </view>
+    
+    <!-- 评论区域 -->
+    <view class="comments-section">
+      <view class="comments-title">评论</view>
+      <view class="comment-item">
+        <view class="comment-avatar">网</view>
+        <view class="comment-content">
+          <view class="comment-user">网友123</view>
+          <view class="comment-text">这篇攻略很详细，收藏了，下次去北京一定参考！</view>
+          <view class="comment-time">2天前</view>
+        </view>
+      </view>
+      <view class="comment-item">
+        <view class="comment-avatar">游</view>
+        <view class="comment-content">
+          <view class="comment-user">旅游爱好者</view>
+          <view class="comment-text">故宫确实需要提前预约，我上次没预约就没进去，遗憾！</view>
+          <view class="comment-time">3天前</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部评论输入框 -->
+    <view class="comment-input-section">
+      <view class="comment-input">
+        <input placeholder="写下你的评论..." class="input-text" />
+      </view>
+      <view class="send-btn" bindtap="showCommentDialog">发送</view>
+    </view>
+  </view>
+  
+  <!-- 无内容状态 -->
+  <view wx:else class="empty-container">
+    <view class="empty-icon">📄</view>
+    <view class="empty-text">未找到相关内容</view>
+  </view>
+</view>

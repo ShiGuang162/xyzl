@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乡音智旅 - 管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .nav {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav li {
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav li:hover,
+        .nav li.active {
+            background-color: #34495e;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #229954;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>乡音智旅 - 管理系统</h1>
+        
+        <div class="nav">
+            <ul>
+                <li class="active" data-section="strategies">旅游攻略</li>
+                <li data-section="scenics">景点管理</li>
+                <li data-section="history">历史文化</li>
+                <li data-section="collections">用户收藏</li>
+                <li data-section="comments">用户评论</li>
+            </ul>
+        </div>
+        
+        <div class="content">
+            <!-- 旅游攻略管理 -->
+            <div class="section active" id="strategies">
+                <h2>旅游攻略管理</h2>
+                <button class="btn btn-primary" onclick="openModal('strategyModal')">添加攻略</button>
+                <table id="strategiesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>标题</th>
+                            <th>作者</th>
+                            <th>浏览量</th>
+                            <th>点赞数</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 景点管理 -->
+            <div class="section" id="scenics">
+                <h2>景点管理</h2>
+                <button class="btn btn-primary" onclick="openModal('scenicModal')">添加景点</button>
+                <table id="scenicsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>地址</th>
+                            <th>评分</th>
+                            <th>评论数</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 历史文化管理 -->
+            <div class="section" id="history">
+                <h2>历史文化管理</h2>
+                <button class="btn btn-primary" onclick="openModal('historyModal')">添加历史文化</button>
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>标题</th>
+                            <th>时期</th>
+                            <th>重要性</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 用户收藏管理 -->
+            <div class="section" id="collections">
+                <h2>用户收藏管理</h2>
+                <table id="collectionsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>用户ID</th>
+                            <th>项目类型</th>
+                            <th>项目标题</th>
+                            <th>收藏时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 用户评论管理 -->
+            <div class="section" id="comments">
+                <h2>用户评论管理</h2>
+                <table id="commentsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>用户ID</th>
+                            <th>项目类型</th>
+                            <th>项目ID</th>
+                            <th>内容</th>
+                            <th>作者</th>
+                            <th>点赞数</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 旅游攻略模态框 -->
+    <div id="strategyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('strategyModal')">&times;</span>
+            <h3>添加/编辑旅游攻略</h3>
+            <form id="strategyForm">
+                <input type="hidden" id="strategyId">
+                <div class="form-group">
+                    <label for="strategyTitle">标题</label>
+                    <input type="text" id="strategyTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="strategyDesc">描述</label>
+                    <textarea id="strategyDesc" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="strategyImage">图片URL</label>
+                    <input type="text" id="strategyImage" required>
+                </div>
+                <div class="form-group">
+                    <label for="strategyAuthor">作者</label>
+                    <input type="text" id="strategyAuthor" required>
+                </div>
+                <div class="form-group">
+                    <label for="strategyViews">浏览量</label>
+                    <input type="number" id="strategyViews" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="strategyLikes">点赞数</label>
+                    <input type="number" id="strategyLikes" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="strategyCreatedAt">创建时间</label>
+                    <input type="text" id="strategyCreatedAt" placeholder="YYYY-MM-DD" required>
+                </div>
+                <button type="submit" class="btn btn-success">保存</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 景点模态框 -->
+    <div id="scenicModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('scenicModal')">&times;</span>
+            <h3>添加/编辑景点</h3>
+            <form id="scenicForm">
+                <input type="hidden" id="scenicId">
+                <div class="form-group">
+                    <label for="scenicName">名称</label>
+                    <input type="text" id="scenicName" required>
+                </div>
+                <div class="form-group">
+                    <label for="scenicDesc">描述</label>
+                    <textarea id="scenicDesc" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="scenicImage">图片URL</label>
+                    <input type="text" id="scenicImage" required>
+                </div>
+                <div class="form-group">
+                    <label for="scenicAddress">地址</label>
+                    <input type="text" id="scenicAddress" required>
+                </div>
+                <div class="form-group">
+                    <label for="scenicRating">评分</label>
+                    <input type="number" id="scenicRating" step="0.1" min="0" max="5" required>
+                </div>
+                <div class="form-group">
+                    <label for="scenicReviews">评论数</label>
+                    <input type="number" id="scenicReviews" value="0" required>
+                </div>
+                <button type="submit" class="btn btn-success">保存</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 历史文化模态框 -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('historyModal')">&times;</span>
+            <h3>添加/编辑历史文化</h3>
+            <form id="historyForm">
+                <input type="hidden" id="historyId">
+                <div class="form-group">
+                    <label for="historyTitle">标题</label>
+                    <input type="text" id="historyTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="historyDesc">描述</label>
+                    <textarea id="historyDesc" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="historyImage">图片URL</label>
+                    <input type="text" id="historyImage" required>
+                </div>
+                <div class="form-group">
+                    <label for="historyPeriod">时期</label>
+                    <input type="text" id="historyPeriod" required>
+                </div>
+                <div class="form-group">
+                    <label for="historyImportance">重要性</label>
+                    <input type="text" id="historyImportance" required>
+                </div>
+                <div class="form-group">
+                    <label for="historyContent">内容</label>
+                    <textarea id="historyContent" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">保存</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 导航切换
+        document.querySelectorAll('.nav li').forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有活动状态
+                document.querySelectorAll('.nav li').forEach(li => li.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+                
+                // 添加当前活动状态
+                this.classList.add('active');
+                const sectionId = this.dataset.section;
+                document.getElementById(sectionId).classList.add('active');
+                
+                // 加载对应数据
+                loadData(sectionId);
+            });
+        });
+        
+        // 模态框操作
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // 重置表单
+            const formId = modalId.replace('Modal', 'Form');
+            if (document.getElementById(formId)) {
+                document.getElementById(formId).reset();
+                document.getElementById(modalId.replace('Modal', 'Id')).value = '';
+            }
+        }
+        
+        // 关闭模态框（点击外部）
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+        
+        // 加载数据
+        function loadData(type) {
+            fetch(`/api/${type}`)
+                .then(response => response.json())
+                .then(data => {
+                    renderTable(type, data);
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                });
+        }
+        
+        // 渲染表格
+        function renderTable(type, data) {
+            const tableBody = document.querySelector(`#${type}Table tbody`);
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                switch(type) {
+                    case 'strategies':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.title}</td>
+                            <td>${item.author}</td>
+                            <td>${item.views}</td>
+                            <td>${item.likes}</td>
+                            <td>${item.createdAt}</td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-primary" onclick="editStrategy(${item.id})">编辑</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteItem('strategies', ${item.id})">删除</button>
+                            </td>
+                        `;
+                        break;
+                    case 'scenics':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.address}</td>
+                            <td>${item.rating}</td>
+                            <td>${item.reviews}</td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-primary" onclick="editScenic(${item.id})">编辑</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteItem('scenics', ${item.id})">删除</button>
+                            </td>
+                        `;
+                        break;
+                    case 'history':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.title}</td>
+                            <td>${item.period}</td>
+                            <td>${item.importance}</td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-primary" onclick="editHistory(${item.id})">编辑</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteItem('history', ${item.id})">删除</button>
+                            </td>
+                        `;
+                        break;
+                    case 'collections':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.userId}</td>
+                            <td>${item.itemType}</td>
+                            <td>${item.title}</td>
+                            <td>${item.collectedAt}</td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-danger" onclick="deleteItem('collections', ${item.id})">删除</button>
+                            </td>
+                        `;
+                        break;
+                    case 'comments':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.userId}</td>
+                            <td>${item.itemType}</td>
+                            <td>${item.itemId}</td>
+                            <td>${item.content}</td>
+                            <td>${item.author}</td>
+                            <td>${item.likes}</td>
+                            <td>${item.createdAt}</td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-danger" onclick="deleteItem('comments', ${item.id})">删除</button>
+                            </td>
+                        `;
+                        break;
+                }
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // 编辑攻略
+        function editStrategy(id) {
+            fetch(`/api/strategies/${id}`)
+                .then(response => response.json())
+                .then(strategy => {
+                    document.getElementById('strategyId').value = strategy.id;
+                    document.getElementById('strategyTitle').value = strategy.title;
+                    document.getElementById('strategyDesc').value = strategy.desc;
+                    document.getElementById('strategyImage').value = strategy.image;
+                    document.getElementById('strategyAuthor').value = strategy.author;
+                    document.getElementById('strategyViews').value = strategy.views;
+                    document.getElementById('strategyLikes').value = strategy.likes;
+                    document.getElementById('strategyCreatedAt').value = strategy.createdAt;
+                    openModal('strategyModal');
+                });
+        }
+        
+        // 编辑景点
+        function editScenic(id) {
+            fetch(`/api/scenics/${id}`)
+                .then(response => response.json())
+                .then(scenic => {
+                    document.getElementById('scenicId').value = scenic.id;
+                    document.getElementById('scenicName').value = scenic.name;
+                    document.getElementById('scenicDesc').value = scenic.desc;
+                    document.getElementById('scenicImage').value = scenic.image;
+                    document.getElementById('scenicAddress').value = scenic.address;
+                    document.getElementById('scenicRating').value = scenic.rating;
+                    document.getElementById('scenicReviews').value = scenic.reviews;
+                    openModal('scenicModal');
+                });
+        }
+        
+        // 编辑历史文化
+        function editHistory(id) {
+            fetch(`/api/history/${id}`)
+                .then(response => response.json())
+                .then(history => {
+                    document.getElementById('historyId').value = history.id;
+                    document.getElementById('historyTitle').value = history.title;
+                    document.getElementById('historyDesc').value = history.desc;
+                    document.getElementById('historyImage').value = history.image;
+                    document.getElementById('historyPeriod').value = history.period;
+                    document.getElementById('historyImportance').value = history.importance;
+                    document.getElementById('historyContent').value = history.content;
+                    openModal('historyModal');
+                });
+        }
+        
+        // 删除项目
+        function deleteItem(type, id) {
+            if (confirm('确定要删除这个项目吗？')) {
+                fetch(`/api/${type}/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadData(type);
+                    }
+                });
+            }
+        }
+        
+        // 提交攻略表单
+        document.getElementById('strategyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('strategyId').value;
+            const strategy = {
+                title: document.getElementById('strategyTitle').value,
+                desc: document.getElementById('strategyDesc').value,
+                image: document.getElementById('strategyImage').value,
+                author: document.getElementById('strategyAuthor').value,
+                views: parseInt(document.getElementById('strategyViews').value),
+                likes: parseInt(document.getElementById('strategyLikes').value),
+                createdAt: document.getElementById('strategyCreatedAt').value
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/strategies/${id}` : '/api/strategies';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(strategy)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('strategyModal');
+                    loadData('strategies');
+                }
+            });
+        });
+        
+        // 提交景点表单
+        document.getElementById('scenicForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('scenicId').value;
+            const scenic = {
+                name: document.getElementById('scenicName').value,
+                desc: document.getElementById('scenicDesc').value,
+                image: document.getElementById('scenicImage').value,
+                address: document.getElementById('scenicAddress').value,
+                rating: parseFloat(document.getElementById('scenicRating').value),
+                reviews: parseInt(document.getElementById('scenicReviews').value)
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/scenics/${id}` : '/api/scenics';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(scenic)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('scenicModal');
+                    loadData('scenics');
+                }
+            });
+        });
+        
+        // 提交历史文化表单
+        document.getElementById('historyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('historyId').value;
+            const history = {
+                title: document.getElementById('historyTitle').value,
+                desc: document.getElementById('historyDesc').value,
+                image: document.getElementById('historyImage').value,
+                period: document.getElementById('historyPeriod').value,
+                importance: document.getElementById('historyImportance').value,
+                content: document.getElementById('historyContent').value
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/history/${id}` : '/api/history';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(history)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('historyModal');
+                    loadData('history');
+                }
+            });
+        });
+        
+        // 初始加载数据
+        loadData('strategies');
+    </script>
+</body>
+</html>
