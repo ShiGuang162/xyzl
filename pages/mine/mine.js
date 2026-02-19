@@ -191,6 +191,90 @@ Page({
     });
   },
   
+  // 编辑昵称
+  editNickname() {
+    wx.showModal({
+      title: '修改昵称',
+      content: '请输入新的昵称',
+      editable: true,
+      placeholderText: '请输入昵称',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          const newNickname = res.content.trim();
+          if (newNickname) {
+            this.updateUserInfo({ nickname: newNickname });
+          } else {
+            wx.showToast({ title: '昵称不能为空', icon: 'none' });
+          }
+        }
+      }
+    });
+  },
+  
+  // 编辑城市
+  editCity() {
+    wx.showModal({
+      title: '修改地区',
+      content: '请输入新的地区',
+      editable: true,
+      placeholderText: '请输入地区',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          const newCity = res.content.trim();
+          if (newCity) {
+            this.updateUserInfo({ city: newCity });
+          } else {
+            wx.showToast({ title: '地区不能为空', icon: 'none' });
+          }
+        }
+      }
+    });
+  },
+  
+  // 更新用户信息
+  updateUserInfo(updateData) {
+    wx.showLoading({ title: '更新中...' });
+    
+    wx.request({
+      url: 'http://localhost:3001/api/users/update',
+      method: 'POST',
+      data: {
+        userId: this.data.userInfo.id,
+        ...updateData
+      },
+      timeout: 10000,
+      success: (res) => {
+        wx.hideLoading();
+        
+        if (res.statusCode === 200 && res.data.success) {
+          const updatedUserInfo = res.data.data.userInfo;
+          console.log('用户信息更新成功:', updatedUserInfo);
+          
+          // 更新本地用户信息
+          this.setData({ userInfo: updatedUserInfo });
+          app.globalData.userInfo = updatedUserInfo;
+          
+          // 同时更新本地存储
+          wx.setStorageSync('userInfo', updatedUserInfo);
+          
+          wx.showToast({ title: '更新成功', icon: 'success' });
+        } else {
+          console.error('更新失败，后端返回失败:', res.data);
+          wx.showToast({ title: '更新失败', icon: 'none' });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('更新用户信息失败:', err);
+        wx.showToast({ title: '网络错误，请重试', icon: 'none' });
+      }
+    });
+  },
+  
   // 上传头像
   uploadAvatar(tempFilePath) {
     console.log('开始上传头像，用户ID:', this.data.userInfo.id);

@@ -10,8 +10,8 @@
         </view>
       </view>
       <view class="user-info">
-        <view class="user-name">{{userInfo.nickname}}</view>
-        <view class="user-id">{{userInfo.city}}</view>
+        <view class="user-name" bindtap="editNickname">{{userInfo.nickname}} <text class="edit-icon">✏️</text></view>
+        <view class="user-id" bindtap="editCity">{{userInfo.city}} <text class="edit-icon">✏️</text></view>
       </view>
     </block>
     <block wx:else>

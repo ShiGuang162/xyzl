@@ -645,6 +645,57 @@ app.post('/api/upload/avatar-base64', async (req, res) => {
   }
 });
 
+// API 接口 - 更新用户信息
+app.post('/api/users/update', async (req, res) => {
+  try {
+    const { userId, nickname, city } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ error: '缺少用户ID' });
+    }
+    
+    // 构建更新字段
+    const updateFields = [];
+    const updateValues = [];
+    
+    if (nickname !== undefined) {
+      updateFields.push('nickname = ?');
+      updateValues.push(nickname);
+    }
+    
+    if (city !== undefined) {
+      updateFields.push('city = ?');
+      updateValues.push(city);
+    }
+    
+    if (updateFields.length === 0) {
+      return res.status(400).json({ error: '没有需要更新的字段' });
+    }
+    
+    // 添加用户ID到值数组
+    updateValues.push(userId);
+    
+    // 构建SQL语句
+    const sql = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+    
+    // 执行更新
+    await db.query(sql, updateValues);
+    
+    // 获取更新后的用户信息
+    const getUserSql = 'SELECT id, nickname, avatar_url as avatarUrl, city, gender FROM users WHERE id = ?';
+    const userResult = await db.query(getUserSql, [userId]);
+    
+    if (userResult.length === 0) {
+      return res.status(404).json({ error: '用户不存在' });
+    }
+    
+    res.json({ success: true, data: { userInfo: userResult[0] } });
+  } catch (error) {
+    logger.error('更新用户信息错误:', error);
+    res.status(500).json({ error: '更新用户信息失败' });
+  }
+});
+
 // 启动服务器
 app.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT}`);
