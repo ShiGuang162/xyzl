@@ -104,9 +104,9 @@
         <view class="interaction-icon">💬</view>
         <view class="interaction-text">评论</view>
       </view>
-      <view class="interaction-item">
-        <view class="interaction-icon">⭐</view>
-        <view class="interaction-text">收藏</view>
+      <view class="interaction-item" bindtap="collectDetail">
+        <view class="interaction-icon {{isCollected ? 'collected' : ''}}">{{isCollected ? '🌟' : '⭐'}}</view>
+        <view class="interaction-text">{{isCollected ? '已收藏' : '收藏'}}</view>
       </view>
     </view>
     

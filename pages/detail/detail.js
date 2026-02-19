@@ -9,6 +9,8 @@ Page({
     id: '',
     // 点赞状态
     isLiked: false,
+    // 收藏状态
+    isCollected: false,
     // 评论相关状态
     commentText: '',
     comments: [],
@@ -103,6 +105,9 @@ Page({
       // 检查用户是否已点赞
       this.checkLikeStatus();
       
+      // 检查用户是否已收藏
+      this.checkCollectStatus();
+      
       // 加载评论列表
       this.loadComments();
     }, 1000);
@@ -178,6 +183,95 @@ Page({
   focusCommentInput() {
     // 这里可以添加逻辑，比如滚动到底部或显示评论输入框
     wx.showToast({ title: '请在下方输入评论', icon: 'none' });
+  },
+
+  // 收藏
+  collectDetail() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    const isCollected = !this.data.isCollected;
+    const detail = this.data.detail;
+    
+    this.setData({ isCollected });
+
+    if (isCollected) {
+      wx.showToast({ title: '收藏成功', icon: 'success' });
+      
+      // 添加到收藏列表
+      const collections = wx.getStorageSync('collections') || [];
+      const newCollection = {
+        id: detail.id,
+        type: this.data.type,
+        title: detail.title,
+        image: detail.images && detail.images.length > 0 ? detail.images[0] : '',
+        collectTime: this.formatTime(new Date(), 'date')
+      };
+      
+      // 检查是否已存在
+      const exists = collections.some(item => item.id == detail.id && item.type == this.data.type);
+      if (!exists) {
+        collections.push(newCollection);
+        wx.setStorageSync('collections', collections);
+      }
+    } else {
+      wx.showToast({ title: '取消收藏', icon: 'none' });
+      
+      // 从收藏列表中移除
+      const collections = wx.getStorageSync('collections') || [];
+      const updatedCollections = collections.filter(item => !(item.id == detail.id && item.type == this.data.type));
+      wx.setStorageSync('collections', updatedCollections);
+    }
+
+    // 保存收藏状态到本地存储
+    const collectedItems = wx.getStorageSync('collectedItems') || {};
+    const key = `${userInfo.id}_${this.data.type}_${this.data.id}`;
+    collectedItems[key] = isCollected;
+    wx.setStorageSync('collectedItems', collectedItems);
+
+    // 向后端发送收藏请求
+    const collectData = {
+      userId: userInfo.id,
+      itemId: this.data.id,
+      itemType: this.data.type
+    };
+
+    if (isCollected) {
+      // 添加收藏
+      wx.request({
+        url: 'http://localhost:3001/api/collections',
+        method: 'POST',
+        data: collectData,
+        success: (res) => {
+          console.log('收藏请求结果:', res.data);
+        },
+        fail: (err) => {
+          console.error('收藏请求失败:', err);
+        }
+      });
+    } else {
+      // 删除收藏
+      // 这里需要先获取收藏ID，然后删除
+      // 简化处理，只更新本地状态
+    }
+  },
+
+  // 检查用户是否已收藏
+  checkCollectStatus() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      return;
+    }
+
+    // 从本地存储获取收藏状态
+    const collectedItems = wx.getStorageSync('collectedItems') || {};
+    const key = `${userInfo.id}_${this.data.type}_${this.data.id}`;
+    const isCollected = collectedItems[key] || false;
+    
+    this.setData({ isCollected });
   },
 
   // 分享
@@ -332,7 +426,11 @@ Page({
   },
 
   // 格式化时间
-  formatTime(date) {
+  formatTime(date, format = 'relative') {
+    if (format === 'date') {
+      return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    }
+
     const now = new Date();
     const diff = now - date;
     const minutes = Math.floor(diff / 60000);
