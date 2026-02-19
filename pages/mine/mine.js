@@ -115,7 +115,9 @@ Page({
     // 这里可以跳转到对应页面
     switch(text) {
       case '旅行攻略':
-        wx.showToast({ title: '旅行攻略功能开发中', icon: 'none' });
+        wx.navigateTo({
+          url: '/pages/strategy/strategy'
+        });
         break;
       case '我的交流':
         wx.showToast({ title: '我的交流功能开发中', icon: 'none' });
