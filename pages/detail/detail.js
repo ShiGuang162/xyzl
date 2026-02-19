@@ -7,6 +7,8 @@ Page({
     detail: null,
     type: '',
     id: '',
+    // 点赞状态
+    isLiked: false,
     // 语音播放相关状态
     isPlaying: false,
     progress: 0,
@@ -94,12 +96,71 @@ Page({
         detail: detail,
         loading: false
       });
+
+      // 检查用户是否已点赞
+      this.checkLikeStatus();
     }, 1000);
   },
 
   // 点赞
   likeDetail() {
-    wx.showToast({ title: '点赞成功', icon: 'success' });
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    const isLiked = !this.data.isLiked;
+    const detail = { ...this.data.detail };
+    
+    if (isLiked) {
+      detail.likes = (detail.likes || 0) + 1;
+      wx.showToast({ title: '点赞成功', icon: 'success' });
+    } else {
+      detail.likes = Math.max(0, (detail.likes || 1) - 1);
+      wx.showToast({ title: '取消点赞', icon: 'none' });
+    }
+
+    this.setData({
+      isLiked,
+      detail
+    });
+
+    const likedItems = wx.getStorageSync('likedItems') || {};
+    const key = `${userInfo.id}_${this.data.type}_${this.data.id}`;
+    likedItems[key] = isLiked;
+    wx.setStorageSync('likedItems', likedItems);
+
+    const likeData = {
+      userId: userInfo.id,
+      contentId: this.data.id,
+      contentType: this.data.type,
+      isLiked
+    };
+
+    wx.request({
+      url: 'http://localhost:3001/api/like',
+      method: 'POST',
+      data: likeData,
+      success: (res) => {
+        if (!res.data.success) {
+          const rollbackIsLiked = !isLiked;
+          const rollbackDetail = { ...detail };
+          if (isLiked) {
+            rollbackDetail.likes = Math.max(0, (rollbackDetail.likes || 1) - 1);
+          } else {
+            rollbackDetail.likes = (rollbackDetail.likes || 0) + 1;
+          }
+          this.setData({
+            isLiked: rollbackIsLiked,
+            detail: rollbackDetail
+          });
+          likedItems[key] = rollbackIsLiked;
+          wx.setStorageSync('likedItems', likedItems);
+          wx.showToast({ title: '操作失败', icon: 'none' });
+        }
+      }
+    });
   },
 
   // 评论
@@ -118,6 +179,37 @@ Page({
   // 返回上一页
   navigateBack() {
     wx.navigateBack();
+  },
+
+  // 检查用户是否已点赞
+  checkLikeStatus() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      return;
+    }
+
+    const likedItems = wx.getStorageSync('likedItems') || {};
+    const key = `${userInfo.id}_${this.data.type}_${this.data.id}`;
+    const isLiked = likedItems[key] || false;
+    
+    this.setData({ isLiked });
+
+    wx.request({
+      url: 'http://localhost:3001/api/like/check',
+      method: 'GET',
+      data: {
+        userId: userInfo.id,
+        contentId: this.data.id,
+        contentType: this.data.type
+      },
+      success: (res) => {
+        if (res.data.isLiked !== undefined) {
+          this.setData({ isLiked: res.data.isLiked });
+          likedItems[key] = res.data.isLiked;
+          wx.setStorageSync('likedItems', likedItems);
+        }
+      }
+    });
   },
 
   // 显示方言选择对话框

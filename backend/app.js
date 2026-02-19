@@ -517,6 +517,67 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// API 接口 - 点赞/取消点赞
+app.post('/api/like', async (req, res) => {
+  try {
+    const { userId, contentId, contentType, isLiked } = req.body;
+    
+    if (!userId || !contentId || !contentType) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 检查是否已存在点赞记录
+    const checkSql = 'SELECT id FROM likes WHERE user_id = ? AND content_id = ? AND content_type = ?';
+    const existingLike = await db.query(checkSql, [userId, contentId, contentType]);
+    
+    if (isLiked) {
+      // 添加点赞
+      if (existingLike.length === 0) {
+        const sql = 'INSERT INTO likes (user_id, content_id, content_type) VALUES (?, ?, ?)';
+        await db.query(sql, [userId, contentId, contentType]);
+        
+        // 更新对应内容的点赞数
+        const updateSql = 'UPDATE ?? SET likes = likes + 1 WHERE id = ?';
+        await db.query(updateSql, [contentType === 'strategy' ? 'strategies' : contentType === 'scenic' ? 'scenics' : 'history', contentId]);
+      }
+    } else {
+      // 取消点赞
+      if (existingLike.length > 0) {
+        const sql = 'DELETE FROM likes WHERE id = ?';
+        await db.query(sql, [existingLike[0].id]);
+        
+        // 更新对应内容的点赞数
+        const updateSql = 'UPDATE ?? SET likes = GREATEST(0, likes - 1) WHERE id = ?';
+        await db.query(updateSql, [contentType === 'strategy' ? 'strategies' : contentType === 'scenic' ? 'scenics' : 'history', contentId]);
+      }
+    }
+    
+    res.json({ success: true, isLiked });
+  } catch (error) {
+    console.error('点赞操作错误:', error);
+    res.status(500).json({ error: '点赞操作失败' });
+  }
+});
+
+// API 接口 - 检查用户是否点赞
+app.get('/api/like/check', async (req, res) => {
+  try {
+    const { userId, contentId, contentType } = req.query;
+    
+    if (!userId || !contentId || !contentType) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    const sql = 'SELECT id FROM likes WHERE user_id = ? AND content_id = ? AND content_type = ?';
+    const result = await db.query(sql, [userId, contentId, contentType]);
+    
+    res.json({ isLiked: result.length > 0 });
+  } catch (error) {
+    console.error('检查点赞状态错误:', error);
+    res.status(500).json({ error: '检查点赞状态失败' });
+  }
+});
+
 // API 接口 - 微信登录
 app.post('/api/login/wechat', async (req, res) => {
   try {

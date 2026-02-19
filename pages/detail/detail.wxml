@@ -97,8 +97,8 @@
     <!-- 互动区域 -->
     <view class="interaction-section">
       <view class="interaction-item" bindtap="likeDetail">
-        <view class="interaction-icon">❤️</view>
-        <view class="interaction-text">点赞</view>
+        <view class="interaction-icon {{isLiked ? 'liked' : ''}}">{{isLiked ? '💖' : '❤️'}}</view>
+        <view class="interaction-text">{{isLiked ? '已点赞' : '点赞'}}</view>
       </view>
       <view class="interaction-item" bindtap="showCommentDialog">
         <view class="interaction-icon">💬</view>
