@@ -146,7 +146,9 @@ Page({
         });
         break;
       case '关于我们':
-        wx.showToast({ title: '关于我们功能开发中', icon: 'none' });
+        wx.navigateTo({
+          url: '/pages/about/about'
+        });
         break;
       default:
         break;

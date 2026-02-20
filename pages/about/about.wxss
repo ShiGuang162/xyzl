@@ -1,0 +1,332 @@
+/* 关于我们页面样式 */
+.container {
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 顶部导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: #2c3e50;
+  color: white;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.nav-left {
+  width: 80rpx;
+}
+
+.nav-back {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.nav-back:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.back-icon {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.nav-right {
+  width: 80rpx;
+}
+
+/* 主内容区域 */
+.content-area {
+  padding: 120rpx 0 40rpx;
+}
+
+/* Logo区域 */
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 40rpx;
+  background-color: white;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.logo-container {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 30rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30rpx;
+  box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.3);
+}
+
+.logo-icon {
+  font-size: 80rpx;
+}
+
+.app-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.app-slogan {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+
+.app-version {
+  font-size: 24rpx;
+  color: #999;
+  background-color: #f5f5f5;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+/* 信息区块 */
+.info-section {
+  background-color: white;
+  margin: 0 30rpx 30rpx;
+  border-radius: 15rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.section-content {
+  line-height: 1.8;
+}
+
+.content-text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* 功能列表 */
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25rpx;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  background-color: #f0f0f0;
+  transform: translateX(5rpx);
+}
+
+.feature-icon {
+  font-size: 40rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.feature-info {
+  flex: 1;
+}
+
+.feature-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.feature-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+/* 联系方式列表 */
+.contact-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-item:active {
+  background-color: #f9f9f9;
+}
+
+.contact-label {
+  font-size: 26rpx;
+  color: #333;
+  width: 160rpx;
+  font-weight: 500;
+}
+
+.contact-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.contact-arrow {
+  font-size: 28rpx;
+  color: #999;
+  margin-left: 10rpx;
+}
+
+/* 更新日志 */
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.changelog-item {
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.changelog-item:last-child {
+  border-bottom: none;
+}
+
+.changelog-version {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #2196f3;
+  margin-bottom: 8rpx;
+}
+
+.changelog-date {
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 15rpx;
+}
+
+.changelog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.changelog-text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 底部版权信息 */
+.footer-section {
+  padding: 40rpx 30rpx;
+  text-align: center;
+  background-color: #f0f0f0;
+  margin-top: 20rpx;
+}
+
+.copyright {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.icp {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .nav-bar {
+    padding: 15rpx 20rpx;
+  }
+
+  .content-area {
+    padding: 100rpx 0 30rpx;
+  }
+
+  .logo-section {
+    padding: 40rpx 30rpx;
+  }
+
+  .logo-container {
+    width: 140rpx;
+    height: 140rpx;
+  }
+
+  .logo-icon {
+    font-size: 70rpx;
+  }
+
+  .info-section {
+    margin: 0 20rpx 20rpx;
+    padding: 25rpx;
+  }
+
+  .feature-item {
+    padding: 15rpx;
+  }
+
+  .contact-item {
+    padding: 20rpx 0;
+  }
+}

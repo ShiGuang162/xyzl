@@ -90,10 +90,8 @@ Page({
 
   // 跳转到关于我们页面
   navigateToAbout() {
-    wx.showModal({
-      title: '关于我们',
-      content: '乡音智旅 v1.0.0\n\n致力于为用户提供优质的旅游攻略和交流平台\n\n© 2026 乡音智旅',
-      showCancel: false
+    wx.navigateTo({
+      url: '/pages/about/about'
     });
   },
 

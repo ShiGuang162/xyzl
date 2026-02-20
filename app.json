@@ -14,7 +14,8 @@
     "pages/settings/settings",
     "pages/profile/profile",
     "pages/change-password/change-password",
-    "pages/customer-service/customer-service"
+    "pages/customer-service/customer-service",
+    "pages/about/about"
   ],
   "window": {
     "backgroundTextStyle": "light",
