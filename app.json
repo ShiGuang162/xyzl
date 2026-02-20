@@ -13,7 +13,8 @@
     "pages/my-discussions/my-discussions",
     "pages/settings/settings",
     "pages/profile/profile",
-    "pages/change-password/change-password"
+    "pages/change-password/change-password",
+    "pages/customer-service/customer-service"
   ],
   "window": {
     "backgroundTextStyle": "light",

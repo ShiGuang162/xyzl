@@ -141,7 +141,9 @@ Page({
         wx.showToast({ title: '我的购买功能开发中', icon: 'none' });
         break;
       case '客服中心':
-        wx.showToast({ title: '客服中心功能开发中', icon: 'none' });
+        wx.navigateTo({
+          url: '/pages/customer-service/customer-service'
+        });
         break;
       case '关于我们':
         wx.showToast({ title: '关于我们功能开发中', icon: 'none' });

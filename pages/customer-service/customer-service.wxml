@@ -1,0 +1,106 @@
+<!-- AI客服小助手页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="nav-back" bindtap="navigateBack">
+        <view class="back-icon">←</view>
+      </view>
+    </view>
+    <view class="nav-center">
+      <view class="nav-title">AI客服助手</view>
+    </view>
+    <view class="nav-right">
+      <view class="clear-btn" bindtap="clearChat">
+        <view class="clear-text">清空</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 聊天区域 -->
+  <scroll-view class="chat-container" scroll-y="{{true}}" scroll-top="{{scrollTop}}" enhanced="{{true}}" show-scrollbar="{{true}}">
+    <!-- 欢迎消息 -->
+    <view class="welcome-message" wx:if="{{messages.length === 0}}">
+      <view class="welcome-icon">🤖</view>
+      <view class="welcome-title">您好，我是乡音智旅AI助手</view>
+      <view class="welcome-desc">我可以为您解答关于乡音智旅小程序的各种问题，包括：</view>
+      <view class="welcome-list">
+        <view class="welcome-item">• 旅游攻略相关问题</view>
+        <view class="welcome-item">• 景点推荐和介绍</view>
+        <view class="welcome-item">• 美食推荐</view>
+        <view class="welcome-item">• 交通住宿信息</view>
+        <view class="welcome-item">• 账号设置问题</view>
+        <view class="welcome-item">• 使用帮助和技巧</view>
+      </view>
+      <view class="welcome-tip">💡 点击下方快捷问题或输入您的问题</view>
+    </view>
+
+    <!-- 消息列表 -->
+    <view class="message-list" wx:if="{{messages.length > 0}}">
+      <block wx:for="{{messages}}" wx:key="index">
+        <!-- AI消息 -->
+        <view class="message-item ai-message" wx:if="{{item.type === 'ai'}}">
+          <view class="avatar ai-avatar">🤖</view>
+          <view class="message-content">
+            <view class="message-bubble ai-bubble">
+              <text class="message-text">{{item.content}}</text>
+            </view>
+            <view class="message-time">{{item.time}}</view>
+          </view>
+        </view>
+
+        <!-- 用户消息 -->
+        <view class="message-item user-message" wx:if="{{item.type === 'user'}}">
+          <view class="message-content">
+            <view class="message-bubble user-bubble">
+              <text class="message-text">{{item.content}}</text>
+            </view>
+            <view class="message-time">{{item.time}}</view>
+          </view>
+          <view class="avatar user-avatar">👤</view>
+        </view>
+      </block>
+
+      <!-- 正在输入提示 -->
+      <view class="typing-indicator" wx:if="{{isTyping}}">
+        <view class="avatar ai-avatar">🤖</view>
+        <view class="typing-bubble">
+          <view class="typing-dots">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 快捷问题区域 -->
+  <view class="quick-questions" wx:if="{{!isTyping && messages.length < 3}}">
+    <scroll-view scroll-x="{{true}}" class="quick-scroll">
+      <view class="quick-list">
+        <view class="quick-item" wx:for="{{quickQuestions}}" wx:key="index" bindtap="sendQuickQuestion" data-question="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <view class="input-container">
+      <input
+        class="message-input"
+        value="{{inputMessage}}"
+        bindinput="onInputChange"
+        bindconfirm="sendMessage"
+        placeholder="请输入您的问题..."
+        confirm-type="send"
+        disabled="{{isTyping}}"
+      />
+      <view class="send-btn {{inputMessage ? 'active' : ''}}" bindtap="sendMessage">
+        <view class="send-icon">➤</view>
+      </view>
+    </view>
+  </view>
+</view>
