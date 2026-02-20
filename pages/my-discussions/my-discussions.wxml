@@ -1,0 +1,89 @@
+<!-- 我的交流页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="nav-back" bindtap="navigateBack">
+        <view class="back-icon">←</view>
+      </view>
+    </view>
+    <view class="nav-center">
+      <view class="nav-title">我的交流</view>
+    </view>
+    <view class="nav-right">
+      <view class="nav-post" bindtap="navigateToPost">
+        <view class="post-icon">+</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 主内容区域 -->
+  <view class="content-area">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <view class="loading-text">加载中...</view>
+    </view>
+    
+    <!-- 未登录状态 -->
+    <view wx:elif="{{!isLogin}}" class="login-container">
+      <view class="login-icon">🔐</view>
+      <view class="login-text">请先登录</view>
+      <view class="login-hint">登录后查看我的交流内容</view>
+      <view class="login-btn" bindtap="navigateToLogin">去登录</view>
+    </view>
+    
+    <!-- 无内容状态 -->
+    <view wx:elif="{{discussionList.length === 0 && !loading}}" class="empty-container">
+      <view class="empty-icon">💬</view>
+      <view class="empty-text">暂无交流内容</view>
+      <view class="empty-hint">快来发布第一条讨论吧！</view>
+      <view class="empty-btn" bindtap="navigateToPost">发布讨论</view>
+    </view>
+    
+    <!-- 讨论列表 -->
+    <view wx:else class="discussion-list">
+      <view wx:for="{{discussionList}}" wx:key="id" class="discussion-item" bindtap="viewDiscussion" data-id="{{item.id}}">
+        <view class="discussion-header">
+          <view class="user-avatar">{{item.user.avatar}}</view>
+          <view class="user-info">
+            <view class="user-name">{{item.user.name}}</view>
+            <view class="post-time">{{item.time}}</view>
+          </view>
+          <view class="post-tag">{{item.tag}}</view>
+        </view>
+        <view class="discussion-content">
+          <view class="discussion-title">{{item.title}}</view>
+          <view class="discussion-text">{{item.content}}</view>
+          <view wx:if="{{item.image}}" class="discussion-image">
+            <image src="{{item.image}}" class="discussion-img" />
+          </view>
+        </view>
+        <view class="discussion-footer">
+          <view class="discussion-stats">
+            <view class="stat-item" bindtap="likeDiscussion" data-id="{{item.id}}">
+              <view class="stat-icon">👍</view>
+              <view class="stat-text">{{item.likes}}</view>
+            </view>
+            <view class="stat-item">
+              <view class="stat-icon">💬</view>
+              <view class="stat-text">{{item.comments}}</view>
+            </view>
+            <view class="stat-item">
+              <view class="stat-icon">👀</view>
+              <view class="stat-text">{{item.views}}</view>
+            </view>
+          </view>
+          <view class="discussion-actions">
+            <view class="action-item" bindtap="editDiscussion" data-id="{{item.id}}">
+              <view class="action-icon">✏️</view>
+            </view>
+            <view class="action-item" bindtap="deleteDiscussion" data-id="{{item.id}}">
+              <view class="action-icon">🗑️</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -91,10 +91,12 @@ Page({
   
   // 点击登录
   login() {
-    app.login().then(() => {
+    return app.login().then((userInfo) => {
       this.checkLoginStatus();
+      return userInfo; // 确保返回用户信息，使Promise链正确执行
     }).catch(err => {
       console.error('登录失败:', err);
+      throw err; // 确保错误被正确传递
     });
   },
   
@@ -105,15 +107,21 @@ Page({
     const id = e.currentTarget.dataset.id;
     const text = e.currentTarget.dataset.text;
     console.log('点击模块:', text, id);
+    console.log('当前登录状态:', this.data.isLogin);
     
-    // 未登录时提示登录
-    if (!this.data.isLogin) {
-      this.login();
-      return;
-    }
-    
-    // 这里可以跳转到对应页面
+    // 无论是否登录，直接尝试跳转，测试跳转功能是否正常
+    console.log('尝试跳转到:', text);
+    this.navigateToModule(text);
+  },
+  
+  // 跳转到对应模块
+  navigateToModule(text) {
     switch(text) {
+      case '我的收藏':
+        wx.navigateTo({
+          url: '/pages/collection/collection'
+        });
+        break;
       case '旅行攻略':
         wx.navigateTo({
           url: '/pages/strategy/strategy'
@@ -121,7 +129,7 @@ Page({
         break;
       case '我的交流':
         wx.navigateTo({
-          url: '/pages/find/find'
+          url: '/pages/my-discussions/my-discussions'
         });
         break;
       case '设置':

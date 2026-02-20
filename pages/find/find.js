@@ -44,10 +44,26 @@ Page({
   },
 
   // 生命周期函数
-  onLoad() {
-    console.log('讨论页加载');
+  onLoad(options) {
+    console.log('讨论页加载', options);
+    // 检查是否需要显示发布对话框
+    if (options && options.showPostDialog === 'true') {
+      this.setData({ showPostDialog: true });
+    }
     // 初始加载数据
     this.loadData();
+  },
+  
+  // 页面显示时
+  onShow() {
+    console.log('讨论页显示');
+    // 检查是否需要显示发布对话框
+    const showPostDialog = wx.getStorageSync('showPostDialog');
+    if (showPostDialog) {
+      this.setData({ showPostDialog: true });
+      // 清除本地存储，避免下次进入页面时重复显示
+      wx.removeStorageSync('showPostDialog');
+    }
   },
 
   // 加载数据

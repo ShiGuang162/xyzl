@@ -9,7 +9,8 @@
     "pages/scenic/scenic",
     "pages/history/history",
     "pages/strategy/strategy",
-    "pages/discussion-detail/discussion-detail"
+    "pages/discussion-detail/discussion-detail",
+    "pages/my-discussions/my-discussions"
   ],
   "window": {
     "backgroundTextStyle": "light",

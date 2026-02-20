@@ -663,6 +663,51 @@ app.post('/api/discussions', async (req, res) => {
   }
 });
 
+// API 接口 - 获取用户自己的讨论列表
+app.get('/api/discussions/user', async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: '缺少用户ID' });
+    }
+    
+    // 从数据库获取用户的讨论列表
+    const sql = 'SELECT * FROM discussions WHERE user_id = ? ORDER BY created_at DESC';
+    const results = await db.query(sql, [user_id]);
+    
+    // 格式化结果
+    const formattedResults = results.map(item => ({
+      id: item.id,
+      title: item.title,
+      content: item.content,
+      tag: item.tag,
+      image: item.image,
+      time: item.created_at,
+      user: {
+        name: item.user_name,
+        avatar: item.user_avatar
+      },
+      likes: item.likes,
+      comments: item.comments,
+      views: item.views
+    }));
+    
+    res.json({
+      data: formattedResults,
+      pagination: {
+        page: 1,
+        limit: 100,
+        total: formattedResults.length,
+        totalPages: 1
+      }
+    });
+  } catch (error) {
+    console.error('获取用户讨论列表错误:', error);
+    res.status(500).json({ error: '获取用户讨论列表失败' });
+  }
+});
+
 // API 接口 - 获取讨论详情
 app.get('/api/discussions/:id', async (req, res) => {
   try {
@@ -782,6 +827,85 @@ app.post('/api/discussions/:id/unlike', async (req, res) => {
   } catch (error) {
     console.error('取消点赞错误:', error);
     res.status(500).json({ error: '取消点赞失败' });
+  }
+});
+
+// API 接口 - 编辑讨论
+app.put('/api/discussions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, tag, image, user_id } = req.body;
+    
+    // 验证必要参数
+    if (!title || !content || !tag || !user_id) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 检查讨论是否存在且属于该用户
+    const checkSql = 'SELECT * FROM discussions WHERE id = ? AND user_id = ?';
+    const checkResult = await db.query(checkSql, [id, user_id]);
+    
+    if (checkResult.length === 0) {
+      return res.status(404).json({ error: '讨论不存在或无权限编辑' });
+    }
+    
+    // 更新讨论
+    const updateSql = 'UPDATE discussions SET title = ?, content = ?, tag = ?, image = ?, updated_at = NOW() WHERE id = ?';
+    await db.query(updateSql, [title, content, tag, image || null, id]);
+    
+    // 获取更新后的讨论
+    const getSql = 'SELECT * FROM discussions WHERE id = ?';
+    const updatedDiscussion = await db.query(getSql, [id]);
+    
+    // 格式化结果
+    const formattedDiscussion = {
+      id: updatedDiscussion[0].id,
+      title: updatedDiscussion[0].title,
+      content: updatedDiscussion[0].content,
+      tag: updatedDiscussion[0].tag,
+      image: updatedDiscussion[0].image,
+      time: updatedDiscussion[0].created_at,
+      user: {
+        name: updatedDiscussion[0].user_name,
+        avatar: updatedDiscussion[0].user_avatar
+      },
+      likes: updatedDiscussion[0].likes,
+      comments: updatedDiscussion[0].comments,
+      views: updatedDiscussion[0].views
+    };
+    
+    res.json({ success: true, data: formattedDiscussion });
+  } catch (error) {
+    console.error('编辑讨论错误:', error);
+    res.status(500).json({ error: '编辑讨论失败' });
+  }
+});
+
+// API 接口 - 删除讨论
+app.delete('/api/discussions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.body;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: '缺少用户ID' });
+    }
+    
+    // 检查讨论是否存在且属于该用户
+    const checkSql = 'SELECT * FROM discussions WHERE id = ? AND user_id = ?';
+    const checkResult = await db.query(checkSql, [id, user_id]);
+    
+    if (checkResult.length === 0) {
+      return res.status(404).json({ error: '讨论不存在或无权限删除' });
+    }
+    
+    // 删除讨论
+    await db.query('DELETE FROM discussions WHERE id = ?', [id]);
+    
+    res.json({ success: true, message: '讨论删除成功' });
+  } catch (error) {
+    console.error('删除讨论错误:', error);
+    res.status(500).json({ error: '删除讨论失败' });
   }
 });
 
