@@ -517,6 +517,182 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// API 接口 - 获取讨论列表
+app.get('/api/discussions', async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category = 'all' } = req.query;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    
+    let sql = 'SELECT * FROM discussions ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    let params = [parseInt(limit), offset];
+    
+    if (category !== 'all') {
+      sql = 'SELECT * FROM discussions WHERE tag = ? ORDER BY created_at DESC LIMIT ? OFFSET ?';
+      params = [category, parseInt(limit), offset];
+    }
+    
+    const results = await db.query(sql, params);
+    
+    // 获取总数用于分页
+    const countSql = category !== 'all' ? 'SELECT COUNT(*) as total FROM discussions WHERE tag = ?' : 'SELECT COUNT(*) as total FROM discussions';
+    const countParams = category !== 'all' ? [category] : [];
+    const countResult = await db.query(countSql, countParams);
+    const total = countResult[0].total;
+    
+    // 格式化结果
+    const formattedResults = results.map(item => ({
+      id: item.id,
+      title: item.title,
+      content: item.content,
+      tag: item.tag,
+      image: item.image,
+      time: item.created_at,
+      user: {
+        name: item.user_name,
+        avatar: item.user_avatar
+      },
+      likes: item.likes,
+      comments: item.comments,
+      views: item.views
+    }));
+    
+    res.json({
+      data: formattedResults,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    console.error('获取讨论列表错误:', error);
+    res.status(500).json({ error: '获取讨论列表失败' });
+  }
+});
+
+// API 接口 - 获取讨论详情
+app.get('/api/discussions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // 获取讨论详情
+    const sql = 'SELECT * FROM discussions WHERE id = ?';
+    const results = await db.query(sql, [id]);
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: '讨论不存在' });
+    }
+    
+    const discussion = results[0];
+    
+    // 增加浏览量
+    await db.query('UPDATE discussions SET views = views + 1 WHERE id = ?', [id]);
+    
+    // 格式化结果
+    const formattedDiscussion = {
+      id: discussion.id,
+      title: discussion.title,
+      content: discussion.content,
+      tag: discussion.tag,
+      image: discussion.image,
+      time: discussion.created_at,
+      user: {
+        name: discussion.user_name,
+        avatar: discussion.user_avatar
+      },
+      likes: discussion.likes,
+      comments: discussion.comments,
+      views: discussion.views + 1
+    };
+    
+    res.json(formattedDiscussion);
+  } catch (error) {
+    console.error('获取讨论详情错误:', error);
+    res.status(500).json({ error: '获取讨论详情失败' });
+  }
+});
+
+// API 接口 - 获取讨论评论
+app.get('/api/discussions/:id/comments', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const sql = 'SELECT * FROM discussion_comments WHERE discussion_id = ? ORDER BY created_at ASC';
+    const results = await db.query(sql, [id]);
+    
+    // 格式化结果
+    const formattedComments = results.map(item => ({
+      id: item.id,
+      user: {
+        name: item.user_name,
+        avatar: item.user_avatar
+      },
+      content: item.content,
+      time: item.created_at
+    }));
+    
+    res.json(formattedComments);
+  } catch (error) {
+    console.error('获取讨论评论错误:', error);
+    res.status(500).json({ error: '获取讨论评论失败' });
+  }
+});
+
+// API 接口 - 添加评论
+app.post('/api/discussions/:id/comments', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId, userName, userAvatar, content } = req.body;
+    
+    if (!userId || !userName || !userAvatar || !content) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 插入评论
+    const insertSql = 'INSERT INTO discussion_comments (discussion_id, user_id, user_name, user_avatar, content) VALUES (?, ?, ?, ?, ?)';
+    await db.query(insertSql, [id, userId, userName, userAvatar, content]);
+    
+    // 更新讨论的评论数
+    await db.query('UPDATE discussions SET comments = comments + 1 WHERE id = ?', [id]);
+    
+    res.json({ success: true, message: '评论成功' });
+  } catch (error) {
+    console.error('添加评论错误:', error);
+    res.status(500).json({ error: '添加评论失败' });
+  }
+});
+
+// API 接口 - 点赞讨论
+app.post('/api/discussions/:id/like', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // 更新点赞数
+    await db.query('UPDATE discussions SET likes = likes + 1 WHERE id = ?', [id]);
+    
+    res.json({ success: true, message: '点赞成功' });
+  } catch (error) {
+    console.error('点赞讨论错误:', error);
+    res.status(500).json({ error: '点赞失败' });
+  }
+});
+
+// API 接口 - 取消点赞
+app.post('/api/discussions/:id/unlike', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // 更新点赞数（确保不小于0）
+    await db.query('UPDATE discussions SET likes = GREATEST(0, likes - 1) WHERE id = ?', [id]);
+    
+    res.json({ success: true, message: '取消点赞成功' });
+  } catch (error) {
+    console.error('取消点赞错误:', error);
+    res.status(500).json({ error: '取消点赞失败' });
+  }
+});
+
 // API 接口 - 点赞/取消点赞
 app.post('/api/like', async (req, res) => {
   try {

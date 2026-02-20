@@ -8,7 +8,8 @@
     "pages/collection/collection",
     "pages/scenic/scenic",
     "pages/history/history",
-    "pages/strategy/strategy"
+    "pages/strategy/strategy",
+    "pages/discussion-detail/discussion-detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
