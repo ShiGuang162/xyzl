@@ -616,6 +616,53 @@ app.get('/api/discussions', async (req, res) => {
   }
 });
 
+// API 接口 - 发布讨论
+app.post('/api/discussions', async (req, res) => {
+  try {
+    const { title, content, tag, user_id, user_name, user_avatar, image } = req.body;
+    
+    // 验证必要参数
+    if (!title || !content || !tag || !user_id || !user_name || !user_avatar) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 插入讨论数据
+    const sql = `
+      INSERT INTO discussions (title, content, tag, user_id, user_name, user_avatar, image, likes, comments, views, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, 0, NOW(), NOW())
+    `;
+    
+    const params = [title, content, tag, user_id, user_name, user_avatar, image || null];
+    const result = await db.query(sql, params);
+    
+    // 获取刚插入的讨论
+    const getSql = 'SELECT * FROM discussions WHERE id = ?';
+    const newDiscussion = await db.query(getSql, [result.insertId]);
+    
+    // 格式化结果
+    const formattedDiscussion = {
+      id: newDiscussion[0].id,
+      title: newDiscussion[0].title,
+      content: newDiscussion[0].content,
+      tag: newDiscussion[0].tag,
+      image: newDiscussion[0].image,
+      time: newDiscussion[0].created_at,
+      user: {
+        name: newDiscussion[0].user_name,
+        avatar: newDiscussion[0].user_avatar
+      },
+      likes: newDiscussion[0].likes,
+      comments: newDiscussion[0].comments,
+      views: newDiscussion[0].views
+    };
+    
+    res.status(201).json({ success: true, data: formattedDiscussion });
+  } catch (error) {
+    console.error('发布讨论错误:', error);
+    res.status(500).json({ error: '发布讨论失败' });
+  }
+});
+
 // API 接口 - 获取讨论详情
 app.get('/api/discussions/:id', async (req, res) => {
   try {

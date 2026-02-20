@@ -1,4 +1,6 @@
 // 讨论页 - QQ频道风格逻辑
+const app = getApp();
+
 Page({
   data: {
     // 当前选中的分类
@@ -11,7 +13,7 @@ Page({
       scenic: '景点讨论',
       transport: '交通住宿',
       story: '旅行故事',
-      other: '其他话题'
+      other: '其他话题' 
     },
     // 讨论列表数据
     discussionList: [],
@@ -23,7 +25,22 @@ Page({
     searchHistory: [],
     hotSearchList: ['北京', '成都', '西湖', '上海', '西藏', '旅游攻略', '美食推荐'],
     searchResults: [],
-    searching: false
+    searching: false,
+    // 发布讨论相关
+    showPostDialog: false,
+    postTitle: '',
+    postContent: '',
+    selectedCategory: 'strategy',
+    postCategories: [
+      { id: 'strategy', name: '旅游攻略' },
+      { id: 'food', name: '美食推荐' },
+      { id: 'scenic', name: '景点讨论' },
+      { id: 'transport', name: '交通住宿' },
+      { id: 'story', name: '旅行故事' },
+      { id: 'other', name: '其他话题' }
+    ],
+    postImage: '',
+    submitting: false
   },
 
   // 生命周期函数
@@ -236,8 +253,157 @@ Page({
   // 显示发布讨论对话框
   showPostDialog() {
     console.log('显示发布讨论对话框');
-    // 这里可以实现发布讨论的功能
-    wx.showToast({ title: '发布讨论功能开发中', icon: 'none' });
+    this.setData({
+      showPostDialog: true,
+      postTitle: '',
+      postContent: '',
+      selectedCategory: 'strategy',
+      postImage: ''
+    });
+  },
+  
+  // 隐藏发布讨论对话框
+  hidePostDialog() {
+    console.log('隐藏发布讨论对话框');
+    this.setData({
+      showPostDialog: false,
+      postTitle: '',
+      postContent: '',
+      selectedCategory: 'strategy',
+      postImage: '',
+      submitting: false
+    });
+  },
+  
+  // 发布标题输入
+  onPostTitleInput(e) {
+    const title = e.detail.value;
+    this.setData({ postTitle: title });
+  },
+  
+  // 发布内容输入
+  onPostContentInput(e) {
+    const content = e.detail.value;
+    this.setData({ postContent: content });
+  },
+  
+  // 选择分类
+  selectCategory(e) {
+    const category = e.currentTarget.dataset.category;
+    this.setData({ selectedCategory: category });
+  },
+  
+  // 选择图片
+  chooseImage() {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePaths = res.tempFilePaths;
+        this.setData({ postImage: tempFilePaths[0] });
+      },
+      fail: (err) => {
+        console.error('选择图片失败:', err);
+      }
+    });
+  },
+  
+  // 删除图片
+  removeImage() {
+    this.setData({ postImage: '' });
+  },
+  
+  // 提交发布
+  submitPost() {
+    const { postTitle, postContent, selectedCategory, postImage } = this.data;
+    
+    // 验证输入
+    if (!postTitle.trim()) {
+      wx.showToast({ title: '请输入讨论标题', icon: 'none' });
+      return;
+    }
+    
+    if (!postContent.trim()) {
+      wx.showToast({ title: '请输入讨论内容', icon: 'none' });
+      return;
+    }
+    
+    // 获取用户信息
+    let userInfo = app.globalData.userInfo;
+    
+    // 如果全局数据中没有用户信息，尝试从本地存储获取
+    if (!userInfo) {
+      userInfo = wx.getStorageSync('userInfo');
+    }
+    
+    // 如果用户未登录，提示登录
+    if (!userInfo) {
+      wx.showModal({
+        title: '请先登录',
+        content: '发布讨论需要登录账号',
+        success: (res) => {
+          if (res.confirm) {
+            // 跳转到个人主页登录
+            wx.navigateTo({
+              url: '/pages/mine/mine'
+            });
+          }
+        }
+      });
+      return;
+    }
+    
+    this.setData({ submitting: true });
+    
+    // 分类映射
+    const categoryMap = {
+      'strategy': '旅游攻略',
+      'food': '美食推荐',
+      'scenic': '景点讨论',
+      'transport': '交通住宿',
+      'story': '旅行故事',
+      'other': '其他话题'
+    };
+    
+    const tag = categoryMap[selectedCategory];
+    
+    // 准备发布数据
+    const postData = {
+      title: postTitle,
+      content: postContent,
+      tag: tag,
+      user_id: userInfo.id,
+      user_name: userInfo.nickname,
+      user_avatar: userInfo.avatarUrl ? userInfo.avatarUrl.charAt(0) : '用', // 使用头像URL的第一个字符作为默认头像
+      image: postImage
+    };
+    
+    // 调用后端API发布讨论
+    wx.request({
+      url: 'http://localhost:3001/api/discussions',
+      method: 'POST',
+      data: postData,
+      success: (res) => {
+        console.log('发布讨论成功:', res.data);
+        if (res.data && res.data.success) {
+          wx.showToast({ title: '发布成功', icon: 'success' });
+          // 隐藏发布对话框
+          this.hidePostDialog();
+          // 重新加载数据
+          this.loadData();
+        } else {
+          wx.showToast({ title: '发布失败', icon: 'none' });
+        }
+      },
+      fail: (err) => {
+        console.error('发布讨论失败:', err);
+        wx.showToast({ title: '网络错误', icon: 'none' });
+      },
+      complete: () => {
+        this.setData({ submitting: false });
+      }
+    });
   },
 
   // 查看讨论详情

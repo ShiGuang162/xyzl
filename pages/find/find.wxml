@@ -187,4 +187,66 @@
   <view class="post-btn" bindtap="showPostDialog">
     <view class="post-icon">+</view>
   </view>
+  
+  <!-- 发布讨论对话框 -->
+  <view wx:if="{{showPostDialog}}" class="post-dialog">
+    <view class="post-dialog-content">
+      <view class="post-dialog-header">
+        <view class="post-dialog-title">发布讨论</view>
+        <view class="post-dialog-close" bindtap="hidePostDialog">✕</view>
+      </view>
+      <view class="post-dialog-body">
+        <view class="post-form">
+          <view class="form-item">
+            <input 
+              class="form-input" 
+              placeholder="请输入讨论标题" 
+              value="{{postTitle}}"
+              bindinput="onPostTitleInput"
+            />
+          </view>
+          <view class="form-item">
+            <textarea 
+              class="form-textarea" 
+              placeholder="请输入讨论内容" 
+              value="{{postContent}}"
+              bindinput="onPostContentInput"
+              auto-height
+            />
+          </view>
+          <view class="form-item">
+            <view class="form-label">选择分类</view>
+            <view class="category-selector">
+              <view 
+                wx:for="{{postCategories}}" 
+                wx:key="id"
+                class="category-option {{selectedCategory === item.id ? 'active' : ''}}"
+                bindtap="selectCategory" 
+                data-category="{{item.id}}"
+              >
+                {{item.name}}
+              </view>
+            </view>
+          </view>
+          <view class="form-item">
+            <view class="form-label">添加图片</view>
+            <view class="image-upload" bindtap="chooseImage">
+              <view class="upload-icon">📷</view>
+              <view class="upload-text">点击选择图片</view>
+            </view>
+            <view wx:if="{{postImage}}" class="image-preview">
+              <image src="{{postImage}}" class="preview-img" />
+              <view class="preview-remove" bindtap="removeImage">✕</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="post-dialog-footer">
+        <view class="cancel-btn" bindtap="hidePostDialog">取消</view>
+        <view class="submit-btn" bindtap="submitPost" disabled="{{submitting}}">
+          {{submitting ? '发布中...' : '发布'}}
+        </view>
+      </view>
+    </view>
+  </view>
 </view>
