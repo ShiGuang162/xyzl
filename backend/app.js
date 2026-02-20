@@ -350,24 +350,56 @@ app.get('/api/search', async (req, res) => {
     }
     
     // 在攻略、景点和历史文化中搜索
-    const strategiesSql = 'SELECT id, title as name, "strategy" as type, description as desc, image FROM strategies WHERE title LIKE ? OR description LIKE ?';
-    const scenicsSql = 'SELECT id, name, "scenic" as type, description as desc, image FROM scenics WHERE name LIKE ? OR description LIKE ?';
-    const historySql = 'SELECT id, title as name, "history" as type, description as desc, image FROM history WHERE title LIKE ? OR description LIKE ?';
+    const strategiesSql = 'SELECT id, title, "strategy" as type, description, image FROM strategies WHERE title LIKE ? OR description LIKE ?';
+    const scenicsSql = 'SELECT id, name, "scenic" as type, description, image FROM scenics WHERE name LIKE ? OR description LIKE ?';
+    const historySql = 'SELECT id, title, "history" as type, description, image FROM history WHERE title LIKE ? OR description LIKE ?';
     
     const searchTerm = `%${keyword}%`;
     
-    const [strategiesResults, scenicsResults, historyResults] = await Promise.all([
-      db.query(strategiesSql, [searchTerm, searchTerm]),
-      db.query(scenicsSql, [searchTerm, searchTerm]),
-      db.query(historySql, [searchTerm, searchTerm])
-    ]);
+    // 分别执行查询
+    const strategiesResults = await db.query(strategiesSql, [searchTerm, searchTerm]);
+    const scenicsResults = await db.query(scenicsSql, [searchTerm, searchTerm]);
+    const historyResults = await db.query(historySql, [searchTerm, searchTerm]);
     
     // 合并所有搜索结果
-    const results = [
-      ...strategiesResults.map(item => ({ ...item, type: 'strategy' })),
-      ...scenicsResults.map(item => ({ ...item, type: 'scenic' })),
-      ...historyResults.map(item => ({ ...item, type: 'history' }))
-    ];
+    const results = [];
+    
+    // 处理攻略结果
+    strategiesResults.forEach(item => {
+      results.push({
+        id: item.id,
+        title: item.title,
+        desc: item.description,
+        image: item.image,
+        type: item.type
+      });
+    });
+    
+    // 处理景点结果
+    scenicsResults.forEach(item => {
+      results.push({
+        id: item.id,
+        title: item.name, // 景点使用name作为title
+        desc: item.description,
+        image: item.image,
+        type: item.type
+      });
+    });
+    
+    // 处理历史文化结果
+    historyResults.forEach(item => {
+      results.push({
+        id: item.id,
+        title: item.title,
+        desc: item.description,
+        image: item.image,
+        type: item.type
+      });
+    });
+    
+    console.log('搜索关键词:', keyword);
+    console.log('搜索结果数量:', results.length);
+    console.log('搜索结果:', results);
     
     res.json(results);
   } catch (error) {

@@ -27,10 +27,19 @@ Page({
     
     // 调用搜索API
     api.search(keyword).then(results => {
+      // 确保结果格式正确
+      const formattedResults = results.map(item => ({
+        id: item.id,
+        title: item.title || item.name,
+        desc: item.desc,
+        image: item.image,
+        type: item.type
+      }));
+      
       this.setData({
-        searchResults: results,
+        searchResults: formattedResults,
         loading: false,
-        noResults: results.length === 0
+        noResults: formattedResults.length === 0
       });
     }).catch(err => {
       console.error('搜索失败:', err);

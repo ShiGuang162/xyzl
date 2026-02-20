@@ -45,7 +45,7 @@
     >
       <image src="{{item.image}}" class="result-image" />
       <view class="result-info">
-        <view class="result-title">{{item.title}}</view>
+        <view class="result-title">{{item.title || item.name}}</view>
         <view class="result-desc">{{item.desc}}</view>
       </view>
     </view>
