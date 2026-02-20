@@ -76,7 +76,7 @@ Page({
       url: 'http://localhost:3001/api/discussions',
       method: 'GET',
       data: {
-        category: category === 'all' ? 'all' : this.data.categoryTitles[category]
+        category: category
       },
       success: (res) => {
         console.log('获取分类讨论列表成功:', res.data);

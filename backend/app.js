@@ -555,19 +555,32 @@ app.get('/api/discussions', async (req, res) => {
     const { page = 1, limit = 10, category = 'all' } = req.query;
     const offset = (parseInt(page) - 1) * parseInt(limit);
     
+    // 分类映射，将前端发送的分类值映射到数据库中的tag值
+    const categoryMap = {
+      'all': 'all',
+      'strategy': '旅游攻略',
+      'food': '美食推荐',
+      'scenic': '景点讨论',
+      'transport': '交通住宿',
+      'story': '旅行故事',
+      'other': '其他话题'
+    };
+    
+    const actualCategory = categoryMap[category] || 'all';
+    
     let sql = 'SELECT * FROM discussions ORDER BY created_at DESC LIMIT ? OFFSET ?';
     let params = [parseInt(limit), offset];
     
-    if (category !== 'all') {
+    if (actualCategory !== 'all') {
       sql = 'SELECT * FROM discussions WHERE tag = ? ORDER BY created_at DESC LIMIT ? OFFSET ?';
-      params = [category, parseInt(limit), offset];
+      params = [actualCategory, parseInt(limit), offset];
     }
     
     const results = await db.query(sql, params);
     
     // 获取总数用于分页
-    const countSql = category !== 'all' ? 'SELECT COUNT(*) as total FROM discussions WHERE tag = ?' : 'SELECT COUNT(*) as total FROM discussions';
-    const countParams = category !== 'all' ? [category] : [];
+    const countSql = actualCategory !== 'all' ? 'SELECT COUNT(*) as total FROM discussions WHERE tag = ?' : 'SELECT COUNT(*) as total FROM discussions';
+    const countParams = actualCategory !== 'all' ? [actualCategory] : [];
     const countResult = await db.query(countSql, countParams);
     const total = countResult[0].total;
     
