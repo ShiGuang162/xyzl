@@ -133,7 +133,9 @@ Page({
         });
         break;
       case '设置':
-        wx.showToast({ title: '设置功能开发中', icon: 'none' });
+        wx.navigateTo({
+          url: '/pages/settings/settings'
+        });
         break;
       case '我的购买':
         wx.showToast({ title: '我的购买功能开发中', icon: 'none' });

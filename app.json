@@ -10,7 +10,10 @@
     "pages/history/history",
     "pages/strategy/strategy",
     "pages/discussion-detail/discussion-detail",
-    "pages/my-discussions/my-discussions"
+    "pages/my-discussions/my-discussions",
+    "pages/settings/settings",
+    "pages/profile/profile",
+    "pages/change-password/change-password"
   ],
   "window": {
     "backgroundTextStyle": "light",
