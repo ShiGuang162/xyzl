@@ -10,23 +10,22 @@ Page({
     scenics: [],    // 景点列表
     history: [],    // 历史文化列表
     searchKeyword: '', // 搜索关键词
-    // 轮播图数据
     swiperList: [
       {
         id: 1,
-        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beautiful%20scenery%20of%20hometown%2C%20mountains%20and%20rivers%2C%20clear%20sky%2C%20professional%20photography&image_size=landscape_16_9',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beautiful%20Chinese%20hometown%20scenery%2C%20majestic%20mountains%20and%20serene%20rivers%2C%20traditional%20village%20by%20water%2C%20soft%20sky%20blue%20sky%20%230EA5E9%2C%20warm%20sunset%20glow%20%23F97316%2C%20morning%20mist%2C%20professional%20photography%2C%20cinematic%20composition%2C%208K%20quality&image_size=landscape_16_9',
         title: '家乡美景',
         link: '/pages/detail/detail?type=scenic&id=1'
       },
       {
         id: 2,
-        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20village%2C%20ancient%20buildings%2C%20calm%20river%2C%20professional%20photography&image_size=landscape_16_9',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20Chinese%20water%20town%2C%20traditional%20architecture%20with%20black%20tiles%20and%20white%20walls%2C%20stone%20bridges%20over%20canals%2C%20lanterns%20glowing%20warm%20orange%20%23F97316%2C%20reflections%20in%20water%2C%20evening%20atmosphere%2C%20professional%20photography%2C%20cinematic%20lighting&image_size=landscape_16_9',
         title: '古镇风情',
         link: '/pages/detail/detail?type=scenic&id=2'
       },
       {
         id: 3,
-        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20countryside%20scenery%2C%20green%20fields%2C%20blue%20sky%2C%20traditional%20houses%2C%20professional%20photography&image_size=landscape_16_9',
+        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20countryside%20landscape%2C%20lush%20green%20rice%20terraces%2C%20traditional%20farmhouses%20with%20blue%20roofs%20%230EA5E9%2C%20golden%20sunset%20light%20%23F97316%2C%20rolling%20hills%20in%20background%2C%20peaceful%20rural%20scene%2C%20professional%20photography%2C%20vibrant%20colors%2C%20idyllic%20atmosphere&image_size=landscape_16_9',
         title: '田园风光',
         link: '/pages/detail/detail?type=scenic&id=3'
       }
