@@ -453,23 +453,42 @@
         </div>
     </div>
     
-    <script>
+    <script> // v1.1
         // 导航切换
-        document.querySelectorAll('.nav li').forEach(item => {
-            item.addEventListener('click', function() {
-                // 移除所有活动状态
-                document.querySelectorAll('.nav li').forEach(li => li.classList.remove('active'));
-                document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-                
-                // 添加当前活动状态
-                this.classList.add('active');
-                const sectionId = this.dataset.section;
-                document.getElementById(sectionId).classList.add('active');
-                
-                // 加载对应数据
-                loadData(sectionId);
+        function setupNavigation() {
+            console.log('Setting up navigation');
+            const navItems = document.querySelectorAll('.nav li');
+            console.log('Found nav items:', navItems.length);
+            
+            navItems.forEach((item, index) => {
+                console.log('Adding event listener to nav item', index, ':', item.textContent);
+                item.addEventListener('click', function() {
+                    console.log('Nav item clicked:', this.textContent);
+                    // 移除所有活动状态
+                    document.querySelectorAll('.nav li').forEach(li => li.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+                    
+                    // 添加当前活动状态
+                    this.classList.add('active');
+                    const sectionId = this.dataset.section;
+                    console.log('Section ID:', sectionId);
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        console.log('Found section:', sectionId);
+                        section.classList.add('active');
+                        
+                        // 加载对应数据
+                        console.log('Calling loadData for:', sectionId);
+                        loadData(sectionId);
+                    } else {
+                        console.error('Section not found:', sectionId);
+                    }
+                });
             });
-        });
+        }
+        
+        // 初始化导航
+        setupNavigation();
         
         // 模态框操作
         function openModal(modalId) {
@@ -498,13 +517,21 @@
         
         // 加载数据
         function loadData(type) {
+            console.log('Loading data for:', type);
             fetch(`/api/${type}`)
-                .then(response => response.json())
-                .then(data => {
+                .then(response => {
+                    console.log('Response status for', type, ':', response.status);
+                    return response.json();
+                })
+                .then(response => {
+                    console.log('Response data for', type, ':', response);
+                    // 处理后端返回的数据结构
+                    const data = response.data || response;
+                    console.log('Processing data for', type, ':', data);
                     renderTable(type, data);
                 })
                 .catch(error => {
-                    console.error('Error loading data:', error);
+                    console.error('Error loading data for', type, ':', error);
                 });
         }
         
@@ -524,7 +551,7 @@
                             <td>${item.author}</td>
                             <td>${item.views}</td>
                             <td>${item.likes}</td>
-                            <td>${item.createdAt}</td>
+                            <td>${item.created_at || item.createdAt}</td>
                             <td class="actions">
                                 <button class="btn btn-sm btn-primary" onclick="editStrategy(${item.id})">编辑</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteItem('strategies', ${item.id})">删除</button>
@@ -559,10 +586,10 @@
                     case 'collections':
                         row.innerHTML = `
                             <td>${item.id}</td>
-                            <td>${item.userId}</td>
-                            <td>${item.itemType}</td>
+                            <td>${item.user_id || item.userId}</td>
+                            <td>${item.item_type || item.itemType}</td>
                             <td>${item.title}</td>
-                            <td>${item.collectedAt}</td>
+                            <td>${item.created_at || item.collectedAt}</td>
                             <td class="actions">
                                 <button class="btn btn-sm btn-danger" onclick="deleteItem('collections', ${item.id})">删除</button>
                             </td>
@@ -571,13 +598,13 @@
                     case 'comments':
                         row.innerHTML = `
                             <td>${item.id}</td>
-                            <td>${item.userId}</td>
-                            <td>${item.itemType}</td>
-                            <td>${item.itemId}</td>
+                            <td>${item.user_id || item.userId}</td>
+                            <td>${item.item_type || item.itemType}</td>
+                            <td>${item.item_id || item.itemId}</td>
                             <td>${item.content}</td>
-                            <td>${item.author}</td>
-                            <td>${item.likes}</td>
-                            <td>${item.createdAt}</td>
+                            <td>${item.nickname || item.author}</td>
+                            <td>${item.likes || 0}</td>
+                            <td>${item.created_at || item.createdAt}</td>
                             <td class="actions">
                                 <button class="btn btn-sm btn-danger" onclick="deleteItem('comments', ${item.id})">删除</button>
                             </td>
@@ -596,12 +623,12 @@
                 .then(strategy => {
                     document.getElementById('strategyId').value = strategy.id;
                     document.getElementById('strategyTitle').value = strategy.title;
-                    document.getElementById('strategyDesc').value = strategy.desc;
+                    document.getElementById('strategyDesc').value = strategy.description || strategy.desc;
                     document.getElementById('strategyImage').value = strategy.image;
                     document.getElementById('strategyAuthor').value = strategy.author;
-                    document.getElementById('strategyViews').value = strategy.views;
-                    document.getElementById('strategyLikes').value = strategy.likes;
-                    document.getElementById('strategyCreatedAt').value = strategy.createdAt;
+                    document.getElementById('strategyViews').value = strategy.views || 0;
+                    document.getElementById('strategyLikes').value = strategy.likes || 0;
+                    document.getElementById('strategyCreatedAt').value = strategy.created_at || strategy.createdAt || '';
                     openModal('strategyModal');
                 });
         }
@@ -613,11 +640,11 @@
                 .then(scenic => {
                     document.getElementById('scenicId').value = scenic.id;
                     document.getElementById('scenicName').value = scenic.name;
-                    document.getElementById('scenicDesc').value = scenic.desc;
+                    document.getElementById('scenicDesc').value = scenic.description || scenic.desc;
                     document.getElementById('scenicImage').value = scenic.image;
                     document.getElementById('scenicAddress').value = scenic.address;
-                    document.getElementById('scenicRating').value = scenic.rating;
-                    document.getElementById('scenicReviews').value = scenic.reviews;
+                    document.getElementById('scenicRating').value = scenic.rating || 0;
+                    document.getElementById('scenicReviews').value = scenic.reviews || 0;
                     openModal('scenicModal');
                 });
         }
@@ -629,7 +656,7 @@
                 .then(history => {
                     document.getElementById('historyId').value = history.id;
                     document.getElementById('historyTitle').value = history.title;
-                    document.getElementById('historyDesc').value = history.desc;
+                    document.getElementById('historyDesc').value = history.description || history.desc;
                     document.getElementById('historyImage').value = history.image;
                     document.getElementById('historyPeriod').value = history.period;
                     document.getElementById('historyImportance').value = history.importance;
@@ -659,12 +686,9 @@
             const id = document.getElementById('strategyId').value;
             const strategy = {
                 title: document.getElementById('strategyTitle').value,
-                desc: document.getElementById('strategyDesc').value,
+                description: document.getElementById('strategyDesc').value,
                 image: document.getElementById('strategyImage').value,
-                author: document.getElementById('strategyAuthor').value,
-                views: parseInt(document.getElementById('strategyViews').value),
-                likes: parseInt(document.getElementById('strategyLikes').value),
-                createdAt: document.getElementById('strategyCreatedAt').value
+                author: document.getElementById('strategyAuthor').value
             };
             
             const method = id ? 'PUT' : 'POST';
@@ -692,7 +716,7 @@
             const id = document.getElementById('scenicId').value;
             const scenic = {
                 name: document.getElementById('scenicName').value,
-                desc: document.getElementById('scenicDesc').value,
+                description: document.getElementById('scenicDesc').value,
                 image: document.getElementById('scenicImage').value,
                 address: document.getElementById('scenicAddress').value,
                 rating: parseFloat(document.getElementById('scenicRating').value),
@@ -724,7 +748,7 @@
             const id = document.getElementById('historyId').value;
             const history = {
                 title: document.getElementById('historyTitle').value,
-                desc: document.getElementById('historyDesc').value,
+                description: document.getElementById('historyDesc').value,
                 image: document.getElementById('historyImage').value,
                 period: document.getElementById('historyPeriod').value,
                 importance: document.getElementById('historyImportance').value,
@@ -751,7 +775,16 @@
         });
         
         // 初始加载数据
+        console.log('Initial page load');
         loadData('strategies');
+        // 强制加载其他数据
+        setTimeout(() => {
+            console.log('Forcing load of other data types');
+            loadData('scenics');
+            loadData('history');
+            loadData('collections');
+            loadData('comments');
+        }, 1000);
     </script>
 </body>
 </html>

@@ -37,6 +37,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' })); // 增加请求�
 
 // 静态文件服务
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// 根目录静态文件服务，用于提供管理页面
+app.use(express.static(__dirname));
 
 // 请求日志中间件
 app.use(logger.requestLogger);
@@ -413,36 +415,50 @@ app.get('/api/collections', async (req, res) => {
   try {
     const userId = req.query.userId;
     
-    if (!userId) {
-      return res.status(400).json({ error: '缺少用户ID' });
+    let sql, params;
+    if (userId) {
+      // 获取特定用户的收藏
+      sql = `
+        SELECT c.id, c.user_id, c.item_id, c.item_type, s.title, s.description, s.image, s.author, 
+               sc.name as scenic_name, h.title as history_title, c.created_at
+        FROM collections c
+        LEFT JOIN strategies s ON (c.item_type = 'strategy' AND c.item_id = s.id)
+        LEFT JOIN scenics sc ON (c.item_type = 'scenic' AND c.item_id = sc.id)
+        LEFT JOIN history h ON (c.item_type = 'history' AND c.item_id = h.id)
+        WHERE c.user_id = ?
+      `;
+      params = [userId];
+    } else {
+      // 获取所有收藏
+      sql = `
+        SELECT c.id, c.user_id, c.item_id, c.item_type, s.title, s.description, s.image, s.author, 
+               sc.name as scenic_name, h.title as history_title, c.created_at
+        FROM collections c
+        LEFT JOIN strategies s ON (c.item_type = 'strategy' AND c.item_id = s.id)
+        LEFT JOIN scenics sc ON (c.item_type = 'scenic' AND c.item_id = sc.id)
+        LEFT JOIN history h ON (c.item_type = 'history' AND c.item_id = h.id)
+      `;
+      params = [];
     }
     
-    const sql = `
-      SELECT c.id, c.item_id, c.item_type, s.title, s.description, s.image, s.author, 
-             sc.name as scenic_name, h.title as history_title
-      FROM collections c
-      LEFT JOIN strategies s ON (c.item_type = 'strategy' AND c.item_id = s.id)
-      LEFT JOIN scenics sc ON (c.item_type = 'scenic' AND c.item_id = sc.id)
-      LEFT JOIN history h ON (c.item_type = 'history' AND c.item_id = h.id)
-      WHERE c.user_id = ?
-    `;
-    
-    const results = await db.query(sql, [userId]);
+    const results = await db.query(sql, params);
     
     // 格式化结果
     const formattedResults = results.map(item => {
       return {
         id: item.id,
+        user_id: item.user_id,
         item_id: item.item_id,
         item_type: item.item_type,
         title: item.title || item.scenic_name || item.history_title,
         description: item.description,
         image: item.image,
-        author: item.author
+        author: item.author,
+        created_at: item.created_at
       };
     });
     
-    res.json(formattedResults);
+    res.json({ data: formattedResults });
   } catch (error) {
     console.error('获取收藏列表错误:', error);
     res.status(500).json({ error: '获取收藏列表失败' });
@@ -495,21 +511,31 @@ app.get('/api/comments', async (req, res) => {
   try {
     const { itemId, itemType } = req.query;
     
-    if (!itemId || !itemType) {
-      return res.status(400).json({ error: '缺少必要参数' });
+    let sql, params;
+    if (itemId && itemType) {
+      // 获取特定项目的评论
+      sql = `
+        SELECT c.*, u.nickname, u.avatar_url 
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.item_id = ? AND c.item_type = ?
+        ORDER BY c.created_at ASC
+      `;
+      params = [itemId, itemType];
+    } else {
+      // 获取所有评论
+      sql = `
+        SELECT c.*, u.nickname, u.avatar_url 
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        ORDER BY c.created_at ASC
+      `;
+      params = [];
     }
     
-    const sql = `
-      SELECT c.*, u.nickname, u.avatar_url 
-      FROM comments c
-      JOIN users u ON c.user_id = u.id
-      WHERE c.item_id = ? AND c.item_type = ?
-      ORDER BY c.created_at ASC
-    `;
+    const results = await db.query(sql, params);
     
-    const results = await db.query(sql, [itemId, itemType]);
-    
-    res.json(results);
+    res.json({ data: results });
   } catch (error) {
     console.error('获取评论列表错误:', error);
     res.status(500).json({ error: '获取评论列表失败' });
