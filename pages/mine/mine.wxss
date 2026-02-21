@@ -179,4 +179,210 @@ page {
 }
 
 .module-item {
-  display: flex
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+  border: 1rpx solid rgba(37, 99, 235, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.module-item:active {
+  transform: translateY(-4rpx) scale(0.98);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.15);
+}
+
+.module-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-bottom: 16rpx;
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
+  transition: all 0.3s ease;
+}
+
+.module-item:active .module-icon {
+  transform: scale(1.1);
+}
+
+.module-text {
+  font-size: 26rpx;
+  color: #3F3F46;
+  font-weight: 600;
+}
+
+.module-arrow {
+  position: absolute;
+  top: 15rpx;
+  right: 15rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+  color: #2563EB;
+}
+
+/* 模块列表 */
+.module-list {
+  padding: 10rpx 0;
+}
+
+.module-list-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.module-list-item:last-child {
+  border-bottom: none;
+}
+
+.module-list-item:active {
+  background: rgba(37, 99, 235, 0.03);
+}
+
+.module-list-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 24rpx;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  transition: all 0.3s ease;
+}
+
+.module-list-item:active .module-list-icon {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+}
+
+.module-list-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #18181B;
+  font-weight: 500;
+}
+
+.module-list-arrow {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+  background: rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.module-list-item:active .module-list-arrow {
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563EB;
+  transform: translateX(4rpx);
+}
+
+/* 退出登录 */
+.logout-btn {
+  margin: 40rpx 30rpx;
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+  border-radius: 20rpx;
+  padding: 32rpx;
+  text-align: center;
+  font-size: 32rpx;
+  color: #DC2626;
+  font-weight: 700;
+  box-shadow: 0 4rpx 16rpx rgba(220, 38, 38, 0.15);
+  border: 1rpx solid rgba(220, 38, 38, 0.1);
+  transition: all 0.3s ease;
+}
+
+.logout-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(220, 38, 38, 0.1);
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 用户信息区域动画 */
+.user-section {
+  animation: slideDown 0.6s ease;
+}
+
+/* 功能模块动画 */
+.module-section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.module-section:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .user-section {
+    padding: 50rpx 30rpx 40rpx;
+  }
+  
+  .user-avatar {
+    width: 140rpx;
+    height: 140rpx;
+  }
+  
+  .user-name {
+    font-size: 38rpx;
+  }
+  
+  .module-grid {
+    padding: 25rpx 15rpx;
+  }
+  
+  .module-item {
+    padding: 25rpx 15rpx;
+  }
+  
+  .module-icon {
+    width: 70rpx;
+    height: 70rpx;
+    font-size: 36rpx;
+  }
+}
