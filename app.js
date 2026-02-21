@@ -160,6 +160,7 @@ App({
   // 全局数据
   globalData: {
     userInfo: null,
-    token: null
+    token: null,
+    activeTab: null // 用于存储需要切换的tab
   }
 });

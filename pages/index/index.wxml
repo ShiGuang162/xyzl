@@ -97,7 +97,7 @@
     <view wx:if="{{activeTab === '景点'}}" class="content-section fade-in">
       <view class="scenic-list">
         <view wx:for="{{scenics}}" wx:key="id" class="scenic-item" bindtap="clickItem" data-type="scenic" data-id="{{item.id}}">
-          <image src="{{item.image}}" class="scenic-image" />
+          <image src="{{item.image}}" class="scenic-image" mode="aspectFill" />
           <view class="scenic-info">
             <view class="scenic-name">{{item.name}}</view>
             <view class="scenic-desc">{{item.desc}}</view>

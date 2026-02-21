@@ -123,9 +123,12 @@ Page({
         });
         break;
       case '旅行攻略':
-        wx.navigateTo({
-          url: '/pages/strategy/strategy'
+        // 跳转到首页的攻略页面
+        wx.switchTab({
+          url: '/pages/index/index'
         });
+        // 设置全局变量，让首页自动切换到攻略tab
+        getApp().globalData.activeTab = 'strategy';
         break;
       case '我的交流':
         wx.navigateTo({

@@ -1057,6 +1057,8 @@ button:active {
   object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .scenic-item:active .scenic-image {

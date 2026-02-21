@@ -39,6 +39,28 @@ Page({
     // 初始加载推荐内容和数据
     this.loadData();
   },
+
+  onShow: function() {
+    console.log('首页显示');
+    // 检查是否有需要切换的tab
+    const app = getApp();
+    const activeTab = app.globalData.activeTab;
+    if (activeTab) {
+      console.log('需要切换到tab:', activeTab);
+      // 将英文tab名称转换为中文
+      const tabMap = {
+        'recommend': '推荐',
+        'strategy': '攻略',
+        'scenic': '景点',
+        'history': '历史'
+      };
+      const tabName = tabMap[activeTab] || activeTab;
+      // 切换到对应的tab
+      this.switchTab({ currentTarget: { dataset: { tab: tabName } } });
+      // 清除全局变量
+      app.globalData.activeTab = null;
+    }
+  },
   
   // 点击轮播图
   clickSwiper(e) {
