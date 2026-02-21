@@ -7,7 +7,7 @@
       <view class="location-text">{{currentLocation || '获取位置'}}</view>
     </view>
     <view class="search-input-container">
-      <view class="search-icon">🔍</view>
+      <view class="search-icon">🔎</view>
       <input placeholder="查找需要的攻略" class="search-input" bindinput="onSearchInput" bindconfirm="onSearchConfirm" value="{{searchKeyword}}" />
       <view wx:if="searchKeyword" class="clear-icon" bindtap="clearSearch">✕</view>
     </view>

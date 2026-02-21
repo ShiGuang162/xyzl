@@ -101,14 +101,34 @@ page {
 }
 
 .edit-icon {
-  font-size: 28rpx;
-  opacity: 0.7;
-  transition: all 0.3s ease;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: white;
+  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: pencilFloat 2s ease-in-out infinite;
 }
 
-.user-name:active .edit-icon {
-  opacity: 1;
-  transform: scale(1.1);
+@keyframes pencilFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4rpx) rotate(5deg);
+  }
+}
+
+.user-name:active .edit-icon,
+.user-id:active .edit-icon {
+  transform: scale(1.15) rotate(15deg);
+  box-shadow: 0 6rpx 20rpx rgba(59, 130, 246, 0.6);
+  animation: none;
 }
 
 .user-id {
@@ -257,21 +277,45 @@ page {
 }
 
 .module-list-icon {
-  width: 56rpx;
-  height: 56rpx;
-  border-radius: 16rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 18rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32rpx;
   margin-right: 24rpx;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 设置图标 - 灰色渐变 */
+.module-list-item:nth-child(1) .module-list-icon {
+  background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+  color: white;
+}
+
+/* 我的购买图标 - 橙色渐变 */
+.module-list-item:nth-child(2) .module-list-icon {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: white;
+}
+
+/* 客服中心图标 - 绿色渐变 */
+.module-list-item:nth-child(3) .module-list-icon {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: white;
+}
+
+/* 关于我们图标 - 紫色渐变 */
+.module-list-item:nth-child(4) .module-list-icon {
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: white;
 }
 
 .module-list-item:active .module-list-icon {
-  transform: scale(1.1);
-  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
 .module-list-text {

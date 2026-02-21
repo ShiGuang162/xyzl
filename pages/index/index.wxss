@@ -71,9 +71,29 @@
 }
 
 .location-icon {
-  font-size: 36rpx;
-  margin-right: 10rpx;
-  animation: pulse 2s infinite;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  margin-right: 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.4);
+  animation: locationPulse 2s infinite;
+  color: white;
+}
+
+@keyframes locationPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6rpx 20rpx rgba(255, 107, 107, 0.6);
+  }
 }
 
 .location-text {
@@ -106,15 +126,23 @@
 }
 
 .search-icon {
-  font-size: 28rpx;
-  color: var(--text-muted);
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: white;
   margin-right: 12rpx;
-  transition: var(--transition);
+  box-shadow: 0 2rpx 8rpx rgba(78, 205, 196, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-input-container:focus-within .search-icon {
-  color: var(--accent-color);
-  transform: scale(1.1);
+  transform: scale(1.15) rotate(15deg);
+  box-shadow: 0 4rpx 16rpx rgba(78, 205, 196, 0.5);
 }
 
 .search-input {

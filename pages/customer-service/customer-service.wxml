@@ -21,7 +21,7 @@
   <scroll-view class="chat-container" scroll-y="{{true}}" scroll-top="{{scrollTop}}" enhanced="{{true}}" show-scrollbar="{{true}}">
     <!-- 欢迎消息 -->
     <view class="welcome-message" wx:if="{{messages.length === 0}}">
-      <view class="welcome-icon">🤖</view>
+      <view class="welcome-icon">✦</view>
       <view class="welcome-title">您好，我是乡音智旅AI助手</view>
       <view class="welcome-desc">我可以为您解答关于乡音智旅小程序的各种问题，包括：</view>
       <view class="welcome-list">
@@ -40,7 +40,7 @@
       <block wx:for="{{messages}}" wx:key="index">
         <!-- AI消息 -->
         <view class="message-item ai-message" wx:if="{{item.type === 'ai'}}">
-          <view class="avatar ai-avatar">🤖</view>
+          <view class="avatar ai-avatar">✦</view>
           <view class="message-content">
             <view class="message-bubble ai-bubble">
               <text class="message-text">{{item.content}}</text>
@@ -57,13 +57,13 @@
             </view>
             <view class="message-time">{{item.time}}</view>
           </view>
-          <view class="avatar user-avatar">👤</view>
+          <view class="avatar user-avatar">◉</view>
         </view>
       </block>
 
       <!-- 正在输入提示 -->
       <view class="typing-indicator" wx:if="{{isTyping}}">
-        <view class="avatar ai-avatar">🤖</view>
+        <view class="avatar ai-avatar">✦</view>
         <view class="typing-bubble">
           <view class="typing-dots">
             <view class="dot"></view>

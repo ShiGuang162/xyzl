@@ -10,8 +10,8 @@
         </view>
       </view>
       <view class="user-info">
-        <view class="user-name" bindtap="editNickname">{{userInfo.nickname}} <text class="edit-icon">✏️</text></view>
-        <view class="user-id" bindtap="editCity">{{userInfo.city}} <text class="edit-icon">✏️</text></view>
+        <view class="user-name" bindtap="editNickname">{{userInfo.nickname}} <view class="edit-icon">✎</view></view>
+        <view class="user-id" bindtap="editCity">{{userInfo.city}} <view class="edit-icon">✎</view></view>
       </view>
     </block>
     <block wx:else>
@@ -48,24 +48,24 @@
     <view class="module-title">其他功能</view>
     <view class="module-list">
       <view class="module-list-item" bindtap="clickModule" data-id="1" data-text="设置">
-        <view class="module-list-icon">⚙️</view>
+        <view class="module-list-icon">⚙</view>
         <view class="module-list-text">设置</view>
-        <view class="module-list-arrow">＞</view>
+        <view class="module-list-arrow">›</view>
       </view>
       <view class="module-list-item" bindtap="clickModule" data-id="2" data-text="我的购买">
         <view class="module-list-icon">🛒</view>
         <view class="module-list-text">我的购买</view>
-        <view class="module-list-arrow">＞</view>
+        <view class="module-list-arrow">›</view>
       </view>
       <view class="module-list-item" bindtap="clickModule" data-id="3" data-text="客服中心">
-        <view class="module-list-icon">📞</view>
+        <view class="module-list-icon">☎</view>
         <view class="module-list-text">客服中心</view>
-        <view class="module-list-arrow">＞</view>
+        <view class="module-list-arrow">›</view>
       </view>
       <view class="module-list-item" bindtap="clickModule" data-id="4" data-text="关于我们">
-        <view class="module-list-icon">ℹ️</view>
+        <view class="module-list-icon">ⓘ</view>
         <view class="module-list-text">关于我们</view>
-        <view class="module-list-arrow">＞</view>
+        <view class="module-list-arrow">›</view>
       </view>
     </view>
   </view>
