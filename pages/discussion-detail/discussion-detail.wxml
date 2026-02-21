@@ -96,6 +96,9 @@
         <view class="send-btn" bindtap="submitComment">发送</view>
       </view>
     </view>
+    
+    <!-- 内容底部间距 -->
+    <view class="content-spacer"></view>
   </view>
   
   <!-- 无内容状态 -->

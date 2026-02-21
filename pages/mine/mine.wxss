@@ -1,377 +1,182 @@
-/* 个人主页样式 */
-.container {
-  background-color: #f5f5f5;
+/* 个人主页 - 现代优雅风格 */
+page {
+  background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
   min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 用户信息 */
+.container {
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* 用户信息区域 - 深色优雅头部 */
 .user-section {
-  background-color: #2c3e50;
-  padding: 40rpx 30rpx;
+  background: linear-gradient(135deg, #18181B 0%, #27272A 50%, #3F3F46 100%);
+  padding: 60rpx 40rpx 50rpx;
   display: flex;
   align-items: center;
   color: white;
+  border-radius: 0 0 40rpx 40rpx;
+  box-shadow: 0 20rpx 60rpx rgba(24, 24, 27, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300rpx;
+  height: 300rpx;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.user-section::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 200rpx;
+  height: 200rpx;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* 头像容器 */
+.avatar-container {
+  position: relative;
+  margin-right: 35rpx;
+  z-index: 1;
 }
 
 .user-avatar {
-  width: 150rpx;
-  height: 150rpx;
+  width: 160rpx;
+  height: 160rpx;
   border-radius: 50%;
-  border: 3rpx solid white;
-  margin-right: 30rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
+.avatar-container:active .user-avatar {
+  transform: scale(0.95);
+}
+
+.avatar-edit {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(37, 99, 235, 0.4);
+  margin-top: -15rpx;
+}
+
+.avatar-edit-text {
+  font-size: 20rpx;
+  color: white;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 用户信息 */
 .user-info {
   flex: 1;
+  z-index: 1;
 }
 
 .user-name {
-  font-size: 36rpx;
-  font-weight: bold;
-  margin-bottom: 10rpx;
+  font-size: 42rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.2);
+}
+
+.edit-icon {
+  font-size: 28rpx;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.user-name:active .edit-icon {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .user-id {
-  font-size: 28rpx;
+  font-size: 26rpx;
   opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* 功能模块 */
+/* 登录按钮 */
+.login-btn {
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  color: white;
+  border: none;
+  border-radius: 30rpx;
+  padding: 18rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-left: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.login-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(37, 99, 235, 0.3);
+}
+
+/* 功能模块 - 玻璃拟态卡片 */
 .module-section {
-  margin: 20rpx;
-  background-color: white;
-  border-radius: 10rpx;
+  margin: 30rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  animation: fadeInUp 0.5s ease;
 }
 
 .module-title {
   font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-  padding: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  font-weight: 700;
+  color: #18181B;
+  padding: 30rpx;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.module-title::before {
+  content: '';
+  width: 6rpx;
+  height: 32rpx;
+  background: linear-gradient(180deg, #2563EB 0%, #3B82F6 100%);
+  border-radius: 3rpx;
 }
 
 /* 模块网格 */
 .module-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  padding: 20rpx 0;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 30rpx 20rpx;
+  gap: 20rpx;
 }
 
 .module-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20rpx 0;
-  position: relative;
-}
-
-.module-icon {
-  font-size: 48rpx;
-  margin-bottom: 10rpx;
-}
-
-.module-text {
-  font-size: 24rpx;
-  color: #666;
-}
-
-.module-arrow {
-  position: absolute;
-  top: 10rpx;
-  right: 10rpx;
-  font-size: 20rpx;
-  color: #999;
-}
-
-/* 收藏列表 */
-.collection-list {
-  margin-top: 20rpx;
-  padding: 0 20rpx 20rpx;
-}
-
-.collection-item {
-  display: flex;
-  align-items: center;
-  padding: 15rpx;
-  background-color: #f9f9f9;
-  border-radius: 10rpx;
-  margin-bottom: 15rpx;
-  transition: background-color 0.3s ease;
-}
-
-.collection-item:hover {
-  background-color: #f0f0f0;
-}
-
-.collection-image {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 10rpx;
-  margin-right: 20rpx;
-}
-
-.collection-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10rpx;
-}
-
-.collection-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-}
-
-.collection-time {
-  font-size: 22rpx;
-  color: #999;
-}
-
-.collection-action {
-  margin-left: 20rpx;
-}
-
-.cancel-collection {
-  padding: 8rpx 16rpx;
-  background-color: #f5f5f5;
-  border-radius: 15rpx;
-  font-size: 22rpx;
-  color: #e74c3c;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cancel-collection:hover {
-  background-color: #fee5e5;
-  color: #c0392b;
-}
-
-.empty-collection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60rpx 0;
-  background-color: #f9f9f9;
-  border-radius: 10rpx;
-  text-align: center;
-}
-
-.empty-icon {
-  font-size: 64rpx;
-  color: #e74c3c;
-  margin-bottom: 20rpx;
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 10rpx;
-}
-
-.empty-hint {
-  font-size: 22rpx;
-  color: #999;
-  padding: 0 40rpx;
-  line-height: 1.4;
-}
-
-/* 模块列表 */
-.module-list {
-  padding: 10rpx 0;
-}
-
-.module-list-item {
-  display: flex;
-  align-items: center;
-  padding: 25rpx 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.module-list-item:last-child {
-  border-bottom: none;
-}
-
-.module-list-icon {
-  font-size: 36rpx;
-  margin-right: 20rpx;
-}
-
-.module-list-text {
-  flex: 1;
-  font-size: 30rpx;
-  color: #333;
-}
-
-.module-list-arrow {
-  font-size: 30rpx;
-  color: #999;
-}
-
-/* 登录按钮 */
-.login-btn {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 20rpx;
-  padding: 15rpx 30rpx;
-  font-size: 28rpx;
-  font-weight: bold;
-  margin-left: 20rpx;
-}
-
-/* 退出登录 */
-.logout-btn {
-  margin: 30rpx 20rpx;
-  background-color: white;
-  border-radius: 10rpx;
-  padding: 30rpx;
-  text-align: center;
-  font-size: 32rpx;
-  color: #e74c3c;
-  font-weight: bold;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.logout-btn:active {
-  transform: scale(0.98);
-  opacity: 0.8;
-}
-
-/* 登录按钮动画 */
-.login-btn {
-  transition: all 0.3s ease;
-}
-
-.login-btn:active {
-  transform: scale(0.95);
-  opacity: 0.8;
-}
-
-/* 用户信息区域动画 */
-.user-section {
-  animation: slideDown 0.5s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 功能模块动画 */
-.module-section {
-  animation: fadeInUp 0.5s ease;
-  animation-fill-mode: both;
-}
-
-.module-section:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.module-section:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-/* 模块项点击效果 */
-.module-item {
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.module-item:active {
-  transform: scale(0.95);
-  opacity: 0.8;
-}
-
-/* 收藏列表动画 */
-.collection-list {
-  animation: slideDown 0.3s ease;
-  animation-fill-mode: both;
-}
-
-.collection-item {
-  animation: fadeInUp 0.3s ease;
-  animation-fill-mode: both;
-}
-
-.collection-item:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.collection-item:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.collection-item:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-/* 取消收藏按钮动画 */
-.cancel-collection {
-  transition: all 0.3s ease;
-}
-
-.cancel-collection:active {
-  transform: scale(0.9);
-  background-color: #e74c3c;
-  color: white;
-}
-
-/* 空收藏提示动画 */
-.empty-collection {
-  animation: fadeIn 0.5s ease;
-}
-
-/* 滚动动画 */
-.container {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* 加载动画 */
-.loading {
-  display: inline-block;
-  width: 20rpx;
-  height: 20rpx;
-  border: 2rpx solid #f3f3f3;
-  border-top: 2rpx solid #2c3e50;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+  display: flex

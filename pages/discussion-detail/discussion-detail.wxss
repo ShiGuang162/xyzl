@@ -1,76 +1,93 @@
-/* 讨论详情页样式 */
-.container {
-  background-color: #f8f8f8;
+/* 讨论详情页 - 现代Glassmorphism风格 */
+page {
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 50%, #EDE9FE 100%);
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 顶部导航栏 */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 50%, #EDE9FE 100%);
+  padding-bottom: 40rpx;
+}
+
+/* 顶部导航栏 - Glassmorphism风格 */
 .nav-bar {
   position: sticky;
   top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100rpx;
-  padding: 0 20rpx;
-  background-color: white;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  height: 110rpx;
+  padding: 40rpx 30rpx 20rpx;
+  background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 50%, #A78BFA 100%);
+  color: white;
+  box-shadow: 0 10rpx 40rpx rgba(124, 58, 237, 0.3);
   z-index: 100;
+  border-radius: 0 0 30rpx 30rpx;
 }
 
 .nav-back {
-  width: 60rpx;
-  height: 60rpx;
+  width: 70rpx;
+  height: 70rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
 }
 
-.nav-back:hover {
-  background-color: #f0f0f0;
+.nav-back:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
 }
 
 .back-icon {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: white;
 }
 
 .nav-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: white;
   flex: 1;
   text-align: center;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .nav-right {
-  width: 60rpx;
+  width: 70rpx;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
 .share-btn {
-  width: 60rpx;
-  height: 60rpx;
+  width: 70rpx;
+  height: 70rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
 }
 
-.share-btn:hover {
-  background-color: #f0f0f0;
+.share-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
 }
 
 .share-icon {
-  font-size: 28rpx;
-  color: #333;
+  font-size: 32rpx;
+  color: white;
 }
 
 /* 加载状态 */
@@ -83,18 +100,19 @@
 }
 
 .loading-spinner {
-  width: 60rpx;
-  height: 60rpx;
-  border: 6rpx solid #f3f3f3;
-  border-top: 6rpx solid #2c3e50;
+  width: 70rpx;
+  height: 70rpx;
+  border: 6rpx solid rgba(124, 58, 237, 0.1);
+  border-top: 6rpx solid #7C3AED;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 20rpx;
+  margin-bottom: 25rpx;
 }
 
 .loading-text {
   font-size: 28rpx;
-  color: #666;
+  color: #7C3AED;
+  font-weight: 500;
 }
 
 @keyframes spin {
@@ -102,292 +120,15 @@
   100% { transform: rotate(360deg); }
 }
 
-/* 讨论容器 */
+/* 讨论容器 - Glassmorphism卡片 */
 .discussion-container {
-  background-color: white;
-  border-radius: 20rpx;
-  margin: 20rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
-}
-
-/* 讨论头部 */
-.discussion-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.user-avatar {
-  width: 70rpx;
-  height: 70rpx;
-  border-radius: 50%;
-  background-color: #2c3e50;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32rpx;
-  font-weight: bold;
-  margin-right: 20rpx;
-}
-
-.user-meta {
-  flex: 1;
-}
-
-.user-name {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5rpx;
-}
-
-.post-time {
-  font-size: 22rpx;
-  color: #999;
-}
-
-.post-tag {
-  padding: 8rpx 16rpx;
-  border-radius: 20rpx;
-  background-color: #e3f2fd;
-  color: #2196f3;
-  font-size: 22rpx;
-  font-weight: bold;
-}
-
-/* 讨论主体 */
-.discussion-body {
-  padding: 20rpx;
-}
-
-.discussion-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-  line-height: 1.4;
-  margin-bottom: 20rpx;
-}
-
-.discussion-content {
-  font-size: 26rpx;
-  color: #333;
-  line-height: 1.6;
-  margin-bottom: 20rpx;
-  white-space: pre-wrap;
-}
-
-.discussion-image {
-  margin: 20rpx 0;
-  border-radius: 10rpx;
-  overflow: hidden;
-}
-
-.content-image {
-  width: 100%;
-  height: 500rpx;
-  object-fit: cover;
-}
-
-/* 互动数据 */
-.interaction-stats {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 20rpx;
-  border-top: 1rpx solid #f0f0f0;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  padding: 10rpx;
-  border-radius: 10rpx;
-  transition: all 0.3s ease;
-}
-
-.stat-item:hover {
-  background-color: #f9f9f9;
-  transform: scale(1.05);
-}
-
-.stat-icon {
-  font-size: 32rpx;
-  transition: all 0.3s ease;
-}
-
-.stat-icon.liked {
-  transform: scale(1.2);
-}
-
-.stat-text {
-  font-size: 22rpx;
-  color: #666;
-}
-
-/* 评论区域 */
-.comments-section {
-  padding: 20rpx;
-}
-
-.comments-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20rpx;
-}
-
-.comments-title {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333;
-}
-
-.comments-list {
-  margin-bottom: 20rpx;
-}
-
-.no-comments {
-  text-align: center;
-  padding: 40rpx 0;
-  color: #999;
-  font-size: 24rpx;
-}
-
-.comment-item {
-  display: flex;
-  gap: 15rpx;
-  margin-bottom: 20rpx;
-  padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.comment-avatar {
-  width: 50rpx;
-  height: 50rpx;
-  border-radius: 50%;
-  background-color: #2c3e50;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24rpx;
-  font-weight: bold;
-  flex-shrink: 0;
-}
-
-.comment-content {
-  flex: 1;
-}
-
-.comment-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8rpx;
-}
-
-.comment-user {
-  font-size: 24rpx;
-  font-weight: bold;
-  color: #333;
-}
-
-.comment-time {
-  font-size: 20rpx;
-  color: #999;
-}
-
-.comment-text {
-  font-size: 24rpx;
-  color: #333;
-  line-height: 1.4;
-}
-
-/* 评论输入框 */
-.comment-input-section {
-  display: flex;
-  align-items: center;
-  gap: 15rpx;
-  padding: 20rpx 0;
-  border-top: 1rpx solid #f0f0f0;
-  margin-top: 20rpx;
-}
-
-.comment-input {
-  flex: 1;
-  position: relative;
-}
-
-.input-text {
-  width: 100%;
-  padding: 15rpx 20rpx;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx);
   border-radius: 30rpx;
-  background-color: #f0f0f0;
-  border: none;
-  font-size: 24rpx;
-  color: #333;
-}
-
-.send-btn {
-  padding: 15rpx 30rpx;
-  border-radius: 30rpx;
-  background-color: #2c3e50;
-  color: white;
-  font-size: 24rpx;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.send-btn:hover {
-  background-color: #34495e;
-  transform: scale(1.05);
-}
-
-/* 无内容状态 */
-.empty-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 500rpx;
-  background-color: white;
-  margin: 20rpx;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
-}
-
-.empty-icon {
-  font-size: 100rpx;
-  margin-bottom: 20rpx;
-  color: #ccc;
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #999;
-  margin-bottom: 10rpx;
-}
-
-.empty-hint {
-  font-size: 24rpx;
-  color: #ccc;
-}
-
-/* 动画效果 */
-.discussion-container {
+  margin: 30rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(124, 58, 237, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
   animation: fadeIn 0.5s ease;
 }
 
@@ -402,25 +143,409 @@
   }
 }
 
+/* 讨论头部 */
+.discussion-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 35rpx 30rpx 25rpx;
+  border-bottom: 1rpx solid rgba(124, 58, 237, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.user-avatar {
+  width: 90rpx;
+  height: 90rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-right: 25rpx;
+  box-shadow: 0 6rpx 20rpx rgba(124, 58, 237, 0.3);
+}
+
+.user-meta {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #4C1D95;
+  margin-bottom: 8rpx;
+}
+
+.post-time {
+  font-size: 24rpx;
+  color: #8B5CF6;
+}
+
+.post-tag {
+  padding: 12rpx 24rpx;
+  border-radius: 25rpx;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+  color: #7C3AED;
+  font-size: 24rpx;
+  font-weight: 600;
+  border: 1rpx solid rgba(124, 58, 237, 0.2);
+}
+
+/* 讨论主体 */
+.discussion-body {
+  padding: 30rpx;
+}
+
+.discussion-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #1F2937;
+  line-height: 1.4;
+  margin-bottom: 25rpx;
+}
+
+.discussion-content {
+  font-size: 30rpx;
+  color: #4B5563;
+  line-height: 1.8;
+  margin-bottom: 30rpx;
+  white-space: pre-wrap;
+}
+
+.discussion-image {
+  margin: 30rpx 0;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.content-image {
+  width: 100%;
+  height: 450rpx;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.content-image:active {
+  transform: scale(1.02);
+}
+
+/* 互动数据 - Glassmorphism */
+.interaction-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 30rpx;
+  margin: 0 30rpx 30rpx;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10rpx);
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 16rpx rgba(124, 58, 237, 0.08);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 40rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.stat-item:active {
+  background: rgba(124, 58, 237, 0.1);
+  transform: scale(0.98);
+}
+
+.stat-icon {
+  font-size: 44rpx;
+  transition: all 0.3s ease;
+}
+
+.stat-icon.liked {
+  transform: scale(1.2);
+  animation: heartBeat 0.5s ease;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.2); }
+  100% { transform: scale(1.2); }
+}
+
+.stat-text {
+  font-size: 26rpx;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+/* 评论区域 - Glassmorphism */
+.comments-section {
+  margin: 0 30rpx 30rpx;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx);
+  border-radius: 30rpx;
+  padding: 35rpx 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(124, 58, 237, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid rgba(124, 58, 237, 0.1);
+}
+
+.comments-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #4C1D95;
+}
+
+.comments-list {
+  margin-bottom: 30rpx;
+}
+
+.no-comments {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #8B5CF6;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.no-comments-text {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+  padding: 40rpx;
+  border-radius: 20rpx;
+  border: 1rpx dashed rgba(124, 58, 237, 0.2);
+}
+
+.comment-item {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid rgba(124, 58, 237, 0.08);
+  animation: slideUp 0.4s ease;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.comment-avatar {
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #A78BFA 0%, #C4B5FD 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(167, 139, 250, 0.3);
+}
+
+.comment-content {
+  flex: 1;
+  background: rgba(124, 58, 237, 0.03);
+  padding: 20rpx 25rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(124, 58, 237, 0.08);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.comment-user {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #4C1D95;
+}
+
+.comment-time {
+  font-size: 22rpx;
+  color: #8B5CF6;
+}
+
+.comment-text {
+  font-size: 28rpx;
+  color: #4B5563;
+  line-height: 1.6;
+}
+
+/* 评论输入框 - Glassmorphism固定底部 */
+.comment-input-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 25rpx 30rpx;
+  padding-bottom: calc(25rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(124, 58, 237, 0.1);
+  box-shadow: 0 -4rpx 20rpx rgba(124, 58, 237, 0.08);
+  z-index: 100;
+}
+
+.comment-input {
+  flex: 1;
+  position: relative;
+}
+
+.input-text {
+  width: 100%;
+  padding: 22rpx 30rpx;
+  border-radius: 35rpx;
+  background: rgba(124, 58, 237, 0.08);
+  border: 2rpx solid rgba(124, 58, 237, 0.15);
+  font-size: 28rpx;
+  color: #1F2937;
+  transition: all 0.3s ease;
+}
+
+.input-text:focus {
+  outline: none;
+  border-color: #7C3AED;
+  background: rgba(124, 58, 237, 0.05);
+  box-shadow: 0 0 0 4rpx rgba(124, 58, 237, 0.1);
+}
+
+.input-text::placeholder {
+  color: #8B5CF6;
+}
+
+.send-btn {
+  padding: 22rpx 45rpx;
+  border-radius: 35rpx;
+  background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%);
+  color: white;
+  font-size: 28rpx;
+  font-weight: 700;
+  box-shadow: 0 4rpx 16rpx rgba(124, 58, 237, 0.3);
+  transition: all 0.3s ease;
+}
+
+.send-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(124, 58, 237, 0.2);
+}
+
+/* 无内容状态 - Glassmorphism */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500rpx;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx);
+  margin: 30rpx;
+  border-radius: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(124, 58, 237, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+}
+
+.empty-icon {
+  width: 150rpx;
+  height: 150rpx;
+  margin-bottom: 35rpx;
+  background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80rpx;
+  box-shadow: 0 10rpx 30rpx rgba(124, 58, 237, 0.3);
+}
+
+.empty-text {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #4C1D95;
+  margin-bottom: 15rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #8B5CF6;
+}
+
+/* 内容底部间距（为固定输入框留空间） */
+.content-spacer {
+  height: 140rpx;
+}
+
 /* 响应式设计 */
 @media (max-width: 750rpx) {
   .discussion-title {
-    font-size: 28rpx;
+    font-size: 32rpx;
   }
   
   .discussion-content {
-    font-size: 24rpx;
+    font-size: 26rpx;
   }
   
   .content-image {
-    height: 300rpx;
+    height: 350rpx;
   }
   
   .stat-icon {
-    font-size: 28rpx;
+    font-size: 38rpx;
   }
   
   .comment-text {
-    font-size: 22rpx;
+    font-size: 26rpx;
+  }
+  
+  .user-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    font-size: 32rpx;
+  }
+  
+  .comment-avatar {
+    width: 60rpx;
+    height: 60rpx;
+    font-size: 24rpx;
   }
 }
