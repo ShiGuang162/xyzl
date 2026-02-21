@@ -738,48 +738,104 @@ button:active {
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 10rpx;
   transition: var(--transition);
-  padding: 6rpx 12rpx;
-  border-radius: 16rpx;
-  background: rgba(247, 250, 252, 0.6);
+  padding: 10rpx 18rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.8) 100%);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
 }
 
 .recommend-view:active,
 .recommend-like:active,
 .recommend-rating:active,
 .recommend-reviews:active {
-  background: rgba(66, 153, 225, 0.1);
-  transform: scale(0.96);
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
+/* 浏览图标 */
 .recommend-view::before {
-  content: '👁️';
-  font-size: 22rpx;
+  content: '👁';
+  font-size: 26rpx;
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2rpx 6rpx rgba(102, 126, 234, 0.3);
+  animation: pulse-blue 2s infinite;
 }
 
+/* 点赞图标 */
 .recommend-like::before {
-  content: '❤️';
-  font-size: 22rpx;
-  animation: heartbeat 2s infinite;
+  content: '♥';
+  font-size: 26rpx;
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 2rpx 6rpx rgba(245, 87, 108, 0.3);
+  animation: heartbeat 1.5s infinite;
 }
 
+/* 评分图标 */
 .recommend-rating::before {
-  content: '⭐';
-  font-size: 22rpx;
+  content: '★';
+  font-size: 26rpx;
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b731 0%, #f5af19 100%);
+  box-shadow: 0 2rpx 6rpx rgba(247, 183, 49, 0.3);
 }
 
+/* 评论图标 */
 .recommend-reviews::before {
-  content: '💬';
-  font-size: 22rpx;
+  content: '✉';
+  font-size: 26rpx;
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 2rpx 6rpx rgba(79, 172, 254, 0.3);
 }
 
 @keyframes heartbeat {
   0%, 100% {
     transform: scale(1);
   }
+  25% {
+    transform: scale(1.15);
+  }
   50% {
+    transform: scale(1);
+  }
+  75% {
     transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-blue {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
   }
 }
 
@@ -912,28 +968,47 @@ button:active {
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 10rpx;
   transition: var(--transition);
-  padding: 6rpx 12rpx;
-  border-radius: 16rpx;
-  background: rgba(247, 250, 252, 0.6);
+  padding: 10rpx 18rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.8) 100%);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
 }
 
 .strategy-view::before {
-  content: '👁️';
-  font-size: 22rpx;
+  content: '👁';
+  font-size: 26rpx;
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2rpx 6rpx rgba(102, 126, 234, 0.3);
+  animation: pulse-blue 2s infinite;
 }
 
 .strategy-like::before {
-  content: '❤️';
-  font-size: 22rpx;
-  animation: heartbeat 2s infinite;
+  content: '♥';
+  font-size: 26rpx;
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 2rpx 6rpx rgba(245, 87, 108, 0.3);
+  animation: heartbeat 1.5s infinite;
 }
 
 .strategy-view:active,
 .strategy-like:active {
-  background: rgba(66, 153, 225, 0.1);
-  transform: scale(0.96);
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 景点内容 */
@@ -1069,27 +1144,45 @@ button:active {
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 10rpx;
   transition: var(--transition);
-  padding: 6rpx 12rpx;
-  border-radius: 16rpx;
-  background: rgba(247, 250, 252, 0.6);
+  padding: 8rpx 14rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.8) 100%);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
 }
 
 .scenic-rating::before {
-  content: '⭐';
-  font-size: 20rpx;
+  content: '★';
+  font-size: 22rpx;
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b731 0%, #f5af19 100%);
+  box-shadow: 0 2rpx 6rpx rgba(247, 183, 49, 0.3);
 }
 
 .scenic-reviews::before {
-  content: '💬';
-  font-size: 20rpx;
+  content: '✉';
+  font-size: 22rpx;
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 2rpx 6rpx rgba(79, 172, 254, 0.3);
 }
 
 .scenic-rating:active,
 .scenic-reviews:active {
-  background: rgba(66, 153, 225, 0.1);
-  transform: scale(0.96);
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 历史内容 */
