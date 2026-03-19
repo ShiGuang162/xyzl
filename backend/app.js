@@ -5,6 +5,7 @@ const logger = require('./utils/logger');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const tts = require('./utils/tts');
 require('dotenv').config();
 
 // 创建上传目录
@@ -34,6 +35,26 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json({ limit: '10mb' })); // 增加请求体大小限制
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // 增加请求体大小限制
+
+// 安全头
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
+// 健康检查端点
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    service: 'xyzl-backend'
+  });
+});
 
 // 静态文件服务
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -1172,6 +1193,56 @@ app.post('/api/users/update', async (req, res) => {
   } catch (error) {
     logger.error('更新用户信息错误:', error);
     res.status(500).json({ error: '更新用户信息失败' });
+  }
+});
+
+// API 接口 - 生成语音
+app.post('/api/tts/generate', async (req, res) => {
+  try {
+    const { text, dialect, id, type } = req.body;
+    
+    if (!text || !dialect || !id || !type) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 生成语音文件
+    const audioPath = await tts.generateSpeech(text, dialect, id, type);
+    
+    if (!audioPath) {
+      return res.status(500).json({ error: '语音合成失败' });
+    }
+    
+    res.json({ success: true, audioUrl: `http://localhost:3001${audioPath}` });
+  } catch (error) {
+    console.error('生成语音错误:', error);
+    res.status(500).json({ error: '生成语音失败' });
+  }
+});
+
+// API 接口 - 获取语音状态
+app.get('/api/tts/status', async (req, res) => {
+  try {
+    const { id, dialect, type } = req.query;
+    
+    if (!id || !dialect || !type) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 检查语音文件是否存在
+    const exists = tts.checkSpeechFile(id, dialect, type);
+    
+    if (exists) {
+      const audioPath = tts.getSpeechFilePath(id, dialect, type);
+      res.json({ 
+        exists: true, 
+        audioUrl: `http://localhost:3001${audioPath}` 
+      });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error('获取语音状态错误:', error);
+    res.status(500).json({ error: '获取语音状态失败' });
   }
 });
 

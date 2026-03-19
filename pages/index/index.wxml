@@ -43,7 +43,7 @@
     <view wx:if="{{activeTab === '推荐'}}" class="content-section fade-in">
       <view class="recommend-list">
         <view wx:for="{{strategies}}" wx:key="id" class="recommend-item" bindtap="clickItem" data-type="strategy" data-id="{{item.id}}">
-          <image src="{{item.image}}" class="recommend-image" />
+          <image src="{{item.image}}" class="recommend-image" mode="aspectFill" />
           <view class="recommend-info">
             <view class="recommend-title">{{item.title}}</view>
             <view class="recommend-desc">{{item.desc}}</view>
@@ -57,7 +57,7 @@
           </view>
         </view>
         <view wx:for="{{scenics}}" wx:key="id" class="recommend-item" bindtap="clickItem" data-type="scenic" data-id="{{item.id}}">
-          <image src="{{item.image}}" class="recommend-image" />
+          <image src="{{item.image}}" class="recommend-image" mode="aspectFill" />
           <view class="recommend-info">
             <view class="recommend-title">{{item.name}}</view>
             <view class="recommend-desc">{{item.desc}}</view>
