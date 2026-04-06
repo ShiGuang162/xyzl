@@ -5,7 +5,6 @@ const logger = require('./utils/logger');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const tts = require('./utils/tts');
 require('dotenv').config();
 
 // 创建上传目录
@@ -35,26 +34,6 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json({ limit: '10mb' })); // 增加请求体大小限制
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // 增加请求体大小限制
-
-// 安全头
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  if (process.env.NODE_ENV === 'production') {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  }
-  next();
-});
-
-// 健康检查端点
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    service: 'xyzl-backend'
-  });
-});
 
 // 静态文件服务
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -631,22 +610,29 @@ app.get('/api/discussions', async (req, res) => {
     const countResult = await db.query(countSql, countParams);
     const total = countResult[0].total;
     
-    // 格式化结果
-    const formattedResults = results.map(item => ({
-      id: item.id,
-      title: item.title,
-      content: item.content,
-      tag: item.tag,
-      image: item.image,
-      time: item.created_at,
-      user: {
-        name: item.user_name,
-        avatar: item.user_avatar
-      },
-      likes: item.likes,
-      comments: item.comments,
-      views: item.views
-    }));
+    // 格式化结果并过滤无效图片
+    const formattedResults = results.map(item => {
+      let validImage = item.image;
+      // 过滤无效的临时图片地址
+      if (validImage && (validImage.startsWith('http://tmp/') || validImage.startsWith('tmp/'))) {
+        validImage = null;
+      }
+      return {
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        tag: item.tag,
+        image: validImage,
+        time: item.created_at,
+        user: {
+          name: item.user_name,
+          avatar: item.user_avatar
+        },
+        likes: item.likes,
+        comments: item.comments,
+        views: item.views
+      };
+    });
     
     res.json({
       data: formattedResults,
@@ -673,13 +659,19 @@ app.post('/api/discussions', async (req, res) => {
       return res.status(400).json({ error: '缺少必要参数' });
     }
     
+    // 过滤无效的临时图片地址
+    let validImage = image;
+    if (validImage && (validImage.startsWith('http://tmp/') || validImage.startsWith('tmp/'))) {
+      validImage = null;
+    }
+    
     // 插入讨论数据
     const sql = `
       INSERT INTO discussions (title, content, tag, user_id, user_name, user_avatar, image, likes, comments, views, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, 0, NOW(), NOW())
     `;
     
-    const params = [title, content, tag, user_id, user_name, user_avatar, image || null];
+    const params = [title, content, tag, user_id, user_name, user_avatar, validImage];
     const result = await db.query(sql, params);
     
     // 获取刚插入的讨论
@@ -723,22 +715,29 @@ app.get('/api/discussions/user', async (req, res) => {
     const sql = 'SELECT * FROM discussions WHERE user_id = ? ORDER BY created_at DESC';
     const results = await db.query(sql, [user_id]);
     
-    // 格式化结果
-    const formattedResults = results.map(item => ({
-      id: item.id,
-      title: item.title,
-      content: item.content,
-      tag: item.tag,
-      image: item.image,
-      time: item.created_at,
-      user: {
-        name: item.user_name,
-        avatar: item.user_avatar
-      },
-      likes: item.likes,
-      comments: item.comments,
-      views: item.views
-    }));
+    // 格式化结果并过滤无效图片
+    const formattedResults = results.map(item => {
+      let validImage = item.image;
+      // 过滤无效的临时图片地址
+      if (validImage && (validImage.startsWith('http://tmp/') || validImage.startsWith('tmp/'))) {
+        validImage = null;
+      }
+      return {
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        tag: item.tag,
+        image: validImage,
+        time: item.created_at,
+        user: {
+          name: item.user_name,
+          avatar: item.user_avatar
+        },
+        likes: item.likes,
+        comments: item.comments,
+        views: item.views
+      };
+    });
     
     res.json({
       data: formattedResults,
@@ -773,13 +772,19 @@ app.get('/api/discussions/:id', async (req, res) => {
     // 增加浏览量
     await db.query('UPDATE discussions SET views = views + 1 WHERE id = ?', [id]);
     
-    // 格式化结果
+    // 格式化结果并过滤无效图片
+    let validImage = discussion.image;
+    // 过滤无效的临时图片地址
+    if (validImage && (validImage.startsWith('http://tmp/') || validImage.startsWith('tmp/'))) {
+      validImage = null;
+    }
+    
     const formattedDiscussion = {
       id: discussion.id,
       title: discussion.title,
       content: discussion.content,
       tag: discussion.tag,
-      image: discussion.image,
+      image: validImage,
       time: discussion.created_at,
       user: {
         name: discussion.user_name,
@@ -1193,56 +1198,6 @@ app.post('/api/users/update', async (req, res) => {
   } catch (error) {
     logger.error('更新用户信息错误:', error);
     res.status(500).json({ error: '更新用户信息失败' });
-  }
-});
-
-// API 接口 - 生成语音
-app.post('/api/tts/generate', async (req, res) => {
-  try {
-    const { text, dialect, id, type } = req.body;
-    
-    if (!text || !dialect || !id || !type) {
-      return res.status(400).json({ error: '缺少必要参数' });
-    }
-    
-    // 生成语音文件
-    const audioPath = await tts.generateSpeech(text, dialect, id, type);
-    
-    if (!audioPath) {
-      return res.status(500).json({ error: '语音合成失败' });
-    }
-    
-    res.json({ success: true, audioUrl: `http://localhost:3001${audioPath}` });
-  } catch (error) {
-    console.error('生成语音错误:', error);
-    res.status(500).json({ error: '生成语音失败' });
-  }
-});
-
-// API 接口 - 获取语音状态
-app.get('/api/tts/status', async (req, res) => {
-  try {
-    const { id, dialect, type } = req.query;
-    
-    if (!id || !dialect || !type) {
-      return res.status(400).json({ error: '缺少必要参数' });
-    }
-    
-    // 检查语音文件是否存在
-    const exists = tts.checkSpeechFile(id, dialect, type);
-    
-    if (exists) {
-      const audioPath = tts.getSpeechFilePath(id, dialect, type);
-      res.json({ 
-        exists: true, 
-        audioUrl: `http://localhost:3001${audioPath}` 
-      });
-    } else {
-      res.json({ exists: false });
-    }
-  } catch (error) {
-    console.error('获取语音状态错误:', error);
-    res.status(500).json({ error: '获取语音状态失败' });
   }
 });
 

@@ -1,725 +1,342 @@
-# 乡音智旅小程序部署指南
+# 微信小程序部署指南
 
-## 项目结构
+本指南将帮助您将微信小程序项目部署到生产环境，使用自己的服务器和域名。
+
+## 部署架构
 
 ```
-xyzl/
-├── backend/              # 后端服务
-│   ├── app.js           # Express服务器
-│   ├── package.json     # 后端依赖
-│   ├── config/          # 配置文件
-│   ├── utils/           # 工具函数
-│   ├── uploads/         # 上传文件目录
-│   └── Dockerfile       # Docker配置
-├── pages/               # 小程序页面
-├── utils/               # 小程序工具
-├── app.json             # 小程序配置
-├── package.json         # 根目录依赖
-├── docker-compose.yml   # Docker Compose配置
-└── DEPLOYMENT.md        # 本文件
+用户 → 微信小程序 → Nginx (80/443端口) → Node.js后端 (3001端口) → MySQL数据库
 ```
 
-## 云端服务器部署
+## 前提条件
 
-### 前置准备
+1. **服务器要求**：
+   - Linux 服务器（推荐 Ubuntu 20.04+ 或 CentOS 7+）
+   - 至少 2GB 内存
+   - 20GB 磁盘空间
+   - 公网 IP 地址
 
-1. **购买云服务器**
-   - 推荐配置：2核4GB以上，40GB SSD
-   - 操作系统：Ubuntu 20.04/22.04 LTS 或 CentOS 7/8
-   - 带宽：3Mbps以上
+2. **域名和证书**：
+   - 已备案的域名（国内服务器需要）
+   - SSL 证书（可使用 Let's Encrypt 免费证书）
 
-2. **购买域名**
-   - 在阿里云、腾讯云等平台购买域名
-   - 完成域名实名认证
+3. **微信小程序配置**：
+   - 微信小程序 AppID
+   - 服务器域名已在微信公众平台配置
 
-3. **配置安全组/防火墙**
-   - 开放端口：22 (SSH)、80 (HTTP)、443 (HTTPS)
-   - 限制SSH访问IP（可选但推荐）
+## 步骤 1: 服务器准备
 
-### 服务器初始化
-
-```bash
-# 1. 登录服务器
-ssh root@your-server-ip
-
-# 2. 更新系统
-apt update && apt upgrade -y  # Ubuntu
-# 或
-yum update -y  # CentOS
-
-# 3. 安装基本工具
-apt install -y curl wget git vim ufw  # Ubuntu
-# 或
-yum install -y curl wget git vim firewalld  # CentOS
-
-# 4. 创建普通用户（安全考虑）
-adduser deploy
-usermod -aG sudo deploy
-```
-
-### 方式一：使用Docker Compose部署（推荐）
-
-#### 1. 安装Docker和Docker Compose
+### 1.1 安装 Docker 和 Docker Compose
 
 ```bash
 # Ubuntu/Debian
-curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
+apt update
+apt install -y docker.io docker-compose
 
-# 安装Docker Compose
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# CentOS
+yum install -y docker docker-compose
 
-# 启动Docker服务
+# 启动 Docker
 systemctl start docker
 systemctl enable docker
-
-# 验证安装
-docker --version
-docker-compose --version
 ```
 
-#### 2. 上传项目代码
+### 1.2 配置域名解析
+
+将您的域名解析到服务器 IP 地址：
+- 记录类型：A
+- 主机记录：@ 或 api
+- 记录值：您的服务器 IP
+
+## 步骤 2: 上传项目代码
+
+### 2.1 在本地打包项目
 
 ```bash
-# 在本地执行
-# 方式1：使用Git（推荐）
-git clone your-repo-url
+# 进入项目目录
+cd /Users/shiguang/Desktop/xyzl
+
+# 压缩项目（排除不需要的文件）
+zip -r xyzl-deploy.zip . -x "node_modules/*" ".git/*" ".DS_Store"
+```
+
+### 2.2 上传到服务器
+
+```bash
+# 使用 SCP 上传
+scp xyzl-deploy.zip root@your-server-ip:/opt/
+
+# 登录服务器
+ssh root@your-server-ip
+
+# 解压
+cd /opt/
+unzip xyzl-deploy.zip -d xyzl/
 cd xyzl
-
-# 方式2：使用SCP上传
-scp -r xyzl root@your-server-ip:/opt/
 ```
 
-#### 3. 配置环境变量
+## 步骤 3: 配置环境变量
+
+创建 `.env` 文件：
 
 ```bash
-cd /opt/xyzl
-
-# 创建.env文件
-cat > backend/.env << EOF
-DB_HOST=mysql
+# 创建环境变量文件
+cat > .env << EOF
+# 数据库配置
 DB_USER=root
-DB_PASSWORD=your_strong_password
+DB_PASSWORD=YourStrongPassword123
 DB_NAME=xyzl_db
-DB_PORT=3306
+
+# 后端配置
 PORT=3001
 NODE_ENV=production
 EOF
 ```
 
-#### 4. 启动服务
+**注意**：请将 `YourStrongPassword123` 替换为强密码。
+
+## 步骤 4: 配置 Nginx
+
+### 4.1 修改 nginx.conf
+
+编辑 `nginx.conf` 文件，将 `your-domain.com` 替换为您的实际域名：
 
 ```bash
-# 首次启动（构建镜像）
-docker-compose up -d --build
+sed -i 's/your-domain.com/api.yourdomain.com/g' nginx.conf
+```
 
-# 后续启动
+### 4.2 配置 SSL 证书（可选但推荐）
+
+使用 Let's Encrypt 获取免费 SSL 证书：
+
+```bash
+# 安装 Certbot
+apt install -y certbot
+
+# 获取证书
+certbot certonly --standalone -d api.yourdomain.com
+
+# 创建 SSL 目录
+mkdir -p ssl
+
+# 复制证书
+cp /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem ssl/
+cp /etc/letsencrypt/live/api.yourdomain.com/privkey.pem ssl/
+```
+
+### 4.3 更新 nginx.conf 支持 HTTPS
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name api.yourdomain.com;
+
+    ssl_certificate /etc/nginx/ssl/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
+    ssl_prefer_server_ciphers off;
+
+    # ... 其他配置保持不变
+}
+
+# HTTP 重定向到 HTTPS
+server {
+    listen 80;
+    server_name api.yourdomain.com;
+    return 301 https://$server_name$request_uri;
+}
+```
+
+## 步骤 5: 启动服务
+
+### 5.1 构建并启动
+
+```bash
+# 构建并启动所有服务
 docker-compose up -d
-
-# 查看日志
-docker-compose logs -f
 
 # 查看服务状态
 docker-compose ps
 
-# 停止服务
-docker-compose down
-
-# 停止并删除数据卷（谨慎使用）
-docker-compose down -v
-```
-
-#### 5. 初始化数据库（首次部署）
-
-```bash
-# 进入后端容器
-docker-compose exec backend sh
-
-# 初始化数据库
-node init-db.js
-
-# 退出容器
-exit
-```
-
-### 方式二：传统部署（PM2 + Nginx）
-
-#### 1. 安装Node.js
-
-```bash
-# 使用NVM安装（推荐）
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.bashrc
-nvm install 18
-nvm use 18
-
-# 验证安装
-node --version
-npm --version
-```
-
-#### 2. 安装MySQL
-
-```bash
-# Ubuntu
-apt install -y mysql-server
-
-# CentOS
-yum install -y mysql-server
-
-# 启动MySQL
-systemctl start mysql
-systemctl enable mysql
-
-# 安全配置
-mysql_secure_installation
-```
-
-#### 3. 创建数据库和用户
-
-```bash
-# 登录MySQL
-mysql -u root -p
-
-# 创建数据库
-CREATE DATABASE xyzl_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-# 创建用户
-CREATE USER 'xyzl_user'@'localhost' IDENTIFIED BY 'your_strong_password';
-
-# 授权
-GRANT ALL PRIVILEGES ON xyzl_db.* TO 'xyzl_user'@'localhost';
-FLUSH PRIVILEGES;
-
-EXIT;
-```
-
-#### 4. 部署后端代码
-
-```bash
-# 创建应用目录
-mkdir -p /opt/xyzl
-cd /opt/xyzl
-
-# 上传代码（使用git或scp）
-git clone your-repo-url .
-
-# 安装依赖
-cd backend
-npm install --production
-
-# 配置环境变量
-cp .env.example .env
-vim .env
-```
-
-#### 5. 初始化数据库
-
-```bash
-node init-db.js
-```
-
-#### 6. 使用PM2管理进程
-
-```bash
-# 全局安装PM2
-npm install -g pm2
-
-# 启动应用
-pm2 start app.js --name xyzl-backend
-
-# 设置开机自启
-pm2 startup
-pm2 save
-
-# 常用命令
-pm2 status              # 查看状态
-pm2 logs xyzl-backend   # 查看日志
-pm2 restart xyzl-backend # 重启
-pm2 stop xyzl-backend    # 停止
-pm2 delete xyzl-backend  # 删除
-```
-
-### 配置Nginx反向代理
-
-#### 1. 安装Nginx
-
-```bash
-# Ubuntu
-apt install -y nginx
-
-# CentOS
-yum install -y nginx
-
-# 启动Nginx
-systemctl start nginx
-systemctl enable nginx
-```
-
-#### 2. 配置Nginx
-
-```bash
-# 创建配置文件
-vim /etc/nginx/sites-available/xyzl
-
-# 或
-vim /etc/nginx/conf.d/xyzl.conf
-```
-
-添加以下配置：
-
-```nginx
-upstream xyzl_backend {
-    server 127.0.0.1:3001;
-    keepalive 32;
-}
-
-server {
-    listen 80;
-    server_name your-domain.com www.your-domain.com;
-
-    # 重定向到HTTPS
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com www.your-domain.com;
-
-    # SSL证书配置（使用Let's Encrypt）
-    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
-
-    # 日志
-    access_log /var/log/nginx/xyzl_access.log;
-    error_log /var/log/nginx/xyzl_error.log;
-
-    # 客户端上传大小限制
-    client_max_body_size 20M;
-
-    # API代理
-    location /api {
-        proxy_pass http://xyzl_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
-    }
-
-    # 上传文件
-    location /uploads {
-        proxy_pass http://xyzl_backend;
-        expires 30d;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # 安全头
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-}
-```
-
-#### 3. 启用配置
-
-```bash
-# Ubuntu/Debian
-ln -s /etc/nginx/sites-available/xyzl /etc/nginx/sites-enabled/
-rm -f /etc/nginx/sites-enabled/default
-
-# 测试配置
-nginx -t
-
-# 重启Nginx
-systemctl reload nginx
-```
-
-### 申请SSL证书（Let's Encrypt）
-
-```bash
-# 安装Certbot
-apt install -y certbot python3-certbot-nginx  # Ubuntu
-# 或
-yum install -y certbot python3-certbot-nginx  # CentOS
-
-# 申请证书（自动配置Nginx）
-certbot --nginx -d your-domain.com -d www.your-domain.com
-
-# 自动续期
-certbot renew --dry-run
-
-# Certbot会自动添加定时任务进行续期
-```
-
-### 配置域名解析
-
-1. 登录域名管理控制台
-2. 添加DNS记录：
-   - A记录：`@` → 服务器IP
-   - A记录：`www` → 服务器IP
-   - CNAME记录（可选）：`*` → your-domain.com
-
-### 配置微信小程序服务器域名
-
-1. 登录[微信公众平台](https://mp.weixin.qq.com/)
-2. 进入「开发」→「开发管理」→「开发设置」
-3. 配置服务器域名：
-   - request合法域名：`https://your-domain.com`
-   - uploadFile合法域名：`https://your-domain.com`
-   - downloadFile合法域名：`https://your-domain.com`
-
-### 修改前端API地址
-
-编辑 `utils/api.js`：
-
-```javascript
-const baseURL = 'https://your-domain.com/api';
-```
-
-### 云服务商特定配置
-
-#### 阿里云ECS
-
-```bash
-# 配置安全组（阿里云控制台）
-# 入方向：
-# - SSH (22)
-# - HTTP (80)
-# - HTTPS (443)
-
-# 使用阿里云RDS（推荐）
-# 修改.env中的DB_HOST为RDS地址
-```
-
-#### 腾讯云CVM
-
-```bash
-# 配置安全组（腾讯云控制台）
-# 入站规则：
-# - SSH (22)
-# - HTTP (80)
-# - HTTPS (443)
-
-# 使用腾讯云MySQL（推荐）
-# 修改.env中的DB_HOST为云数据库地址
-```
-
-#### 华为云ECS
-
-```bash
-# 配置安全组（华为云控制台）
-# 入方向规则：
-# - SSH (22)
-# - HTTP (80)
-# - HTTPS (443)
-
-# 使用华为云RDS（推荐）
-# 修改.env中的DB_HOST为RDS地址
-```
-
-## 后端部署（本地开发）
-
-### 1. 环境要求
-
-- Node.js >= 16.x
-- MySQL >= 5.7
-- npm 或 yarn
-
-### 2. 安装依赖
-
-```bash
-cd backend
-npm install
-```
-
-### 3. 配置环境变量
-
-复制 `.env.example` 为 `.env` 并配置：
-
-```bash
-cp .env.example .env
-# 编辑 .env 文件，填入正确的配置
-```
-
-必要配置：
-- `DB_HOST`: 数据库主机
-- `DB_USER`: 数据库用户名
-- `DB_PASSWORD`: 数据库密码
-- `DB_NAME`: 数据库名
-- `PORT`: 服务端口
-
-### 4. 初始化数据库
-
-```bash
-# 确保MySQL服务正在运行
-node init-db.js
-```
-
-### 5. 启动服务
-
-```bash
-# 开发模式（使用nodemon）
-npm run dev
-
-# 生产模式
-npm start
-```
-
-### 6. 使用PM2部署（推荐生产环境）
-
-```bash
-# 全局安装PM2
-npm install -g pm2
-
-# 启动服务
-cd backend
-pm2 start app.js --name xyzl-backend
-
-# 查看状态
-pm2 status
-
 # 查看日志
-pm2 logs xyzl-backend
-
-# 重启服务
-pm2 restart xyzl-backend
-
-# 停止服务
-pm2 stop xyzl-backend
-
-# 设置开机自启
-pm2 startup
-pm2 save
+docker-compose logs -f
 ```
 
-## 前端部署（微信小程序）
+### 5.2 初始化数据库
 
-### 1. 修改API地址
+```bash
+# 进入 MySQL 容器
+docker exec -it xyzl-mysql mysql -u root -p
 
-编辑 `utils/api.js`，将 `baseURL` 修改为生产环境地址：
+# 在 MySQL 中执行
+USE xyzl_db;
+SHOW TABLES;
+```
+
+## 步骤 6: 配置微信小程序
+
+### 6.1 登录微信公众平台
+
+访问 [微信公众平台](https://mp.weixin.qq.com/)，登录您的小程序账号。
+
+### 6.2 配置服务器域名
+
+进入「开发」→「开发管理」→「开发设置」→「服务器域名」：
+
+**request 合法域名**：
+```
+https://api.yourdomain.com
+```
+
+**uploadFile 合法域名**（如果有上传功能）：
+```
+https://api.yourdomain.com
+```
+
+**downloadFile 合法域名**（如果有下载功能）：
+```
+https://api.yourdomain.com
+```
+
+### 6.3 配置业务域名（可选）
+
+如果需要使用 web-view 组件，需要配置业务域名。
+
+## 步骤 7: 修改小程序前端代码
+
+### 7.1 更新 API 基础地址
+
+在小程序代码中，将 API 地址修改为您的域名：
 
 ```javascript
-const baseURL = 'https://your-domain.com/api';
+// utils/api.js 或 app.js
+const API_BASE_URL = 'https://api.yourdomain.com';
 ```
 
-### 2. 配置服务器域名
+### 7.2 检查所有接口调用
 
-在微信小程序后台配置：
-1. 登录 [微信公众平台](https://mp.weixin.qq.com/)
-2. 进入「开发」→「开发管理」→「开发设置」
-3. 配置服务器域名：
-   - request合法域名：`https://your-domain.com`
-   - uploadFile合法域名：`https://your-domain.com`
-   - downloadFile合法域名：`https://your-domain.com`
+确保所有接口调用都使用完整的 URL：
 
-### 3. 上传代码
+```javascript
+// 正确
+wx.request({
+  url: 'https://api.yourdomain.com/api/scenics',
+  // ...
+});
 
-1. 打开微信开发者工具
-2. 点击「上传」按钮
-3. 填写版本号和项目备注
-4. 在微信公众平台提交审核
-5. 审核通过后发布
-
-## 数据库安全
-
-### 1. 创建专用数据库用户
-
-```sql
-CREATE USER 'xyzl_user'@'localhost' IDENTIFIED BY 'strong_password';
-GRANT ALL PRIVILEGES ON xyzl_db.* TO 'xyzl_user'@'localhost';
-FLUSH PRIVILEGES;
+// 错误（使用 localhost）
+wx.request({
+  url: 'http://localhost:3001/api/scenics',
+  // ...
+});
 ```
 
-### 2. 更新.env配置
+## 步骤 8: 上传小程序代码
 
-```env
-DB_USER=xyzl_user
-DB_PASSWORD=strong_password
-```
+### 8.1 在微信开发者工具中
 
-## Nginx反向代理配置（可选）
+1. 点击「上传」按钮
+2. 填写版本号和项目备注
+3. 等待上传完成
 
-如果使用Nginx，添加以下配置：
+### 8.2 在公众平台提交审核
 
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+1. 登录微信公众平台
+2. 进入「版本管理」
+3. 找到刚才上传的版本，点击「提交审核」
+4. 填写审核信息，提交审核
 
-    # 重定向到HTTPS（推荐）
-    return 301 https://$server_name$request_uri;
-}
+### 8.3 审核通过后发布
 
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com;
+审核通过后，点击「发布」即可上线。
 
-    # SSL证书配置
-    ssl_certificate /path/to/cert.pem;
-    ssl_certificate_key /path/to/key.pem;
+## 常见问题排查
 
-    # 前端静态文件（如果有）
-    location / {
-        root /path/to/frontend;
-        try_files $uri $uri/ /index.html;
-    }
-
-    # 后端API代理
-    location /api {
-        proxy_pass http://localhost:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # 上传文件
-    location /uploads {
-        proxy_pass http://localhost:3001;
-        expires 30d;
-        add_header Cache-Control "public, immutable";
-    }
-}
-```
-
-## 防火墙配置
-
-确保服务器防火墙开放必要端口：
+### 1. 服务启动失败
 
 ```bash
-# Ubuntu/Debian
-sudo ufw allow 22/tcp    # SSH
-sudo ufw allow 80/tcp    # HTTP
-sudo ufw allow 443/tcp   # HTTPS
-sudo ufw enable
-
-# CentOS/RHEL
-sudo firewall-cmd --permanent --add-service=ssh
-sudo firewall-cmd --permanent --add-service=http
-sudo firewall-cmd --permanent --add-service=https
-sudo firewall-cmd --reload
-```
-
-## 备份策略
-
-### 1. 数据库备份
-
-创建备份脚本 `backup-db.sh`：
-
-```bash
-#!/bin/bash
-BACKUP_DIR="/path/to/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-mysqldump -u xyzl_user -p'password' xyzl_db | gzip > $BACKUP_DIR/xyzl_db_$DATE.sql.gz
-find $BACKUP_DIR -name "xyzl_db_*.sql.gz" -mtime +7 -delete
-```
-
-设置定时任务：
-
-```bash
-crontab -e
-# 每天凌晨2点备份
-0 2 * * * /path/to/backup-db.sh
-```
-
-### 2. 上传文件备份
-
-```bash
-#!/bin/bash
-BACKUP_DIR="/path/to/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-tar -czf $BACKUP_DIR/uploads_$DATE.tar.gz /path/to/backend/uploads
-find $BACKUP_DIR -name "uploads_*.tar.gz" -mtime +7 -delete
-```
-
-## 监控和日志
-
-### 1. PM2监控
-
-```bash
-pm2 monit
-```
-
-### 2. 日志轮转
-
-配置logrotate：
-
-```
-/path/to/backend/logs/*.log {
-    daily
-    rotate 7
-    compress
-    delaycompress
-    missingok
-    notifempty
-    create 0644 www-data www-data
-}
-```
-
-## 安全检查清单
-
-- [ ] 环境变量已正确配置且不提交到代码库
-- [ ] 数据库使用专用用户，权限最小化
-- [ ] 使用HTTPS，配置SSL证书
-- [ ] 定期备份数据库和上传文件
-- [ ] 防火墙正确配置
-- [ ] 定期更新依赖包
-- [ ] 配置日志监控和告警
-- [ ] 小程序服务器域名已配置
-- [ ] 敏感数据已加密存储
-- [ ] API接口有适当的认证和授权
-
-## 常见问题
-
-### 1. 端口被占用
-
-```bash
-# 查找占用端口的进程
-lsof -i :3001
-# 或
-netstat -tulpn | grep 3001
-
-# 杀死进程
-kill -9 <PID>
+# 查看详细日志
+docker-compose logs backend
+docker-compose logs mysql
+docker-compose logs nginx
 ```
 
 ### 2. 数据库连接失败
 
-- 检查MySQL服务是否运行
-- 确认.env配置正确
-- 检查防火墙设置
-- 验证数据库用户权限
+```bash
+# 检查 MySQL 是否运行
+docker ps | grep mysql
 
-### 3. 上传文件大小限制
-
-在Nginx配置中添加：
-
-```nginx
-client_max_body_size 20M;
+# 进入 MySQL 容器检查
+docker exec -it xyzl-mysql mysql -u root -p
 ```
 
-在Express中配置：
+### 3. 接口访问 502 错误
 
-```javascript
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ limit: '20mb', extended: true }));
+```bash
+# 检查后端服务是否运行
+docker ps | grep backend
+
+# 查看后端日志
+docker logs xyzl-backend
 ```
 
-## 联系方式
+### 4. 小程序无法访问接口
 
-如有问题，请参考项目README.md或联系开发团队。
+- 检查域名是否已配置在微信公众平台
+- 确认使用 HTTPS 协议
+- 检查 SSL 证书是否有效
+
+### 5. 跨域问题
+
+已在 `nginx.conf` 中配置 CORS，如果仍有问题，检查：
+- Nginx 配置是否生效：`docker exec xyzl-nginx nginx -t`
+- 重启 Nginx：`docker-compose restart nginx`
+
+## 维护命令
+
+```bash
+# 查看所有容器状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+
+# 重启服务
+docker-compose restart
+
+# 停止服务
+docker-compose down
+
+# 更新代码后重新构建
+docker-compose down
+docker-compose up -d --build
+
+# 备份数据库
+docker exec xyzl-mysql mysqldump -u root -p xyzl_db > backup.sql
+
+# 恢复数据库
+docker exec -i xyzl-mysql mysql -u root -p xyzl_db < backup.sql
+```
+
+## 安全建议
+
+1. **修改默认密码**：不要使用默认的数据库密码
+2. **定期更新**：定期更新 Docker 镜像和系统补丁
+3. **防火墙配置**：只开放必要的端口（80、443、22）
+4. **日志监控**：定期检查日志文件，发现异常及时处理
+5. **SSL 证书**：使用 HTTPS，定期更新 SSL 证书
+
+## 性能优化
+
+1. **启用 Gzip**：已在 Nginx 配置中启用
+2. **数据库优化**：根据实际数据量调整 MySQL 配置
+3. **缓存策略**：对静态资源启用浏览器缓存
+4. **CDN 加速**：如果用户分布广泛，可以考虑使用 CDN
+
+---
+
+**部署完成！** 您的小程序现在应该可以通过自己的服务器正常运行了。
+
+如有问题，请检查日志或参考常见问题排查部分。

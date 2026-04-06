@@ -82,9 +82,25 @@ Page({
     
     // 同时获取攻略、景点和历史数据
     Promise.all([api.getStrategies(), api.getScenics(), api.getHistory()]).then(([strategiesResponse, scenicsResponse, historyResponse]) => {
-      const strategies = strategiesResponse.data || strategiesResponse;
-      const scenics = scenicsResponse.data || scenicsResponse;
-      const history = historyResponse.data || historyResponse;
+      const strategiesData = strategiesResponse.data || strategiesResponse;
+      const scenicsData = scenicsResponse.data || scenicsResponse;
+      const historyData = historyResponse.data || historyResponse;
+      
+      // 处理数据字段映射
+      const strategies = strategiesData.map(item => ({
+        ...item,
+        desc: item.description || item.desc
+      }));
+      
+      const scenics = scenicsData.map(item => ({
+        ...item,
+        desc: item.description || item.desc
+      }));
+      
+      const history = historyData.map(item => ({
+        ...item,
+        desc: item.description || item.desc
+      }));
       
       this.setData({ 
         strategies,
@@ -125,8 +141,19 @@ Page({
       case '推荐':
         // 加载推荐数据（可以结合攻略和景点数据）
         Promise.all([api.getStrategies(), api.getScenics()]).then(([strategiesResponse, scenicsResponse]) => {
-          const strategies = strategiesResponse.data || strategiesResponse;
-          const scenics = scenicsResponse.data || scenicsResponse;
+          const strategiesData = strategiesResponse.data || strategiesResponse;
+          const scenicsData = scenicsResponse.data || scenicsResponse;
+          
+          const strategies = strategiesData.map(item => ({
+            ...item,
+            desc: item.description || item.desc
+          }));
+          
+          const scenics = scenicsData.map(item => ({
+            ...item,
+            desc: item.description || item.desc
+          }));
+          
           that.setData({ 
             strategies,
             scenics,
@@ -140,7 +167,11 @@ Page({
       case '攻略':
         // 加载攻略数据
         api.getStrategies().then(strategiesResponse => {
-          const strategies = strategiesResponse.data || strategiesResponse;
+          const strategiesData = strategiesResponse.data || strategiesResponse;
+          const strategies = strategiesData.map(item => ({
+            ...item,
+            desc: item.description || item.desc
+          }));
           that.setData({ 
             strategies,
             loading: false 
@@ -153,7 +184,11 @@ Page({
       case '景点':
         // 加载景点数据
         api.getScenics().then(scenicsResponse => {
-          const scenics = scenicsResponse.data || scenicsResponse;
+          const scenicsData = scenicsResponse.data || scenicsResponse;
+          const scenics = scenicsData.map(item => ({
+            ...item,
+            desc: item.description || item.desc
+          }));
           that.setData({ 
             scenics,
             loading: false 
@@ -166,7 +201,11 @@ Page({
       case '历史':
         // 加载历史数据
         api.getHistory().then(historyResponse => {
-          const history = historyResponse.data || historyResponse;
+          const historyData = historyResponse.data || historyResponse;
+          const history = historyData.map(item => ({
+            ...item,
+            desc: item.description || item.desc
+          }));
           that.setData({ 
             history,
             loading: false 

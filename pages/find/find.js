@@ -76,17 +76,37 @@ Page({
       method: 'GET',
       success: (res) => {
         console.log('获取讨论列表成功:', res.data);
+        let discussions = [];
+        
+        // 处理不同的数据格式
         if (res.data && res.data.data) {
-          // 格式化时间
-          const formattedDiscussions = res.data.data.map(item => ({
-            ...item,
-            time: this.formatTime(item.time)
-          }));
+          discussions = res.data.data;
+        } else if (res.data && Array.isArray(res.data)) {
+          discussions = res.data;
+        }
+        
+        if (discussions.length > 0) {
+          // 格式化时间和验证图片
+          const formattedDiscussions = discussions.map(item => {
+            let validImage = item.image;
+            // 过滤无效的临时图片地址
+            if (validImage && (validImage.startsWith('http://tmp/') || validImage.startsWith('tmp/'))) {
+              validImage = '';
+            }
+            return {
+              ...item,
+              image: validImage,
+              time: this.formatTime(item.time || item.created_at)
+            };
+          });
           this.setData({ discussionList: formattedDiscussions });
+        } else {
+          this.setData({ discussionList: [] });
         }
       },
       fail: (err) => {
         console.error('获取讨论列表失败:', err);
+        this.setData({ discussionList: [] });
       },
       complete: () => {
         this.setData({ loading: false });
@@ -113,17 +133,37 @@ Page({
       },
       success: (res) => {
         console.log('获取分类讨论列表成功:', res.data);
+        let discussions = [];
+        
+        // 处理不同的数据格式
         if (res.data && res.data.data) {
-          // 格式化时间
-          const formattedDiscussions = res.data.data.map(item => ({
-            ...item,
-            time: this.formatTime(item.time)
-          }));
+          discussions = res.data.data;
+        } else if (res.data && Array.isArray(res.data)) {
+          discussions = res.data;
+        }
+        
+        if (discussions.length > 0) {
+          // 格式化时间和验证图片
+          const formattedDiscussions = discussions.map(item => {
+            let validImage = item.image;
+            // 过滤无效的临时图片地址
+            if (validImage && (validImage.startsWith('http://tmp/') || validImage.startsWith('tmp/'))) {
+              validImage = '';
+            }
+            return {
+              ...item,
+              image: validImage,
+              time: this.formatTime(item.time || item.created_at)
+            };
+          });
           this.setData({ discussionList: formattedDiscussions });
+        } else {
+          this.setData({ discussionList: [] });
         }
       },
       fail: (err) => {
         console.error('获取分类讨论列表失败:', err);
+        this.setData({ discussionList: [] });
       },
       complete: () => {
         this.setData({ loading: false });

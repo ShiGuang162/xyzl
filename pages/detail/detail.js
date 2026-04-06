@@ -18,7 +18,7 @@ Page({
     isPlaying: false,
     progress: 0,
     currentTime: '00:00',
-    totalTime: '00:10',
+    totalTime: '05:00',
     selectedDialect: '普通话',
     // 支持的方言列表
     dialects: ['普通话', '北京话', '上海话', '广东话', '四川话', '东北话']
@@ -30,7 +30,6 @@ Page({
       type: options.type,
       id: options.id
     });
-    
     this.loadDetail(options.type, options.id);
   },
 
@@ -67,9 +66,6 @@ Page({
       method: 'GET',
       success: (res) => {
         console.log('获取详情数据成功:', res.data);
-        console.log('原始 images 字段:', res.data.images);
-        console.log('原始 image 字段:', res.data.image);
-        console.log('数据类型:', type);
         let detail = res.data;
         
         // 处理数据格式，确保与前端期望的格式一致
@@ -84,8 +80,7 @@ Page({
             likes: detail.likes || 0,
             comments: detail.comments || 0,
             content: (detail.content || detail.description || '暂无内容').replace(/\n/g, '\n\n'),
-            // 处理图片数据：优先使用images字段，如果不存在则使用image字段创建数组
-            images: this.processImages(detail),
+            images: detail.images ? JSON.parse(detail.images) : [],
             tags: detail.tags ? detail.tags.split(',').map(tag => tag.trim()) : []
           };
         } else if (type === 'scenic') {
@@ -102,8 +97,7 @@ Page({
             likes: detail.likes || 0,
             comments: detail.comments || 0,
             content: (detail.content || detail.description || '暂无内容').replace(/\n/g, '\n\n'),
-            // 处理图片数据：优先使用images字段，如果不存在则使用image字段创建数组
-            images: this.processImages(detail),
+            images: detail.images ? JSON.parse(detail.images) : [],
             tags: detail.tags ? detail.tags.split(',').map(tag => tag.trim()) : []
           };
         } else if (type === 'history') {
@@ -117,16 +111,10 @@ Page({
             likes: detail.likes || 0,
             comments: detail.comments || 0,
             content: (detail.content || detail.description || '暂无内容').replace(/\n/g, '\n\n'),
-            // 处理图片数据：优先使用images字段，如果不存在则使用image字段创建数组
-            images: this.processImages(detail),
+            images: detail.images ? JSON.parse(detail.images) : [],
             tags: detail.tags ? detail.tags.split(',').map(tag => tag.trim()) : []
           };
         }
-        
-        console.log('处理后的detail对象:', detail);
-        console.log('处理后的images字段:', detail.images);
-        console.log('images字段类型:', typeof detail.images);
-        console.log('images数组长度:', detail.images ? detail.images.length : 0);
         
         this.setData({ detail: detail, loading: false });
 
@@ -495,6 +483,7 @@ Page({
         const selectedDialect = that.data.dialects[res.tapIndex];
         that.setData({ selectedDialect });
         wx.showToast({ title: `已切换到${selectedDialect}`, icon: 'success' });
+        // 这里可以根据选择的方言加载对应的音频文件
       },
       fail(res) {
         console.log(res.errMsg);
@@ -504,95 +493,29 @@ Page({
 
   // 切换播放/暂停状态
   togglePlay() {
-    const { isPlaying, selectedDialect, detail } = this.data;
+    const isPlaying = !this.data.isPlaying;
+    this.setData({ isPlaying });
     
     if (isPlaying) {
-      // 暂停播放
-      this.stopSpeech();
+      // 模拟开始播放
+      wx.showToast({ title: `开始${this.data.selectedDialect}讲解`, icon: 'none' });
+      // 开始更新进度
+      this.startProgressUpdate();
+    } else {
+      // 模拟暂停播放
       wx.showToast({ title: '已暂停', icon: 'none' });
-    } else {
-      if (detail) {
-        // 准备合成的文本
-        const text = `${detail.title}。${detail.content.replace(/\n/g, '。')}`;
-        // 使用微信内置的语音合成功能
-        this.playSpeech(text, selectedDialect);
-      }
-    }
-  },
-  
-  // 使用微信内置的语音合成功能
-  playSpeech(text, dialect) {
-    wx.showToast({ title: `开始${dialect}讲解`, icon: 'none' });
-    
-    // 开始播放
-    this.setData({ isPlaying: true });
-    
-    // 计算预计播放时间（假设每秒播放5个汉字）
-    const textLength = text.length;
-    const estimatedTime = Math.max(10, Math.ceil(textLength / 5));
-    this.setData({ totalTime: `00:${estimatedTime.toString().padStart(2, '0')}` });
-    
-    // 模拟语音播放进度
-    this.startProgressUpdate(estimatedTime);
-    
-    // 检查微信语音合成功能是否可用
-    if (wx.speechSynthesis && wx.speechSynthesis.speak) {
-      // 使用微信的语音合成功能
-      wx.speechSynthesis.speak({
-        text: text,
-        lang: 'zh_CN',
-        rate: 1.0,
-        pitch: 1.0,
-        volume: 1.0,
-        success: () => {
-          console.log('语音播放成功');
-        },
-        fail: (res) => {
-          console.error('语音播放失败:', res);
-          this.setData({ isPlaying: false });
-          this.stopProgressUpdate();
-          wx.showToast({ title: '语音播放失败', icon: 'none' });
-        }
-      });
-    } else {
-      // 语音合成功能不可用，显示提示
-      console.warn('语音合成功能不可用');
-      wx.showToast({ title: '语音合成功能不可用，请在真机上测试', icon: 'none' });
-    }
-    
-    // 根据文本长度设置播放结束时间
-    setTimeout(() => {
-      // 停止语音播放
-      if (wx.speechSynthesis && wx.speechSynthesis.stop) {
-        wx.speechSynthesis.stop();
-      }
-      this.setData({ 
-        isPlaying: false, 
-        progress: 0, 
-        currentTime: '00:00' 
-      });
+      // 停止更新进度
       this.stopProgressUpdate();
-      wx.showToast({ title: '播放结束', icon: 'none' });
-    }, estimatedTime * 1000);
-  },
-  
-  // 停止语音播放
-  stopSpeech() {
-    // 停止微信语音合成
-    if (wx.speechSynthesis && wx.speechSynthesis.stop) {
-      wx.speechSynthesis.stop();
     }
-    this.setData({ isPlaying: false });
-    this.stopProgressUpdate();
   },
-  
+
   // 开始更新播放进度
-  startProgressUpdate(totalSeconds) {
+  startProgressUpdate() {
     this.progressTimer = setInterval(() => {
-      const progress = this.data.progress + (100 / totalSeconds / 10);
+      const progress = this.data.progress + 1;
       if (progress <= 100) {
         // 计算当前时间
-        const currentSeconds = Math.floor((progress / 100) * totalSeconds);
+        const currentSeconds = Math.floor((progress / 100) * 300); // 假设总时长5分钟
         const minutes = Math.floor(currentSeconds / 60);
         const seconds = currentSeconds % 60;
         const currentTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -609,8 +532,9 @@ Page({
           currentTime: '00:00' 
         });
         this.stopProgressUpdate();
+        wx.showToast({ title: '播放结束', icon: 'none' });
       }
-    }, 100); // 每100毫秒更新一次进度
+    }, 3000); // 每3秒更新一次进度
   },
 
   // 停止更新播放进度
@@ -620,62 +544,7 @@ Page({
       this.progressTimer = null;
     }
   },
-  
-  // 处理图片数据：优先使用本地的image字段，如果不存在则使用images字段
-  processImages(detail) {
-    try {
-      console.log('processImages开始处理:', { 
-        hasImage: !!detail.image, 
-        hasImages: !!detail.images,
-        image: detail.image,
-        images: detail.images 
-      });
-      
-      // 优先使用本地的image字段（通常是可访问的本地图片）
-      if (detail.image) {
-        console.log('使用本地image字段:', detail.image);
-        return [detail.image];
-      }
-      
-      // 如果本地image字段不存在，尝试使用images字段
-      if (detail.images) {
-        console.log('尝试使用images字段:', detail.images);
-        // 如果images是字符串，尝试解析为JSON数组
-        if (typeof detail.images === 'string') {
-          try {
-            const parsedImages = JSON.parse(detail.images);
-            if (Array.isArray(parsedImages) && parsedImages.length > 0) {
-              console.log('成功解析images字段为JSON数组:', parsedImages.length, '个图片');
-              return parsedImages;
-            }
-          } catch (parseError) {
-            console.warn('无法解析images字段为JSON:', parseError);
-            // 如果解析失败，检查是否是逗号分隔的字符串
-            if (detail.images.includes(',')) {
-              const images = detail.images.split(',').map(img => img.trim()).filter(img => img);
-              console.log('将逗号分隔的字符串转换为数组:', images.length, '个图片');
-              return images;
-            }
-            // 如果只有一个URL字符串，返回数组
-            console.log('images字段是单个URL字符串');
-            return [detail.images];
-          }
-        } else if (Array.isArray(detail.images)) {
-          // 如果已经是数组，直接返回
-          console.log('images字段已经是数组:', detail.images.length, '个图片');
-          return detail.images;
-        }
-      }
-      
-      // 如果都没有，返回空数组
-      console.log('没有找到可用的图片字段');
-      return [];
-    } catch (error) {
-      console.error('处理图片数据时出错:', error);
-      return [];
-    }
-  },
-  
+
   // 页面卸载时清理定时器
   onUnload() {
     this.stopProgressUpdate();
