@@ -1,0 +1,111 @@
+<!-- 产品详情页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="navigateBack">
+      <view class="back-icon">←</view>
+    </view>
+    <view class="nav-title">产品详情</view>
+    <view class="nav-share" bindtap="onShareAppMessage">
+      <view class="share-icon">📤</view>
+    </view>
+  </view>
+
+  <!-- 产品图片 -->
+  <view class="product-images">
+    <scroll-view scroll-x="true" class="image-scroll">
+      <view class="image-container">
+        <image src="{{product && product.image}}" mode="aspectFill"></image>
+      </view>
+      <view wx:for="{{product && product.images}}" wx:key="index" class="image-container">
+        <image src="{{item}}" mode="aspectFill"></image>
+      </view>
+    </scroll-view>
+    <view class="image-indicators">
+      <view 
+        wx:for="{{product && product.images ? product.images.length + 1 : 1}}" 
+        wx:key="index"
+        class="indicator {{selectedImage === index ? 'active' : ''}}"
+        bindtap="switchImage"
+        data-index="{{index}}"
+      ></view>
+    </view>
+  </view>
+
+  <!-- 产品信息 -->
+  <view class="product-info">
+    <view class="product-name">{{product && product.name}}</view>
+    <view class="product-price">¥{{product && product.price}}</view>
+    <view class="product-stats">
+      <view class="stat-item">
+        <view class="stat-icon">📊</view>
+        <view class="stat-text">{{product && product.sales}} 已售</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon">⭐</view>
+        <view class="stat-text">{{product && product.rating}}分</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon">💬</view>
+        <view class="stat-text">{{product && product.review_count}}评价</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon">📦</view>
+        <view class="stat-text">库存{{product && product.stock}}</view>
+      </view>
+    </view>
+    <view class="product-badges">
+      <view wx:if="{{product && product.is_hot}}" class="badge hot">热门</view>
+      <view wx:if="{{product && product.is_new}}" class="badge new">新品</view>
+    </view>
+  </view>
+
+  <!-- 产品描述 -->
+  <view class="product-description">
+    <view class="section-title">产品描述</view>
+    <view class="description-content">{{product && product.description}}</view>
+  </view>
+
+  <!-- 产品评价 -->
+  <view class="product-reviews">
+    <view class="section-title">用户评价</view>
+    <view wx:if="{{reviews.length === 0}}" class="no-reviews">
+      <view class="no-reviews-icon">💭</view>
+      <view class="no-reviews-text">暂无评价</view>
+    </view>
+    <view wx:for="{{reviews}}" wx:key="id" class="review-item">
+      <view class="review-header">
+        <view class="review-user">{{user_name}}</view>
+        <view class="review-rating">
+          <view wx:for="{{5}}" wx:key="index" class="star {{index < rating ? 'active' : ''}}">★</view>
+        </view>
+      </view>
+      <view class="review-content">{{content}}</view>
+      <view class="review-time">{{created_at}}</view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="quantity-control">
+      <view class="quantity-btn" bindtap="decreaseQuantity">-</view>
+      <view class="quantity">{{quantity}}</view>
+      <view class="quantity-btn" bindtap="increaseQuantity">+</view>
+    </view>
+    <view class="action-buttons">
+      <view class="add-to-cart" bindtap="addToCart">
+        <view class="cart-icon">🛒</view>
+        <view class="cart-text">加入购物车</view>
+      </view>
+      <view class="buy-now" bindtap="buyNow">
+        立即购买
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载提示 -->
+  <view wx:if="{{loading}}" class="loading">
+    <view class="loading-icon">⏳</view>
+    <view class="loading-text">加载中...</view>
+  </view>
+</view>

@@ -203,7 +203,7 @@
   color: #333;
 }
 
-.dialect-selector {
+.voice-settings-btn {
   display: flex;
   align-items: center;
   gap: 8rpx;
@@ -215,20 +215,136 @@
   transition: all 0.3s ease;
 }
 
-.dialect-selector:hover {
+.voice-settings-btn:hover {
   background-color: #f0f0f0;
   transform: scale(1.05);
 }
 
-.dialect-text {
+.voice-settings-text {
   font-size: 22rpx;
   font-weight: bold;
   color: #2196f3;
 }
 
-.dialect-icon {
-  font-size: 16rpx;
+.voice-settings-icon {
+  font-size: 24rpx;
+}
+
+/* 语音设置面板 */
+.voice-settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.voice-settings-panel {
+  background-color: white;
+  width: 100%;
+  max-height: 80vh;
+  border-radius: 30rpx 30rpx 0 0;
+  padding: 30rpx;
+  animation: slideUp 0.3s ease;
+  overflow-y: auto;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.settings-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.settings-close {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #999;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+}
+
+.settings-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.option-item {
+  padding: 15rpx 30rpx;
+  border-radius: 30rpx;
+  background-color: #f5f5f5;
   color: #666;
+  font-size: 24rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2rpx solid transparent;
+}
+
+.option-item:active {
+  transform: scale(0.95);
+}
+
+.option-item.active {
+  background-color: #2196f3;
+  color: white;
+  border-color: #2196f3;
+}
+
+.settings-footer {
+  margin-top: 40rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 25rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 28rpx;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 50rpx;
+  box-shadow: 0 4rpx 15rpx rgba(102, 126, 234, 0.4);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .audio-controls {

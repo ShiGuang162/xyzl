@@ -42,9 +42,9 @@
       <view class="audio-player">
         <view class="audio-header">
           <view class="audio-title">语音讲解</view>
-          <view class="dialect-selector" bindtap="showDialectDialog">
-            <view class="dialect-text">{{selectedDialect}}</view>
-            <view class="dialect-icon">▼</view>
+          <view class="voice-settings-btn" bindtap="showVoiceSettings">
+            <view class="voice-settings-text">{{selectedDialect}} · {{selectedVoice}}</view>
+            <view class="voice-settings-icon">⚙️</view>
           </view>
         </view>
         <view class="audio-controls">
@@ -56,6 +56,68 @@
               <view class="progress-fill" style="width: {{progress}}%"></view>
             </view>
             <view class="progress-time">{{currentTime}} / {{totalTime}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 语音设置面板 -->
+      <view wx:if="{{showVoiceSettings}}" class="voice-settings-overlay" bindtap="hideVoiceSettings">
+        <view class="voice-settings-panel" catchtap="stopPropagation">
+          <view class="settings-header">
+            <view class="settings-title">语音设置</view>
+            <view class="settings-close" bindtap="hideVoiceSettings">✕</view>
+          </view>
+          
+          <!-- 方言选择 -->
+          <view class="settings-section">
+            <view class="section-title">方言选择</view>
+            <view class="options-grid">
+              <view wx:for="{{dialects}}" wx:key="index" 
+                    class="option-item {{selectedDialect === item ? 'active' : ''}}" 
+                    bindtap="selectDialect" data-dialect="{{item}}">
+                {{item}}
+              </view>
+            </view>
+          </view>
+
+          <!-- 语音风格 -->
+          <view class="settings-section">
+            <view class="section-title">语音风格</view>
+            <view class="options-grid">
+              <view wx:for="{{voiceStyles}}" wx:key="index" 
+                    class="option-item {{selectedStyle === item ? 'active' : ''}}" 
+                    bindtap="selectStyle" data-style="{{item}}">
+                {{item}}
+              </view>
+            </view>
+          </view>
+
+          <!-- 情感语调 -->
+          <view class="settings-section">
+            <view class="section-title">情感语调</view>
+            <view class="options-grid">
+              <view wx:for="{{emotions}}" wx:key="index" 
+                    class="option-item {{selectedEmotion === item ? 'active' : ''}}" 
+                    bindtap="selectEmotion" data-emotion="{{item}}">
+                {{item}}
+              </view>
+            </view>
+          </view>
+
+          <!-- 声音类型 -->
+          <view class="settings-section">
+            <view class="section-title">声音类型</view>
+            <view class="options-grid">
+              <view wx:for="{{voiceTypes}}" wx:key="index" 
+                    class="option-item {{selectedVoice === item ? 'active' : ''}}" 
+                    bindtap="selectVoice" data-voice="{{item}}">
+                {{item}}
+              </view>
+            </view>
+          </view>
+
+          <view class="settings-footer">
+            <view class="confirm-btn" bindtap="hideVoiceSettings">确认</view>
           </view>
         </view>
       </view>

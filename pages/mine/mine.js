@@ -173,6 +173,14 @@ Page({
       url: '/pages/collection/collection'
     });
   },
+
+  // 跳转到用户画像设置页面
+  navigateToProfileSetting() {
+    console.log('跳转到个性化设置页面');
+    wx.navigateTo({
+      url: '/pages/profile-setting/profile-setting'
+    });
+  },
   
   // 点击退出登录
   logout() {

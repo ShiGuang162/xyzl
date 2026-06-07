@@ -20,12 +20,24 @@ Page({
     currentTime: '00:00',
     totalTime: '05:00',
     selectedDialect: '普通话',
+    selectedStyle: '亲切',
+    selectedEmotion: '平静',
+    selectedVoice: '女声',
+    showVoiceSettings: false,
     // 支持的方言列表
-    dialects: ['普通话', '北京话', '上海话', '广东话', '四川话', '东北话']
+    dialects: ['普通话', '北京话', '上海话', '广东话', '四川话', '东北话'],
+    // 支持的语音风格
+    voiceStyles: ['正式', '亲切', '幽默', '温柔', '活泼'],
+    // 支持的情感语调
+    emotions: ['平静', '兴奋', '温柔', '严肃', '愉悦'],
+    // 支持的声音类型
+    voiceTypes: ['男声', '女声', '童声', '磁性男声', '甜美女声']
   },
 
   onLoad(options) {
     console.log('详情页加载', options);
+    // 加载用户保存的语音设置
+    this.loadVoiceSettings();
     this.setData({
       type: options.type,
       id: options.id
@@ -474,21 +486,72 @@ Page({
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
   },
 
-  // 显示方言选择对话框
-  showDialectDialog() {
-    const that = this;
-    wx.showActionSheet({
-      itemList: this.data.dialects,
-      success(res) {
-        const selectedDialect = that.data.dialects[res.tapIndex];
-        that.setData({ selectedDialect });
-        wx.showToast({ title: `已切换到${selectedDialect}`, icon: 'success' });
-        // 这里可以根据选择的方言加载对应的音频文件
-      },
-      fail(res) {
-        console.log(res.errMsg);
-      }
-    });
+  // 显示语音设置面板
+  showVoiceSettings() {
+    this.setData({ showVoiceSettings: true });
+  },
+
+  // 隐藏语音设置面板
+  hideVoiceSettings() {
+    this.setData({ showVoiceSettings: false });
+  },
+
+  // 选择方言
+  selectDialect(e) {
+    const dialect = e.currentTarget.dataset.dialect;
+    this.setData({ selectedDialect: dialect });
+    this.saveVoiceSettings();
+    wx.showToast({ title: `已切换到${dialect}`, icon: 'success' });
+  },
+
+  // 选择语音风格
+  selectStyle(e) {
+    const style = e.currentTarget.dataset.style;
+    this.setData({ selectedStyle: style });
+    this.saveVoiceSettings();
+  },
+
+  // 选择情感语调
+  selectEmotion(e) {
+    const emotion = e.currentTarget.dataset.emotion;
+    this.setData({ selectedEmotion: emotion });
+    this.saveVoiceSettings();
+  },
+
+  // 选择声音类型
+  selectVoice(e) {
+    const voice = e.currentTarget.dataset.voice;
+    this.setData({ selectedVoice: voice });
+    this.saveVoiceSettings();
+  },
+
+  // 保存语音设置到本地存储
+  saveVoiceSettings() {
+    const voiceSettings = {
+      dialect: this.data.selectedDialect,
+      style: this.data.selectedStyle,
+      emotion: this.data.selectedEmotion,
+      voice: this.data.selectedVoice
+    };
+    wx.setStorageSync('voiceSettings', voiceSettings);
+  },
+
+  // 从本地存储加载语音设置
+  loadVoiceSettings() {
+    const voiceSettings = wx.getStorageSync('voiceSettings');
+    if (voiceSettings) {
+      this.setData({
+        selectedDialect: voiceSettings.dialect || '普通话',
+        selectedStyle: voiceSettings.style || '亲切',
+        selectedEmotion: voiceSettings.emotion || '平静',
+        selectedVoice: voiceSettings.voice || '女声'
+      });
+    }
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
   },
 
   // 切换播放/暂停状态

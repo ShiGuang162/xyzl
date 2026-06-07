@@ -1,0 +1,284 @@
+/* 用户画像设置页面样式 */
+.container {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 顶部导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100rpx;
+  padding: 0 20rpx;
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.nav-back {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.back-icon {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: white;
+  flex: 1;
+  text-align: center;
+}
+
+.nav-right {
+  width: 60rpx;
+}
+
+/* 设置内容区域 */
+.setting-content {
+  height: calc(100vh - 100rpx);
+  padding: 30rpx 20rpx;
+}
+
+/* 欢迎区域 */
+.welcome-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30rpx;
+  padding: 40rpx 30rpx;
+  margin-bottom: 30rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.welcome-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.welcome-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.welcome-desc {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 设置区块 */
+.setting-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30rpx;
+  padding: 30rpx;
+  margin-bottom: 25rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.section-icon {
+  font-size: 40rpx;
+  margin-right: 15rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.section-hint {
+  font-size: 22rpx;
+  color: #999;
+  margin-left: auto;
+}
+
+/* 选项行 */
+.options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.option-chip {
+  padding: 15rpx 30rpx;
+  border-radius: 50rpx;
+  background-color: #f5f5f5;
+  color: #666;
+  font-size: 26rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2rpx solid transparent;
+}
+
+.option-chip:active {
+  transform: scale(0.95);
+}
+
+.option-chip.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+/* 兴趣爱好网格 */
+.interests-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.interest-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25rpx 15rpx;
+  border-radius: 20rpx;
+  background-color: #f8f8f8;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.interest-item:active {
+  transform: scale(0.95);
+}
+
+.interest-item.active {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-color: #667eea;
+}
+
+.interest-icon {
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
+}
+
+.interest-name {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.interest-check {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 36rpx;
+  height: 36rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+/* 导览深度选项 */
+.depth-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.depth-card {
+  padding: 25rpx;
+  border-radius: 20rpx;
+  background-color: #f8f8f8;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.depth-card:active {
+  transform: scale(0.98);
+}
+
+.depth-card.active {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-color: #667eea;
+}
+
+.depth-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.depth-card.active .depth-title {
+  color: #667eea;
+}
+
+.depth-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.reset-btn {
+  flex: 1;
+  padding: 25rpx;
+  background: rgba(255, 255, 255, 0.95);
+  color: #666;
+  font-size: 28rpx;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 50rpx;
+  border: 2rpx solid #e0e0e0;
+}
+
+.save-btn {
+  flex: 2;
+  padding: 25rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  font-size: 28rpx;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 50rpx;
+  box-shadow: 0 4rpx 15rpx rgba(238, 90, 111, 0.4);
+}
+
+/* 动画效果 */
+.setting-section {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

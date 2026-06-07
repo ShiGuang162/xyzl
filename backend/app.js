@@ -175,10 +175,14 @@ app.get('/api/scenics', async (req, res) => {
   }
 });
 
+// 导入内容生成引擎
+const { generateContent } = require('./utils/content-generator');
+
 // API 接口 - 根据ID获取单个景点
 app.get('/api/scenics/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    
     const sql = 'SELECT * FROM scenics WHERE id = ?';
     const results = await db.query(sql, [id]);
     
@@ -190,6 +194,37 @@ app.get('/api/scenics/:id', async (req, res) => {
   } catch (error) {
     logger.error('获取景点详情错误:', error);
     res.status(500).json({ error: '获取景点详情失败' });
+  }
+});
+
+// API 接口 - 获取个性化景点内容
+app.post('/api/scenics/:id/personalized', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userProfile } = req.body;
+    
+    const sql = 'SELECT * FROM scenics WHERE id = ?';
+    const results = await db.query(sql, [id]);
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: '景点不存在' });
+    }
+    
+    let content = results[0];
+    
+    // 根据用户画像生成个性化内容
+    if (userProfile) {
+      try {
+        content = generateContent(content, userProfile);
+      } catch (parseError) {
+        console.error('解析用户画像错误:', parseError);
+      }
+    }
+    
+    res.json(content);
+  } catch (error) {
+    logger.error('获取个性化景点内容错误:', error);
+    res.status(500).json({ error: '获取个性化景点内容失败' });
   }
 });
 
@@ -572,6 +607,165 @@ app.get('/api/health', async (req, res) => {
     res.json({ status: 'ok', message: 'Backend service is running with MySQL database' });
   } catch (error) {
     res.status(500).json({ status: 'error', message: 'Database connection failed', error: error.message });
+  }
+});
+
+// 导入语音合成工具
+const { textToSpeech, getDialectSpeaker } = require('./utils/volcengine-speech');
+const { generateCacheKey, checkCache, saveToCache, readFromCache } = require('./utils/cache-manager');
+
+// API 接口 - 语音合成
+app.post('/api/tts', async (req, res) => {
+  try {
+    const { text, dialect, style, emotion, voice, speed = 1.0, volume = 1.0, pitch = 1.0 } = req.body;
+    
+    if (!text) {
+      return res.status(400).json({ error: '缺少文本参数' });
+    }
+    
+    // 生成缓存键
+    const cacheKey = generateCacheKey(text, {
+      dialect,
+      style,
+      emotion,
+      voice,
+      speed,
+      volume,
+      pitch
+    });
+    
+    // 检查缓存
+    if (checkCache(cacheKey)) {
+      console.log('从缓存获取音频');
+      const cachedAudio = readFromCache(cacheKey);
+      return res.json({
+        success: true,
+        data: {
+          audio: cachedAudio,
+          fromCache: true
+        }
+      });
+    }
+    
+    // 获取方言对应的音色
+    const speaker = getDialectSpeaker(dialect);
+    
+    // 调用语音合成 API
+    console.log('调用语音合成 API');
+    const result = await textToSpeech(text, {
+      speaker,
+      speed,
+      volume,
+      pitch
+    });
+    
+    // 保存到缓存
+    saveToCache(cacheKey, result.Audio);
+    
+    res.json({
+      success: true,
+      data: {
+        audio: result.Audio,
+        fromCache: false
+      }
+    });
+  } catch (error) {
+    console.error('语音合成错误:', error);
+    // 降级处理：返回模拟的音频数据
+    res.json({
+      success: true,
+      data: {
+        audio: 'mock_audio_data',
+        fromCache: false,
+        isMock: true,
+        error: error.message
+      }
+    });
+  }
+});
+
+// API 接口 - 获取支持的方言列表
+app.get('/api/tts/dialects', (req, res) => {
+  try {
+    const dialects = [
+      { id: '普通话', name: '普通话', speaker: 'zh_female_vv_jupiter_bigtts' },
+      { id: '北京话', name: '北京话', speaker: 'zh_male_beijing_1_tts' },
+      { id: '上海话', name: '上海话', speaker: 'zh_female_shanghai_1_tts' },
+      { id: '广东话', name: '广东话', speaker: 'zh_female_cantonese_1_tts' },
+      { id: '四川话', name: '四川话', speaker: 'zh_male_sichuan_1_tts' },
+      { id: '东北话', name: '东北话', speaker: 'zh_male_northeast_1_tts' }
+    ];
+    
+    res.json({
+      success: true,
+      data: dialects
+    });
+  } catch (error) {
+    console.error('获取方言列表错误:', error);
+    res.status(500).json({ error: '获取方言列表失败' });
+  }
+});
+
+// API 接口 - 获取支持的声音风格
+app.get('/api/tts/styles', (req, res) => {
+  try {
+    const styles = [
+      { id: 'formal', name: '正式' },
+      { id: 'friendly', name: '亲切' },
+      { id: 'humorous', name: '幽默' },
+      { id: 'gentle', name: '温柔' },
+      { id: 'lively', name: '活泼' }
+    ];
+    
+    res.json({
+      success: true,
+      data: styles
+    });
+  } catch (error) {
+    console.error('获取风格列表错误:', error);
+    res.status(500).json({ error: '获取风格列表失败' });
+  }
+});
+
+// API 接口 - 获取支持的情感类型
+app.get('/api/tts/emotions', (req, res) => {
+  try {
+    const emotions = [
+      { id: 'calm', name: '平静' },
+      { id: 'excited', name: '兴奋' },
+      { id: 'gentle', name: '温柔' },
+      { id: 'serious', name: '严肃' },
+      { id: 'cheerful', name: '愉悦' }
+    ];
+    
+    res.json({
+      success: true,
+      data: emotions
+    });
+  } catch (error) {
+    console.error('获取情感列表错误:', error);
+    res.status(500).json({ error: '获取情感列表失败' });
+  }
+});
+
+// API 接口 - 获取支持的声音类型
+app.get('/api/tts/voices', (req, res) => {
+  try {
+    const voices = [
+      { id: 'male', name: '男声' },
+      { id: 'female', name: '女声' },
+      { id: 'child', name: '童声' },
+      { id: 'magnetic_male', name: '磁性男声' },
+      { id: 'sweet_female', name: '甜美女声' }
+    ];
+    
+    res.json({
+      success: true,
+      data: voices
+    });
+  } catch (error) {
+    console.error('获取声音类型列表错误:', error);
+    res.status(500).json({ error: '获取声音类型列表失败' });
   }
 });
 
@@ -1198,6 +1392,279 @@ app.post('/api/users/update', async (req, res) => {
   } catch (error) {
     logger.error('更新用户信息错误:', error);
     res.status(500).json({ error: '更新用户信息失败' });
+  }
+});
+
+// API 接口 - 获取产品列表
+app.get('/api/products', async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category = '', keyword = '', sort = 'created_at' } = req.query;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    
+    let sql = 'SELECT * FROM products WHERE 1=1';
+    let params = [];
+    
+    if (category) {
+      sql += ' AND category = ?';
+      params.push(category);
+    }
+    
+    if (keyword) {
+      sql += ' AND (name LIKE ? OR description LIKE ?)';
+      params.push(`%${keyword}%`, `%${keyword}%`);
+    }
+    
+    sql += ` ORDER BY ${sort} DESC LIMIT ? OFFSET ?`;
+    params.push(parseInt(limit), offset);
+    
+    const results = await db.query(sql, params);
+    
+    // 获取总数
+    const countSql = 'SELECT COUNT(*) as total FROM products WHERE 1=1' + 
+                    (category ? ' AND category = ?' : '') + 
+                    (keyword ? ' AND (name LIKE ? OR description LIKE ?)' : '');
+    const countParams = [];
+    if (category) countParams.push(category);
+    if (keyword) countParams.push(`%${keyword}%`, `%${keyword}%`);
+    
+    const countResult = await db.query(countSql, countParams);
+    const total = countResult[0].total;
+    
+    res.json({
+      data: results,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    console.error('获取产品列表错误:', error);
+    res.status(500).json({ error: '获取产品列表失败' });
+  }
+});
+
+// API 接口 - 获取产品详情
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sql = 'SELECT * FROM products WHERE id = ?';
+    const results = await db.query(sql, [id]);
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: '产品不存在' });
+    }
+    
+    // 获取产品评价
+    const reviewsSql = 'SELECT * FROM product_reviews WHERE product_id = ? ORDER BY created_at DESC';
+    const reviews = await db.query(reviewsSql, [id]);
+    
+    res.json({
+      product: results[0],
+      reviews: reviews
+    });
+  } catch (error) {
+    console.error('获取产品详情错误:', error);
+    res.status(500).json({ error: '获取产品详情失败' });
+  }
+});
+
+// API 接口 - 获取产品分类
+app.get('/api/product-categories', async (req, res) => {
+  try {
+    const sql = 'SELECT * FROM product_categories ORDER BY sort_order ASC';
+    const results = await db.query(sql, []);
+    
+    res.json({ data: results });
+  } catch (error) {
+    console.error('获取产品分类错误:', error);
+    res.status(500).json({ error: '获取产品分类失败' });
+  }
+});
+
+// API 接口 - 添加到购物车
+app.post('/api/cart', async (req, res) => {
+  try {
+    const { userId, productId, quantity = 1 } = req.body;
+    
+    if (!userId || !productId) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 检查产品是否存在
+    const productSql = 'SELECT * FROM products WHERE id = ?';
+    const product = await db.query(productSql, [productId]);
+    if (product.length === 0) {
+      return res.status(404).json({ error: '产品不存在' });
+    }
+    
+    // 检查购物车中是否已有该产品
+    const cartSql = 'SELECT * FROM shopping_cart WHERE user_id = ? AND product_id = ?';
+    const existingItem = await db.query(cartSql, [userId, productId]);
+    
+    if (existingItem.length > 0) {
+      // 更新数量
+      const updateSql = 'UPDATE shopping_cart SET quantity = quantity + ? WHERE id = ?';
+      await db.query(updateSql, [quantity, existingItem[0].id]);
+      res.json({ success: true, message: '购物车已更新' });
+    } else {
+      // 添加新商品
+      const insertSql = 'INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (?, ?, ?)';
+      await db.query(insertSql, [userId, productId, quantity]);
+      res.status(201).json({ success: true, message: '已添加到购物车' });
+    }
+  } catch (error) {
+    console.error('添加到购物车错误:', error);
+    res.status(500).json({ error: '添加到购物车失败' });
+  }
+});
+
+// API 接口 - 获取购物车
+app.get('/api/cart', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: '缺少用户ID' });
+    }
+    
+    const sql = `
+      SELECT sc.*, p.name, p.price, p.image, p.stock 
+      FROM shopping_cart sc
+      JOIN products p ON sc.product_id = p.id
+      WHERE sc.user_id = ?
+    `;
+    const results = await db.query(sql, [userId]);
+    
+    res.json({ data: results });
+  } catch (error) {
+    console.error('获取购物车错误:', error);
+    res.status(500).json({ error: '获取购物车失败' });
+  }
+});
+
+// API 接口 - 创建订单
+app.post('/api/orders', async (req, res) => {
+  try {
+    const { userId, items, address, phone, recipient, paymentMethod } = req.body;
+    
+    if (!userId || !items || !items.length || !address || !phone || !recipient) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+    
+    // 计算总金额
+    let totalAmount = 0;
+    for (const item of items) {
+      const productSql = 'SELECT price, stock FROM products WHERE id = ?';
+      const product = await db.query(productSql, [item.productId]);
+      if (product.length === 0) {
+        return res.status(404).json({ error: `产品 ${item.productId} 不存在` });
+      }
+      if (product[0].stock < item.quantity) {
+        return res.status(400).json({ error: `产品 ${item.productId} 库存不足` });
+      }
+      totalAmount += product[0].price * item.quantity;
+    }
+    
+    // 生成订单号
+    const orderNo = 'ORD' + Date.now() + Math.floor(Math.random() * 1000);
+    
+    // 开启事务
+    await db.beginTransaction();
+    
+    try {
+      // 创建订单
+      const orderSql = `
+        INSERT INTO orders (order_no, user_id, total_amount, address, phone, recipient, payment_method)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+      const orderResult = await db.query(orderSql, [orderNo, userId, totalAmount, address, phone, recipient, paymentMethod]);
+      const orderId = orderResult.insertId;
+      
+      // 添加订单商品
+      for (const item of items) {
+        const productSql = 'SELECT name, price, image FROM products WHERE id = ?';
+        const product = await db.query(productSql, [item.productId]);
+        
+        const itemSql = `
+          INSERT INTO order_items (order_id, product_id, product_name, product_image, price, quantity, subtotal)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+        await db.query(itemSql, [
+          orderId,
+          item.productId,
+          product[0].name,
+          product[0].image,
+          product[0].price,
+          item.quantity,
+          product[0].price * item.quantity
+        ]);
+        
+        // 减少库存
+        const updateStockSql = 'UPDATE products SET stock = stock - ? WHERE id = ?';
+        await db.query(updateStockSql, [item.quantity, item.productId]);
+        
+        // 增加销量
+        const updateSalesSql = 'UPDATE products SET sales = sales + ? WHERE id = ?';
+        await db.query(updateSalesSql, [item.quantity, item.productId]);
+        
+        // 从购物车中删除
+        const deleteCartSql = 'DELETE FROM shopping_cart WHERE user_id = ? AND product_id = ?';
+        await db.query(deleteCartSql, [userId, item.productId]);
+      }
+      
+      // 提交事务
+      await db.commit();
+      
+      res.status(201).json({ 
+        success: true, 
+        message: '订单创建成功',
+        orderId: orderId,
+        orderNo: orderNo
+      });
+    } catch (transactionError) {
+      // 回滚事务
+      await db.rollback();
+      throw transactionError;
+    }
+  } catch (error) {
+    console.error('创建订单错误:', error);
+    res.status(500).json({ error: '创建订单失败' });
+  }
+});
+
+// API 接口 - 获取用户订单列表
+app.get('/api/orders', async (req, res) => {
+  try {
+    const { userId, status = '' } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: '缺少用户ID' });
+    }
+    
+    let sql = 'SELECT * FROM orders WHERE user_id = ?';
+    let params = [userId];
+    
+    if (status) {
+      sql += ' AND status = ?';
+      params.push(status);
+    }
+    
+    sql += ' ORDER BY created_at DESC';
+    
+    const orders = await db.query(sql, params);
+    
+    // 获取每个订单的商品
+    for (const order of orders) {
+      const itemsSql = 'SELECT * FROM order_items WHERE order_id = ?';
+      order.items = await db.query(itemsSql, [order.id]);
+    }
+    
+    res.json({ data: orders });
+  } catch (error) {
+    console.error('获取订单列表错误:', error);
+    res.status(500).json({ error: '获取订单列表失败' });
   }
 });
 

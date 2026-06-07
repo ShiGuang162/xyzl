@@ -33,9 +33,10 @@
         <view class="module-text">我的收藏</view>
         <view class="module-arrow">▶</view>
       </view>
-      <view class="module-item" bindtap="clickModule" data-id="2" data-text="旅行攻略">
-        <view class="module-icon">📝</view>
-        <view class="module-text">旅行攻略</view>
+      <view class="module-item" bindtap="navigateToProfileSetting">
+        <view class="module-icon">⚙️</view>
+        <view class="module-text">个性化设置</view>
+        <view class="module-arrow">▶</view>
       </view>
       <view class="module-item" bindtap="clickModule" data-id="3" data-text="我的交流">
         <view class="module-icon">💬</view>
