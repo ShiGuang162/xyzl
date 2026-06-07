@@ -1,0 +1,95 @@
+<!-- 用户画像设置页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="navigateBack">
+      <view class="back-icon">←</view>
+    </view>
+    <view class="nav-title">个性化设置</view>
+    <view class="nav-right"></view>
+  </view>
+
+  <!-- 设置内容 -->
+  <scroll-view class="setting-content" scroll-y="true">
+    <!-- 欢迎提示 -->
+    <view class="welcome-section">
+      <view class="welcome-icon">👋</view>
+      <view class="welcome-title">让我更了解你</view>
+      <view class="welcome-desc">根据你的偏好，为你定制专属的导览体验</view>
+    </view>
+
+    <!-- 年龄段选择 -->
+    <view class="setting-section">
+      <view class="section-header">
+        <view class="section-icon">🎂</view>
+        <view class="section-title">年龄段</view>
+      </view>
+      <view class="options-row">
+        <view wx:for="{{ageGroups}}" wx:key="index" 
+              class="option-chip {{selectedAgeGroup === item ? 'active' : ''}}" 
+              bindtap="selectAgeGroup" data-age="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 文化程度 -->
+    <view class="setting-section">
+      <view class="section-header">
+        <view class="section-icon">📚</view>
+        <view class="section-title">文化程度</view>
+      </view>
+      <view class="options-row">
+        <view wx:for="{{educationLevels}}" wx:key="index" 
+              class="option-chip {{selectedEducation === item ? 'active' : ''}}" 
+              bindtap="selectEducation" data-education="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 兴趣爱好 -->
+    <view class="setting-section">
+      <view class="section-header">
+        <view class="section-icon">❤️</view>
+        <view class="section-title">兴趣爱好</view>
+        <view class="section-hint">选择你感兴趣的（可多选）</view>
+      </view>
+      <view class="interests-grid">
+        <view wx:for="{{interests}}" wx:key="id" 
+              class="interest-item {{item.selected ? 'active' : ''}}" 
+              bindtap="toggleInterest" data-index="{{index}}">
+          <view class="interest-icon">{{item.icon}}</view>
+          <view class="interest-name">{{item.name}}</view>
+          <view wx:if="{{item.selected}}" class="interest-check">✓</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 导览深度 -->
+    <view class="setting-section">
+      <view class="section-header">
+        <view class="section-icon">🎯</view>
+        <view class="section-title">导览深度</view>
+      </view>
+      <view class="depth-options">
+        <view wx:for="{{tourDepths}}" wx:key="index" 
+              class="depth-card {{selectedTourDepth === item ? 'active' : ''}}" 
+              bindtap="selectTourDepth" data-depth="{{item}}">
+          <view class="depth-title">{{item}}</view>
+          <view class="depth-desc">
+            <text wx:if="{{item === '浅度'}}">快速游览，了解基本信息</text>
+            <text wx:if="{{item === '中度'}}">适度深入，体验当地特色</text>
+            <text wx:if="{{item === '深度'}}">深度探索，感受文化底蕴</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <view class="reset-btn" bindtap="resetToDefault">重置</view>
+      <view class="save-btn" bindtap="saveUserProfile">保存设置</view>
+    </view>
+  </scroll-view>
+</view>

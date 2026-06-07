@@ -1,0 +1,45 @@
+<!-- 景点页面 -->
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">←</view>
+    <view class="title">景点介绍</view>
+  </view>
+  
+  <view class="scenic-list">
+    <view class="scenic-item">
+      <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scenic%20spot%20photo%2C%20mountain%20view%2C%20clear%20weather%2C%20professional%20photography&image_size=square" class="scenic-image" />
+      <view class="scenic-info">
+        <view class="scenic-name">青山绿水</view>
+        <view class="scenic-desc">风景秀丽，空气清新，是休闲度假的好去处</view>
+        <view class="scenic-tags">
+          <view class="tag">自然</view>
+          <view class="tag">休闲</view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="scenic-item">
+      <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20temple%20scenic%20spot%2C%20traditional%20chinese%20architecture%2C%20peaceful%20environment&image_size=square" class="scenic-image" />
+      <view class="scenic-info">
+        <view class="scenic-name">古寺名刹</view>
+        <view class="scenic-desc">历史悠久，文化底蕴深厚，建筑风格独特</view>
+        <view class="scenic-tags">
+          <view class="tag">历史</view>
+          <view class="tag">文化</view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="scenic-item">
+      <image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20village%2C%20ancient%20buildings%2C%20calm%20river%2C%20professional%20photography&image_size=square" class="scenic-image" />
+      <view class="scenic-info">
+        <view class="scenic-name">水乡古镇</view>
+        <view class="scenic-desc">小桥流水，古朴典雅，展现江南水乡特色</view>
+        <view class="scenic-tags">
+          <view class="tag">古镇</view>
+          <view class="tag">水乡</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

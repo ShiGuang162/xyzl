@@ -1,0 +1,133 @@
+<!-- 首页 -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="location-container" bindtap="getLocation">
+      <view class="location-icon">📍</view>
+      <view class="location-text">{{currentLocation || '获取位置'}}</view>
+    </view>
+    <view class="search-input-container">
+      <view class="search-icon">🔎</view>
+      <input placeholder="查找需要的攻略" class="search-input" bindinput="onSearchInput" bindconfirm="onSearchConfirm" value="{{searchKeyword}}" />
+      <view wx:if="searchKeyword" class="clear-icon" bindtap="clearSearch">✕</view>
+    </view>
+  </view>
+  
+  <!-- 轮播图 -->
+  <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000">
+    <swiper-item wx:for="{{swiperList}}" wx:key="id">
+      <view class="swiper-item" bindtap="clickSwiper" data-index="{{index}}">
+        <image src="{{item.image}}" class="swiper-image" />
+        <view class="swiper-title">{{item.title}}</view>
+      </view>
+    </swiper-item>
+  </swiper>
+  
+  <!-- 标签栏 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === '推荐' ? 'active' : ''}}" bindtap="switchTab" data-tab="推荐">推荐</view>
+    <view class="tab-item {{activeTab === '攻略' ? 'active' : ''}}" bindtap="switchTab" data-tab="攻略">攻略</view>
+    <view class="tab-item {{activeTab === '景点' ? 'active' : ''}}" bindtap="switchTab" data-tab="景点">景点</view>
+    <view class="tab-item {{activeTab === '历史' ? 'active' : ''}}" bindtap="switchTab" data-tab="历史">历史</view>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">加载中...</view>
+  </view>
+  
+  <!-- 内容区域 -->
+  <view class="content-container">
+    <!-- 推荐内容 -->
+    <view wx:if="{{activeTab === '推荐'}}" class="content-section fade-in">
+      <view class="recommend-list">
+        <view wx:for="{{strategies}}" wx:key="id" class="recommend-item" bindtap="clickItem" data-type="strategy" data-id="{{item.id}}">
+          <image src="{{item.image}}" class="recommend-image" mode="aspectFill" />
+          <view class="recommend-info">
+            <view class="recommend-title">{{item.title}}</view>
+            <view class="recommend-desc">{{item.desc}}</view>
+            <view class="recommend-meta">
+              <view class="recommend-author">{{item.author}}</view>
+              <view class="recommend-stats">
+                <view class="recommend-view">{{item.views}}浏览</view>
+                <view class="recommend-like">{{item.likes}}点赞</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view wx:for="{{scenics}}" wx:key="id" class="recommend-item" bindtap="clickItem" data-type="scenic" data-id="{{item.id}}">
+          <image src="{{item.image}}" class="recommend-image" mode="aspectFill" />
+          <view class="recommend-info">
+            <view class="recommend-title">{{item.name}}</view>
+            <view class="recommend-desc">{{item.desc}}</view>
+            <view class="recommend-meta">
+              <view class="recommend-author">{{item.address}}</view>
+              <view class="recommend-stats">
+                <view class="recommend-rating">⭐ {{item.rating}}</view>
+                <view class="recommend-reviews">{{item.reviews}}评论</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 攻略内容 -->
+    <view wx:if="{{activeTab === '攻略'}}" class="content-section fade-in">
+      <view class="strategy-list">
+        <view wx:for="{{strategies}}" wx:key="id" class="strategy-item" bindtap="clickItem" data-type="strategy" data-id="{{item.id}}">
+          <image src="{{item.image}}" class="strategy-image" />
+          <view class="strategy-info">
+            <view class="strategy-title">{{item.title}}</view>
+            <view class="strategy-desc">{{item.desc}}</view>
+            <view class="strategy-meta">
+              <view class="strategy-author">{{item.author}}</view>
+              <view class="strategy-stats">
+                <view class="strategy-view">{{item.views}}浏览</view>
+                <view class="strategy-like">{{item.likes}}点赞</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 景点内容 -->
+    <view wx:if="{{activeTab === '景点'}}" class="content-section fade-in">
+      <view class="scenic-list">
+        <view wx:for="{{scenics}}" wx:key="id" class="scenic-item" bindtap="clickItem" data-type="scenic" data-id="{{item.id}}">
+          <image src="{{item.image}}" class="scenic-image" mode="aspectFill" />
+          <view class="scenic-info">
+            <view class="scenic-name">{{item.name}}</view>
+            <view class="scenic-desc">{{item.desc}}</view>
+            <view class="scenic-meta">
+              <view class="scenic-address">{{item.address}}</view>
+              <view class="scenic-stats">
+                <view class="scenic-rating">⭐ {{item.rating}}</view>
+                <view class="scenic-reviews">{{item.reviews}}评论</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 历史内容 -->
+    <view wx:if="{{activeTab === '历史'}}" class="content-section fade-in">
+      <view class="history-list">
+        <view wx:for="{{history}}" wx:key="id" class="history-item" bindtap="clickItem" data-type="history" data-id="{{item.id}}">
+          <image src="{{item.image}}" class="history-image" />
+          <view class="history-info">
+            <view class="history-title">{{item.title}}</view>
+            <view class="history-desc">{{item.desc}}</view>
+            <view class="history-meta">
+              <view class="history-period">{{item.period}}</view>
+              <view class="history-importance">{{item.importance}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

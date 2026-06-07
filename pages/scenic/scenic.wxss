@@ -1,0 +1,80 @@
+/* 景点页面样式 */
+.container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 头部 */
+.header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.back-btn {
+  font-size: 40rpx;
+  margin-right: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 景点列表 */
+.scenic-list {
+  padding: 20rpx;
+}
+
+.scenic-item {
+  background-color: white;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.scenic-image {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+}
+
+.scenic-info {
+  flex: 1;
+}
+
+.scenic-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+.scenic-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 15rpx;
+}
+
+.scenic-tags {
+  display: flex;
+  gap: 10rpx;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  color: #666;
+  padding: 5rpx 15rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}

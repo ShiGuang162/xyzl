@@ -1,0 +1,53 @@
+<!-- 搜索结果页面 -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-container">
+      <view class="search-icon">🔍</view>
+      <input 
+        placeholder="请输入搜索关键词" 
+        class="search-input" 
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view class="clear-icon" bindtap="goBack">✕</view>
+    </view>
+  </view>
+  
+  <!-- 搜索结果标题 -->
+  <view class="result-title">
+    <view class="title-text">搜索结果</view>
+    <view class="title-keyword">"{{keyword}}"</view>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">搜索中...</view>
+  </view>
+  
+  <!-- 无结果状态 -->
+  <view wx:if="{{noResults && !loading}}" class="empty-container">
+    <view class="empty-icon">🔍</view>
+    <view class="empty-text">未找到相关结果</view>
+    <view class="empty-hint">试试其他关键词吧</view>
+  </view>
+  
+  <!-- 搜索结果列表 -->
+  <view wx:if="{{searchResults.length > 0 && !loading}}" class="result-list">
+    <view 
+      wx:for="{{searchResults}}" 
+      wx:key="id" 
+      class="result-item"
+      bindtap="clickResult"
+      data-item="{{item}}"
+    >
+      <image src="{{item.image}}" class="result-image" />
+      <view class="result-info">
+        <view class="result-title">{{item.title || item.name}}</view>
+        <view class="result-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+</view>

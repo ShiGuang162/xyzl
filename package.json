@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios": "^1.13.5",
+    "form-data": "^4.0.5",
+    "mysql2": "^3.17.4",
+    "request": "^2.88.2"
+  }
+}

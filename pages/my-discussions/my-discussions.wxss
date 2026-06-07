@@ -1,0 +1,402 @@
+/* 我的交流页面样式 */
+.container {
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 顶部导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: #2c3e50;
+  color: white;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.nav-left {
+  width: 80rpx;
+}
+
+.nav-back {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.nav-back:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.back-icon {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.nav-right {
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav-post {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.nav-post:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.post-icon {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+/* 主内容区域 */
+.content-area {
+  padding: 120rpx 30rpx 30rpx;
+  min-height: 100vh;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #2196f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 登录状态 */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500rpx;
+  background-color: white;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  padding: 50rpx;
+  text-align: center;
+}
+
+.login-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.login-text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.login-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.login-btn {
+  padding: 20rpx 60rpx;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #1976d2;
+  transform: scale(1.05);
+}
+
+/* 无内容状态 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500rpx;
+  background-color: white;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  padding: 50rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+  color: #ccc;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.empty-btn {
+  padding: 20rpx 60rpx;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.empty-btn:hover {
+  background-color: #1976d2;
+  transform: scale(1.05);
+}
+
+/* 讨论列表 */
+.discussion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.discussion-item {
+  background-color: white;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  padding: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.discussion-item:hover {
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.15);
+  transform: translateY(-2rpx);
+}
+
+.discussion-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.user-avatar {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background-color: #2c3e50;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-right: 15rpx;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  margin-right: 15rpx;
+}
+
+.user-name {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.post-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.post-tag {
+  padding: 5rpx 15rpx;
+  border-radius: 15rpx;
+  background-color: #e3f2fd;
+  color: #2196f3;
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+.discussion-content {
+  margin-bottom: 15rpx;
+}
+
+.discussion-title {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+  line-height: 1.4;
+}
+
+.discussion-text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 15rpx;
+}
+
+.discussion-image {
+  margin-bottom: 15rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+
+.discussion-img {
+  width: 100%;
+  height: 250rpx;
+  object-fit: cover;
+}
+
+.discussion-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 15rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.discussion-stats {
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  color: #2196f3;
+}
+
+.stat-icon {
+  font-size: 24rpx;
+}
+
+.stat-text {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.discussion-actions {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.action-item {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-item:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.1);
+}
+
+.action-icon {
+  font-size: 20rpx;
+}
+
+/* 动画效果 */
+.discussion-item {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .content-area {
+    padding: 120rpx 20rpx 20rpx;
+  }
+  
+  .discussion-img {
+    height: 200rpx;
+  }
+}

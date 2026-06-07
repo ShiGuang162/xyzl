@@ -1,0 +1,64 @@
+{
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmRelationList": [],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false,
+    "minifyWXML": true,
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
+  },
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [
+      {
+        "value": "node_modules",
+        "type": "file"
+      },
+      {
+        "value": "backend",
+        "type": "file"
+      },
+      {
+        "value": "images",
+        "type": "file"
+      },
+      {
+        "value": "API_ENHANCED_USAGE.md",
+        "type": "file"
+      },
+      {
+        "value": "MYSQL_SETUP_GUIDE.md",
+        "type": "file"
+      },
+      {
+        "value": "OPTIMIZATION_PLAN.md",
+        "type": "file"
+      },
+      {
+        "value": "update_database_images.js",
+        "type": "file"
+      }
+    ],
+    "include": []
+  },
+  "appid": "wxd36c80e25aeb43f6",
+  "editorSetting": {},
+  "libVersion": "3.14.1"
+}

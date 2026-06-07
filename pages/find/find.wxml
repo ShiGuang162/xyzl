@@ -1,0 +1,252 @@
+<!-- 讨论页 - QQ频道风格 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="channel-name">讨论频道</view>
+      <view class="channel-subtitle">发现精彩内容</view>
+    </view>
+    <view class="nav-right">
+      <view class="search-btn" bindtap="showSearchDialog">
+        <view class="search-icon">🔍</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 搜索对话框 -->
+  <view wx:if="{{showSearchDialog}}" class="search-dialog">
+    <view class="search-header">
+      <view class="search-input-container">
+        <view class="search-input-icon">🔍</view>
+        <input 
+          class="search-input" 
+          placeholder="搜索讨论内容..." 
+          value="{{searchKeyword}}" 
+          bindinput="onSearchInput"
+          bindconfirm="onSearchConfirm"
+          focus="{{true}}"
+        />
+        <view wx:if="{{searchKeyword}}" class="search-clear" bindtap="clearSearchInput">✕</view>
+      </view>
+      <view class="search-cancel" bindtap="hideSearchDialog">取消</view>
+    </view>
+    
+    <!-- 搜索历史 -->
+    <view wx:if="{{!searching && searchHistory.length > 0 && !searchKeyword}}" class="search-history">
+      <view class="search-history-header">
+        <view class="search-history-title">搜索历史</view>
+        <view class="search-history-clear" bindtap="clearSearchHistory">清空</view>
+      </view>
+      <view class="search-history-list">
+        <view wx:for="{{searchHistory}}" wx:key="index" class="search-history-item" bindtap="onHistoryItemClick" data-keyword="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 热门搜索 -->
+    <view wx:if="{{!searching && !searchKeyword}}" class="hot-search">
+      <view class="hot-search-title">热门搜索</view>
+      <view class="hot-search-list">
+        <view wx:for="{{hotSearchList}}" wx:key="index" class="hot-search-item" bindtap="onHotSearchClick" data-keyword="{{item}}">
+          <view class="hot-search-rank">{{index + 1}}</view>
+          <view class="hot-search-text">{{item}}</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 搜索结果 -->
+    <view wx:if="{{searching}}" class="search-loading">
+      <view class="loading-spinner"></view>
+      <view class="loading-text">搜索中...</view>
+    </view>
+    
+    <!-- 搜索结果 -->
+    <view wx:elif="{{searchResults.length > 0 && searchKeyword}}" class="search-results">
+      <view class="search-results-header">
+        搜索结果 ({{searchResults.length}})
+      </view>
+      <view class="search-results-list">
+        <view wx:for="{{searchResults}}" wx:key="id" class="search-result-item" bindtap="viewDiscussion" data-id="{{item.id}}">
+          <view class="search-result-title">{{item.title}}</view>
+          <view class="search-result-content">{{item.content}}</view>
+          <view class="search-result-meta">
+            <view class="search-result-tag">{{item.tag}}</view>
+            <view class="search-result-time">{{item.time}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 无搜索结果 -->
+    <view wx:elif="{{!searching && searchKeyword && searchResults.length === 0}}" class="search-empty">
+      <view class="search-empty-icon">🔍</view>
+      <view class="search-empty-text">未找到相关内容</view>
+      <view class="search-empty-hint">试试其他关键词吧</view>
+    </view>
+  </view>
+  
+  <!-- 主内容区域 -->
+  <view class="main-content">
+    <!-- 左侧分类导航 -->
+    <view class="category-nav">
+      <view class="category-item {{activeCategory === 'all' ? 'active' : ''}}" bindtap="switchCategory" data-category="all">
+        <view class="category-icon">🏠</view>
+        <view class="category-text">全部</view>
+      </view>
+      <view class="category-item {{activeCategory === 'strategy' ? 'active' : ''}}" bindtap="switchCategory" data-category="strategy">
+        <view class="category-icon">🗺️</view>
+        <view class="category-text">旅游攻略</view>
+      </view>
+      <view class="category-item {{activeCategory === 'food' ? 'active' : ''}}" bindtap="switchCategory" data-category="food">
+        <view class="category-icon">🍜</view>
+        <view class="category-text">美食推荐</view>
+      </view>
+      <view class="category-item {{activeCategory === 'scenic' ? 'active' : ''}}" bindtap="switchCategory" data-category="scenic">
+        <view class="category-icon">🏞️</view>
+        <view class="category-text">景点讨论</view>
+      </view>
+      <view class="category-item {{activeCategory === 'transport' ? 'active' : ''}}" bindtap="switchCategory" data-category="transport">
+        <view class="category-icon">🚗</view>
+        <view class="category-text">交通住宿</view>
+      </view>
+      <view class="category-item {{activeCategory === 'story' ? 'active' : ''}}" bindtap="switchCategory" data-category="story">
+        <view class="category-icon">📖</view>
+        <view class="category-text">旅行故事</view>
+      </view>
+      <view class="category-item {{activeCategory === 'other' ? 'active' : ''}}" bindtap="switchCategory" data-category="other">
+        <view class="category-icon">💬</view>
+        <view class="category-text">其他话题</view>
+      </view>
+    </view>
+    
+    <!-- 右侧内容区域 -->
+    <view class="content-area">
+      <!-- 内容标题栏 -->
+      <view class="content-header">
+        <view class="header-title">{{categoryTitles[activeCategory]}}</view>
+        <view class="header-sort" bindtap="showSortDialog">
+          <view class="sort-text">最新</view>
+          <view class="sort-icon">▼</view>
+        </view>
+      </view>
+      
+      <!-- 加载状态 -->
+      <view wx:if="{{loading}}" class="loading-container">
+        <view class="loading-spinner"></view>
+        <view class="loading-text">加载中...</view>
+      </view>
+      
+      <!-- 无内容状态 -->
+      <view wx:elif="{{discussionList.length === 0 && !loading}}" class="empty-container">
+        <view class="empty-icon">💬</view>
+        <view class="empty-text">暂无讨论内容</view>
+        <view class="empty-hint">快来发布第一条讨论吧！</view>
+      </view>
+      
+      <!-- 讨论列表 -->
+      <view wx:else class="discussion-list">
+        <view wx:for="{{discussionList}}" wx:key="id" class="discussion-item" bindtap="viewDiscussion" data-id="{{item.id}}">
+          <view class="discussion-header">
+            <view class="user-avatar">{{item.user.avatar}}</view>
+            <view class="user-info">
+              <view class="user-name">{{item.user.name}}</view>
+              <view class="post-time">{{item.time}}</view>
+            </view>
+            <view class="post-tag">{{item.tag}}</view>
+          </view>
+          <view class="discussion-content">
+            <view class="discussion-title">{{item.title}}</view>
+            <view class="discussion-text">{{item.content}}</view>
+            <view wx:if="{{item.image}}" class="discussion-image">
+              <image src="{{item.image}}" class="discussion-img" />
+            </view>
+          </view>
+          <view class="discussion-footer">
+            <view class="discussion-stats">
+              <view class="stat-item" bindtap="likeDiscussion" data-id="{{item.id}}">
+                <view class="stat-icon">👍</view>
+                <view class="stat-text">{{item.likes}}</view>
+              </view>
+              <view class="stat-item">
+                <view class="stat-icon">💬</view>
+                <view class="stat-text">{{item.comments}}</view>
+              </view>
+              <view class="stat-item">
+                <view class="stat-icon">👀</view>
+                <view class="stat-text">{{item.views}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部发布按钮 -->
+  <view class="post-btn" bindtap="showPostDialog">
+    <view class="post-icon">+</view>
+  </view>
+  
+  <!-- 发布讨论对话框 -->
+  <view wx:if="{{showPostDialog}}" class="post-dialog">
+    <view class="post-dialog-content">
+      <view class="post-dialog-header">
+        <view class="post-dialog-title">发布讨论</view>
+        <view class="post-dialog-close" bindtap="hidePostDialog">✕</view>
+      </view>
+      <view class="post-dialog-body">
+        <view class="post-form">
+          <view class="form-item">
+            <input 
+              class="form-input" 
+              placeholder="请输入讨论标题" 
+              value="{{postTitle}}"
+              bindinput="onPostTitleInput"
+            />
+          </view>
+          <view class="form-item">
+            <textarea 
+              class="form-textarea" 
+              placeholder="请输入讨论内容" 
+              value="{{postContent}}"
+              bindinput="onPostContentInput"
+              auto-height
+            />
+          </view>
+          <view class="form-item">
+            <view class="form-label">选择分类</view>
+            <view class="category-selector">
+              <view 
+                wx:for="{{postCategories}}" 
+                wx:key="id"
+                class="category-option {{selectedCategory === item.id ? 'active' : ''}}"
+                bindtap="selectCategory" 
+                data-category="{{item.id}}"
+              >
+                {{item.name}}
+              </view>
+            </view>
+          </view>
+          <view class="form-item">
+            <view class="form-label">添加图片</view>
+            <view class="image-upload" bindtap="chooseImage">
+              <view class="upload-icon">📷</view>
+              <view class="upload-text">点击选择图片</view>
+            </view>
+            <view wx:if="{{postImage}}" class="image-preview">
+              <image src="{{postImage}}" class="preview-img" />
+              <view class="preview-remove" bindtap="removeImage">✕</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="post-dialog-footer">
+        <view class="cancel-btn" bindtap="hidePostDialog">取消</view>
+        <view class="submit-btn" bindtap="submitPost" disabled="{{submitting}}">
+          {{submitting ? '发布中...' : '发布'}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,104 @@
+<!-- 设置页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="nav-back" bindtap="navigateBack">
+        <view class="back-icon">←</view>
+      </view>
+    </view>
+    <view class="nav-center">
+      <view class="nav-title">设置</view>
+    </view>
+    <view class="nav-right">
+    </view>
+  </view>
+  
+  <!-- 主内容区域 -->
+  <view class="content-area">
+    <!-- 账号设置 -->
+    <view class="setting-section">
+      <view class="section-title">账号设置</view>
+      <view class="setting-list">
+        <view class="setting-item" bindtap="navigateToProfile">
+          <view class="setting-label">个人资料</view>
+          <view class="setting-arrow">＞</view>
+        </view>
+        <view class="setting-item" bindtap="changePassword">
+          <view class="setting-label">修改密码</view>
+          <view class="setting-arrow">＞</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 隐私设置 -->
+    <view class="setting-section">
+      <view class="section-title">隐私设置</view>
+      <view class="setting-list">
+        <view class="setting-item">
+          <view class="setting-label">允许陌生人私信</view>
+          <view class="setting-switch">
+            <switch checked="{{privacySettings.allowStrangerMessage}}" bindchange="onPrivacySettingChange" data-key="allowStrangerMessage" />
+          </view>
+        </view>
+        <view class="setting-item">
+          <view class="setting-label">允许评论我的讨论</view>
+          <view class="setting-switch">
+            <switch checked="{{privacySettings.allowComment}}" bindchange="onPrivacySettingChange" data-key="allowComment" />
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 通知设置 -->
+    <view class="setting-section">
+      <view class="section-title">通知设置</view>
+      <view class="setting-list">
+        <view class="setting-item">
+          <view class="setting-label">接收系统通知</view>
+          <view class="setting-switch">
+            <switch checked="{{notificationSettings.system}}" bindchange="onNotificationSettingChange" data-key="system" />
+          </view>
+        </view>
+        <view class="setting-item">
+          <view class="setting-label">接收评论通知</view>
+          <view class="setting-switch">
+            <switch checked="{{notificationSettings.comment}}" bindchange="onNotificationSettingChange" data-key="comment" />
+          </view>
+        </view>
+        <view class="setting-item">
+          <view class="setting-label">接收点赞通知</view>
+          <view class="setting-switch">
+            <switch checked="{{notificationSettings.like}}" bindchange="onNotificationSettingChange" data-key="like" />
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 其他设置 -->
+    <view class="setting-section">
+      <view class="section-title">其他设置</view>
+      <view class="setting-list">
+        <view class="setting-item" bindtap="clearCache">
+          <view class="setting-label">清除缓存</view>
+          <view class="setting-value">{{cacheSize}}</view>
+          <view class="setting-arrow">＞</view>
+        </view>
+        <view class="setting-item" bindtap="navigateToAbout">
+          <view class="setting-label">关于我们</view>
+          <view class="setting-arrow">＞</view>
+        </view>
+        <view class="setting-item" bindtap="checkUpdate">
+          <view class="setting-label">检查更新</view>
+          <view class="setting-value">v1.0.0</view>
+          <view class="setting-arrow">＞</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 退出登录 -->
+    <view class="logout-section">
+      <view class="logout-btn" bindtap="logout">退出登录</view>
+    </view>
+  </view>
+</view>

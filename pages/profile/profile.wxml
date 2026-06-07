@@ -1,0 +1,56 @@
+<!-- 个人资料编辑页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="nav-back" bindtap="navigateBack">
+        <view class="back-icon">←</view>
+      </view>
+    </view>
+    <view class="nav-center">
+      <view class="nav-title">编辑个人资料</view>
+    </view>
+    <view class="nav-right">
+      <view class="nav-save" bindtap="saveProfile">
+        <view class="save-text">保存</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 主内容区域 -->
+  <view class="content-area">
+    <!-- 头像 -->
+    <view class="avatar-section">
+      <view class="avatar-container" bindtap="chooseAvatar">
+        <image src="{{userInfo.avatarUrl}}" class="user-avatar" />
+        <view class="avatar-edit">
+          <text class="avatar-edit-text">更换头像</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 个人信息表单 -->
+    <view class="form-section">
+      <view class="form-item">
+        <view class="form-label">昵称</view>
+        <view class="form-input">
+          <input value="{{userInfo.nickname}}" bindinput="onNicknameChange" placeholder="请输入昵称" />
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-label">地区</view>
+        <view class="form-input">
+          <input value="{{userInfo.city}}" bindinput="onCityChange" placeholder="请输入地区" />
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-label">性别</view>
+        <view class="form-select">
+          <picker range="{{genderOptions}}" value="{{genderIndex}}" bindchange="onGenderChange">
+            <view class="picker-text">{{genderOptions[genderIndex]}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

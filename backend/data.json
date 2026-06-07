@@ -1,0 +1,147 @@
+{
+  "strategies": [
+    {
+      "id": 1,
+      "title": "北京三日游攻略",
+      "desc": "详细的北京三日游行程安排，带你玩转帝都",
+      "image": "https://p26-aiop-sign.byteimg.com/tos-cn-i-vuqhorh59i/20260221151417D9477FD96D7ED7BE3E30-7478-0~tplv-vuqhorh59i-image-v1.image?rk3s=7f9e702d&x-expires=1771744477&x-signature=KN1X47VUQVlxHKBQKmmsRc0vjL4%3D",
+      "author": "旅游达人",
+      "views": 1234,
+      "likes": 567,
+      "createdAt": "2026-01-01"
+    },
+    {
+      "id": 2,
+      "title": "上海美食攻略",
+      "desc": "探寻上海当地特色美食，满足你的味蕾",
+      "image": "https://p9-aiop-sign.byteimg.com/tos-cn-i-vuqhorh59i/202602211514435FAD248ED5F53AA1A374-9410-0~tplv-vuqhorh59i-image-v1.image?rk3s=7f9e702d&x-expires=1771744496&x-signature=ZDKDiHXaH3tPKrf2aqRJ56vyzIQ%3D",
+      "author": "美食专家",
+      "views": 987,
+      "likes": 432,
+      "createdAt": "2026-01-02"
+    },
+    {
+      "id": 3,
+      "title": "杭州西湖一日游",
+      "desc": "西湖十景全攻略，领略江南水乡之美",
+      "image": "https://p26-aiop-sign.byteimg.com/tos-cn-i-vuqhorh59i/20260221151503983104AA1BBB89A227B7-9914-0~tplv-vuqhorh59i-image-v1.image?rk3s=7f9e702d&x-expires=1771744514&x-signature=Hky3QiNbkNsgNsEPYfMzO7FAJp8%3D",
+      "author": "旅行博主",
+      "views": 765,
+      "likes": 321,
+      "createdAt": "2026-01-03"
+    },
+    {
+      "id": 4,
+      "title": "测试攻略",
+      "desc": "这是一个测试攻略",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=test%20travel%20guide%2C%20scenic%20view%2C%20professional%20photography&image_size=landscape_16_9",
+      "author": "测试用户",
+      "views": 0,
+      "likes": 0,
+      "createdAt": "2026-02-04"
+    },
+    {
+      "id": 5,
+      "title": "11111",
+      "desc": "1111",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20history%2C%20ancient%20chinese%20palace%2C%20historical%20photography&image_size=landscape_16_9",
+      "author": "11111",
+      "views": 9,
+      "likes": 0,
+      "createdAt": "1111-11-11"
+    }
+  ],
+  "scenics": [
+    {
+      "id": 1,
+      "name": "故宫博物院",
+      "desc": "中国明清两代的皇家宫殿，世界文化遗产",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20beijing%2C%20ancient%20chinese%20palace%2C%20red%20walls%2C%20professional%20photography&image_size=square",
+      "address": "北京市东城区景山前街4号",
+      "rating": 4.8,
+      "reviews": 12345
+    },
+    {
+      "id": 2,
+      "name": "长城",
+      "desc": "中国古代伟大的防御工程，世界文化遗产",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=great%20wall%20of%20china%2C%20mountain%20landscape%2C%20ancient%20architecture%2C%20professional%20photography&image_size=square",
+      "address": "北京市怀柔区",
+      "rating": 4.9,
+      "reviews": 23456
+    },
+    {
+      "id": 3,
+      "name": "西湖",
+      "desc": "杭州西湖，中国著名的风景名胜区",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=west%20lake%20hangzhou%2C%20traditional%20chinese%20garden%2C%20pagoda%2C%20professional%20photography&image_size=square",
+      "address": "浙江省杭州市西湖区",
+      "rating": 4.7,
+      "reviews": 18901
+    },
+    {
+      "id": 4,
+      "name": "11111",
+      "desc": "1111",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20history%2C%20ancient%20chinese%20palace%2C%20historical%20photography&image_size=landscape_16_9",
+      "address": "1111",
+      "rating": 5,
+      "reviews": 0
+    }
+  ],
+  "history": [
+    {
+      "id": 1,
+      "title": "故宫的历史变迁",
+      "desc": "从明清宫殿到现代博物馆的演变历程",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20history%2C%20ancient%20chinese%20palace%2C%20historical%20photography&image_size=landscape_16_9",
+      "period": "明清时期",
+      "importance": "世界文化遗产",
+      "content": "故宫又称紫禁城，是中国明清两代的皇家宫殿，始建于明永乐四年（1406年），是世界上现存规模最大、保存最为完整的木质结构古建筑之一。"
+    }
+  ],
+  "collections": [
+    {
+      "id": 1,
+      "userId": "user1",
+      "itemId": 1,
+      "itemType": "strategy",
+      "title": "北京三日游攻略",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beijing%20travel%20guide%2C%20forbidden%20city%2C%20great%20wall%2C%20professional%20photography&image_size=landscape_16_9",
+      "collectedAt": "2026-01-10"
+    },
+    {
+      "id": 2,
+      "userId": "user1",
+      "itemId": 1,
+      "itemType": "scenic",
+      "title": "故宫博物院",
+      "image": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forbidden%20city%20beijing%2C%20ancient%20chinese%20palace%2C%20red%20walls%2C%20professional%20photography&image_size=square",
+      "collectedAt": "2026-01-11"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "userId": "user1",
+      "itemId": 1,
+      "itemType": "strategy",
+      "content": "这个攻略非常详细，很有帮助！",
+      "author": "微信用户123",
+      "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJLcib4VJj1ibk5e0EiaTia4iaibM9kZ9YHfCib4iaibM9kZ9YHfCib4iaibM9kZ9YHfCib4/132",
+      "createdAt": "2026-01-05",
+      "likes": 12
+    },
+    {
+      "id": 2,
+      "userId": "user2",
+      "itemId": 1,
+      "itemType": "strategy",
+      "content": "谢谢分享，已经收藏了",
+      "author": "微信用户456",
+      "avatar": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJLcib4VJj1ibk5e0EiaTia4iaibM9kZ9YHfCib4iaibM9kZ9YHfCib4iaibM9kZ9YHfCib4/132",
+      "createdAt": "2026-01-06",
+      "likes": 8
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+<!-- 关于我们页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <view class="nav-back" bindtap="navigateBack">
+        <view class="back-icon">←</view>
+      </view>
+    </view>
+    <view class="nav-center">
+      <view class="nav-title">关于我们</view>
+    </view>
+    <view class="nav-right"></view>
+  </view>
+
+  <!-- 主内容区域 -->
+  <scroll-view class="content-area" scroll-y="true">
+    <!-- Logo区域 -->
+    <view class="logo-section">
+      <view class="logo-container">
+        <view class="logo-icon">🏞️</view>
+      </view>
+      <view class="app-name">乡音智旅</view>
+      <view class="app-slogan">发现精彩旅行，分享美好时光</view>
+      <view class="app-version">版本 {{version}}</view>
+    </view>
+
+    <!-- 应用介绍 -->
+    <view class="info-section">
+      <view class="section-title">应用介绍</view>
+      <view class="section-content">
+        <text class="content-text">乡音智旅是一款专注于旅游攻略分享和交流的小程序。我们致力于为用户提供优质的旅游内容，包括景点推荐、美食攻略、交通住宿信息等，帮助用户发现更多精彩旅行目的地，分享美好旅行时光。</text>
+      </view>
+    </view>
+
+    <!-- 核心功能 -->
+    <view class="info-section">
+      <view class="section-title">核心功能</view>
+      <view class="feature-list">
+        <view class="feature-item">
+          <view class="feature-icon">🔍</view>
+          <view class="feature-info">
+            <view class="feature-name">智能搜索</view>
+            <view class="feature-desc">快速搜索旅游攻略、景点、历史文化等内容</view>
+          </view>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon">💬</view>
+          <view class="feature-info">
+            <view class="feature-name">讨论社区</view>
+            <view class="feature-desc">分享旅游攻略、美食推荐、旅行故事</view>
+          </view>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon">❤️</view>
+          <view class="feature-info">
+            <view class="feature-name">收藏管理</view>
+            <view class="feature-desc">收藏感兴趣的内容，方便随时查看</view>
+          </view>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon">🤖</view>
+          <view class="feature-info">
+            <view class="feature-name">AI客服</view>
+            <view class="feature-desc">智能客服助手，解答使用疑问</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="info-section">
+      <view class="section-title">联系我们</view>
+      <view class="contact-list">
+        <view class="contact-item" bindtap="copyEmail">
+          <view class="contact-label">官方邮箱</view>
+          <view class="contact-value">contact@xiangyinzlv.com</view>
+          <view class="contact-arrow">📋</view>
+        </view>
+        <view class="contact-item" bindtap="copyPhone">
+          <view class="contact-label">客服电话</view>
+          <view class="contact-value">400-888-8888</view>
+          <view class="contact-arrow">📋</view>
+        </view>
+        <view class="contact-item">
+          <view class="contact-label">官方网站</view>
+          <view class="contact-value">www.xiangyinzlv.com</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 更新日志 -->
+    <view class="info-section">
+      <view class="section-title">更新日志</view>
+      <view class="changelog-list">
+        <view class="changelog-item">
+          <view class="changelog-version">v1.0.0</view>
+          <view class="changelog-date">2026-02-20</view>
+          <view class="changelog-content">
+            <view class="changelog-text">• 全新上线，提供旅游攻略分享功能</view>
+            <view class="changelog-text">• 支持发布旅游攻略、美食推荐、景点讨论</view>
+            <view class="changelog-text">• 新增AI客服助手，智能解答使用问题</view>
+            <view class="changelog-text">• 支持个人资料编辑、密码修改等功能</view>
+            <view class="changelog-text">• 支持隐私设置、通知设置等个性化配置</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 版权信息 -->
+    <view class="footer-section">
+      <view class="copyright">© 2026 乡音智旅 版权所有</view>
+      <view class="icp">ICP备案号：京ICP备XXXXXXXX号</view>
+    </view>
+  </scroll-view>
+</view>

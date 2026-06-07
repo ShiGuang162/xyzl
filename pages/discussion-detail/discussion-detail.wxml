@@ -1,0 +1,110 @@
+<!-- 讨论详情页 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-back" bindtap="navigateBack">
+      <view class="back-icon">←</view>
+    </view>
+    <view class="nav-title">讨论详情</view>
+    <view class="nav-right">
+      <view class="share-btn" bindtap="shareDiscussion">
+        <view class="share-icon">🔗</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">加载中...</view>
+  </view>
+  
+  <!-- 讨论内容 -->
+  <view wx:elif="{{discussion}}" class="discussion-container">
+    <!-- 讨论头部 -->
+    <view class="discussion-header">
+      <view class="user-info">
+        <view class="user-avatar">{{discussion.user.avatar}}</view>
+        <view class="user-meta">
+          <view class="user-name">{{discussion.user.name}}</view>
+          <view class="post-time">{{discussion.time}}</view>
+        </view>
+      </view>
+      <view class="post-tag">{{discussion.tag}}</view>
+    </view>
+    
+    <!-- 讨论主体 -->
+    <view class="discussion-body">
+      <!-- 标题 -->
+      <view class="discussion-title">{{discussion.title}}</view>
+      
+      <!-- 内容 -->
+      <view class="discussion-content">{{discussion.content}}</view>
+      
+      <!-- 图片 -->
+      <view wx:if="{{discussion.image}}" class="discussion-image">
+        <image src="{{discussion.image}}" class="content-image" mode="aspectFill" />
+      </view>
+    </view>
+    
+    <!-- 互动数据 -->
+    <view class="interaction-stats">
+      <view class="stat-item" bindtap="likeDiscussion">
+        <view class="stat-icon {{isLiked ? 'liked' : ''}}">{{isLiked ? '❤️' : '🤍'}}</view>
+        <view class="stat-text">{{discussion.likes}} 点赞</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon">💬</view>
+        <view class="stat-text">{{discussion.comments}} 评论</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-icon">👀</view>
+        <view class="stat-text">{{discussion.views}} 浏览</view>
+      </view>
+    </view>
+    
+    <!-- 评论区域 -->
+    <view class="comments-section">
+      <view class="comments-header">
+        <view class="comments-title">评论 ({{comments.length}})</view>
+      </view>
+      
+      <!-- 评论列表 -->
+      <view class="comments-list">
+        <view wx:if="{{comments.length === 0}}" class="no-comments">
+          <view class="no-comments-text">暂无评论，快来发表第一条评论吧！</view>
+        </view>
+        <view wx:elif="{{comments.length > 0}}" class="comment-list">
+          <view wx:for="{{comments}}" wx:key="id" class="comment-item">
+            <view class="comment-avatar">{{item.user.avatar}}</view>
+            <view class="comment-content">
+              <view class="comment-header">
+                <view class="comment-user">{{item.user.name}}</view>
+                <view class="comment-time">{{item.time}}</view>
+              </view>
+              <view class="comment-text">{{item.content}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 评论输入框 -->
+      <view class="comment-input-section">
+        <view class="comment-input">
+          <input placeholder="写下你的评论..." class="input-text" value="{{commentText}}" bindinput="onCommentInput" />
+        </view>
+        <view class="send-btn" bindtap="submitComment">发送</view>
+      </view>
+    </view>
+    
+    <!-- 内容底部间距 -->
+    <view class="content-spacer"></view>
+  </view>
+  
+  <!-- 无内容状态 -->
+  <view wx:else class="empty-container">
+    <view class="empty-icon">💬</view>
+    <view class="empty-text">未找到讨论内容</view>
+    <view class="empty-hint">请检查链接是否正确</view>
+  </view>
+</view>
