@@ -6,7 +6,7 @@ require('dotenv').config();
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'Mysql@123456',  // 使用正确的密码
+  password: process.env.DB_PASSWORD || '',  // 请通过环境变量或.env文件配置
   database: process.env.DB_NAME || 'xyzl_db',
   port: process.env.DB_PORT || 3306,
   waitForConnections: true,

@@ -326,7 +326,7 @@ Page({
           url: 'https://apis.map.qq.com/ws/geocoder/v1/',
           data: {
             location: res.latitude + ',' + res.longitude,
-            key: 'OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77' // 这里使用腾讯地图API密钥，实际使用时需要替换为自己的密钥
+            key: 'YOUR_TENCENT_MAP_KEY_HERE' // 请替换为你的腾讯地图API密钥，建议通过后端代理或云函数调用以保护密钥安全
           },
           success: function(geoRes) {
             if (geoRes.data.status === 0) {
